@@ -76,6 +76,12 @@ define PatchOne
 			 -printf 'mkdir -p $(OPENWRT_DIR)/%h/patches && \
 								cp $(1)/%p $(OPENWRT_DIR)/%h/patches/%f\n') | sh; \
 	fi
+	if [ -d $(1)/target ]; then \
+		(cd $(1) && \
+		 find target -name '*.patch' \
+			 -printf 'mkdir -p $(OPENWRT_DIR)/%h && \
+								cp $(1)/%p $(OPENWRT_DIR)/%h/%f\n') | sh; \
+	fi
 endef
 
 # Patch <config> <dir>
