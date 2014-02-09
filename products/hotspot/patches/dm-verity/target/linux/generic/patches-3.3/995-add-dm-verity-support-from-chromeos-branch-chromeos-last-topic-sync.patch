@@ -1,7 +1,7 @@
 Index: linux-3.3.8/Documentation/device-mapper/dm-bht.txt
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-3.3.8/Documentation/device-mapper/dm-bht.txt	2014-01-15 17:05:19.755052882 +0800
++++ linux-3.3.8/Documentation/device-mapper/dm-bht.txt	2014-02-09 08:02:38.855062478 +0000
 @@ -0,0 +1,73 @@
 +dm-bht
 +======
@@ -79,7 +79,7 @@ Index: linux-3.3.8/Documentation/device-mapper/dm-bht.txt
 Index: linux-3.3.8/Documentation/device-mapper/dm-verity.txt
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-3.3.8/Documentation/device-mapper/dm-verity.txt	2014-01-15 17:05:19.755052882 +0800
++++ linux-3.3.8/Documentation/device-mapper/dm-verity.txt	2014-02-09 08:02:38.855062478 +0000
 @@ -0,0 +1,71 @@
 +dm-verity
 +==========
@@ -154,8 +154,8 @@ Index: linux-3.3.8/Documentation/device-mapper/dm-verity.txt
 +  http://git.chromium.org/cgi-bin/gitweb.cgi?p=dm-verity.git;a=tree
 Index: linux-3.3.8/drivers/md/Kconfig
 ===================================================================
---- linux-3.3.8.orig/drivers/md/Kconfig	2012-06-01 15:16:13.000000000 +0800
-+++ linux-3.3.8/drivers/md/Kconfig	2014-01-15 17:05:19.755052882 +0800
+--- linux-3.3.8.orig/drivers/md/Kconfig	2012-06-01 07:16:13.000000000 +0000
++++ linux-3.3.8/drivers/md/Kconfig	2014-02-09 08:02:38.859062638 +0000
 @@ -349,6 +349,40 @@
  
  	  If unsure, say N.
@@ -199,8 +199,8 @@ Index: linux-3.3.8/drivers/md/Kconfig
  	depends on BLK_DEV_DM && EXPERIMENTAL
 Index: linux-3.3.8/drivers/md/Makefile
 ===================================================================
---- linux-3.3.8.orig/drivers/md/Makefile	2012-06-01 15:16:13.000000000 +0800
-+++ linux-3.3.8/drivers/md/Makefile	2014-01-15 17:05:19.755052882 +0800
+--- linux-3.3.8.orig/drivers/md/Makefile	2012-06-01 07:16:13.000000000 +0000
++++ linux-3.3.8/drivers/md/Makefile	2014-02-09 08:02:38.863062799 +0000
 @@ -42,6 +42,9 @@
  obj-$(CONFIG_DM_ZERO)		+= dm-zero.o
  obj-$(CONFIG_DM_RAID)	+= dm-raid.o
@@ -214,7 +214,7 @@ Index: linux-3.3.8/drivers/md/Makefile
 Index: linux-3.3.8/drivers/md/dm-bht.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-3.3.8/drivers/md/dm-bht.c	2014-01-15 17:05:19.759052882 +0800
++++ linux-3.3.8/drivers/md/dm-bht.c	2014-02-09 08:02:38.863062799 +0000
 @@ -0,0 +1,980 @@
 + /*
 + * Copyright (C) 2010 The Chromium OS Authors <chromium-os-dev@chromium.org>
@@ -1198,8 +1198,8 @@ Index: linux-3.3.8/drivers/md/dm-bht.c
 +}
 Index: linux-3.3.8/drivers/md/dm-ioctl.c
 ===================================================================
---- linux-3.3.8.orig/drivers/md/dm-ioctl.c	2012-06-01 15:16:13.000000000 +0800
-+++ linux-3.3.8/drivers/md/dm-ioctl.c	2014-01-15 17:05:33.087053306 +0800
+--- linux-3.3.8.orig/drivers/md/dm-ioctl.c	2012-06-01 07:16:13.000000000 +0000
++++ linux-3.3.8/drivers/md/dm-ioctl.c	2014-02-09 08:02:38.867062960 +0000
 @@ -1748,6 +1748,46 @@
  	dm_hash_exit();
  }
@@ -1250,7 +1250,7 @@ Index: linux-3.3.8/drivers/md/dm-ioctl.c
 Index: linux-3.3.8/drivers/md/dm-verity.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-3.3.8/drivers/md/dm-verity.c	2014-01-15 17:05:19.759052882 +0800
++++ linux-3.3.8/drivers/md/dm-verity.c	2014-02-09 08:02:38.867062960 +0000
 @@ -0,0 +1,1484 @@
 +/*
 + * Originally based on dm-crypt.c,
@@ -2739,7 +2739,7 @@ Index: linux-3.3.8/drivers/md/dm-verity.c
 Index: linux-3.3.8/drivers/md/dm-verity.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-3.3.8/drivers/md/dm-verity.h	2014-01-15 17:05:19.759052882 +0800
++++ linux-3.3.8/drivers/md/dm-verity.h	2014-02-09 08:02:38.871063122 +0000
 @@ -0,0 +1,45 @@
 +/*
 + * Copyright (C) 2010 The Chromium OS Authors <chromium-os-dev@chromium.org>
@@ -2788,8 +2788,8 @@ Index: linux-3.3.8/drivers/md/dm-verity.h
 +#endif  /* DM_VERITY_H */
 Index: linux-3.3.8/include/linux/device-mapper.h
 ===================================================================
---- linux-3.3.8.orig/include/linux/device-mapper.h	2012-06-01 15:16:13.000000000 +0800
-+++ linux-3.3.8/include/linux/device-mapper.h	2014-01-15 17:05:33.087053306 +0800
+--- linux-3.3.8.orig/include/linux/device-mapper.h	2012-06-01 07:16:13.000000000 +0000
++++ linux-3.3.8/include/linux/device-mapper.h	2014-02-09 08:02:38.871063122 +0000
 @@ -302,6 +302,12 @@
  void *dm_get_mdptr(struct mapped_device *md);
  
@@ -2805,8 +2805,8 @@ Index: linux-3.3.8/include/linux/device-mapper.h
  int dm_suspend(struct mapped_device *md, unsigned suspend_flags);
 Index: linux-3.3.8/init/Makefile
 ===================================================================
---- linux-3.3.8.orig/init/Makefile	2012-06-01 15:16:13.000000000 +0800
-+++ linux-3.3.8/init/Makefile	2014-01-15 17:05:19.759052882 +0800
+--- linux-3.3.8.orig/init/Makefile	2012-06-01 07:16:13.000000000 +0000
++++ linux-3.3.8/init/Makefile	2014-02-09 08:02:38.887063778 +0000
 @@ -14,6 +14,7 @@
  mounts-$(CONFIG_BLK_DEV_RAM)	+= do_mounts_rd.o
  mounts-$(CONFIG_BLK_DEV_INITRD)	+= do_mounts_initrd.o
@@ -2817,8 +2817,8 @@ Index: linux-3.3.8/init/Makefile
  $(obj)/version.o: include/generated/compile.h
 Index: linux-3.3.8/init/do_mounts.c
 ===================================================================
---- linux-3.3.8.orig/init/do_mounts.c	2012-06-01 15:16:13.000000000 +0800
-+++ linux-3.3.8/init/do_mounts.c	2014-01-15 17:05:33.087053306 +0800
+--- linux-3.3.8.orig/init/do_mounts.c	2012-06-01 07:16:13.000000000 +0000
++++ linux-3.3.8/init/do_mounts.c	2014-02-09 08:02:38.895064104 +0000
 @@ -521,6 +521,7 @@
  	wait_for_device_probe();
  
@@ -2829,8 +2829,8 @@ Index: linux-3.3.8/init/do_mounts.c
  		root_device_name = saved_root_name;
 Index: linux-3.3.8/init/do_mounts.h
 ===================================================================
---- linux-3.3.8.orig/init/do_mounts.h	2012-06-01 15:16:13.000000000 +0800
-+++ linux-3.3.8/init/do_mounts.h	2014-01-15 17:05:33.087053306 +0800
+--- linux-3.3.8.orig/init/do_mounts.h	2012-06-01 07:16:13.000000000 +0000
++++ linux-3.3.8/init/do_mounts.h	2014-02-09 08:02:38.903064432 +0000
 @@ -74,3 +74,13 @@
  static inline void md_run_setup(void) {}
  
@@ -2848,7 +2848,7 @@ Index: linux-3.3.8/init/do_mounts.h
 Index: linux-3.3.8/init/do_mounts_dm.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-3.3.8/init/do_mounts_dm.c	2014-01-15 17:05:19.759052882 +0800
++++ linux-3.3.8/init/do_mounts_dm.c	2014-02-09 08:02:38.907064595 +0000
 @@ -0,0 +1,454 @@
 +/* do_mounts_dm.c
 + * Copyright (C) 2010 The Chromium OS Authors <chromium-os-dev@chromium.org>
@@ -3304,3 +3304,154 @@ Index: linux-3.3.8/init/do_mounts_dm.c
 +	DMINFO("attempting early device configuration.");
 +	dm_setup_drives();
 +}
+Index: linux-3.3.8/include/linux/dm-bht.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-3.3.8/include/linux/dm-bht.h	2014-02-09 11:53:12.719787409 +0000
+@@ -0,0 +1,146 @@
++/*
++ * Copyright (C) 2010 The Chromium OS Authors <chromium-os-dev@chromium.org>
++ *
++ * Device-Mapper block hash tree interface.
++ * See Documentation/device-mapper/dm-bht.txt for details.
++ *
++ * This file is released under the GPLv2.
++ */
++#ifndef __LINUX_DM_BHT_H
++#define __LINUX_DM_BHT_H
++
++#include <linux/compiler.h>
++#include <linux/crypto.h>
++#include <linux/types.h>
++
++/* To avoid allocating memory for digest tests, we just setup a
++ * max to use for now.
++ */
++#define DM_BHT_MAX_DIGEST_SIZE 128  /* 1k hashes are unlikely for now */
++#define DM_BHT_SALT_SIZE       32   /* 256 bits of salt is a lot */
++
++/* UNALLOCATED, PENDING, READY, and VERIFIED are valid states. All other
++ * values are entry-related return codes.
++ */
++#define DM_BHT_ENTRY_VERIFIED 8  /* 'nodes' has been checked against parent */
++#define DM_BHT_ENTRY_READY 4  /* 'nodes' is loaded and available */
++#define DM_BHT_ENTRY_PENDING 2  /* 'nodes' is being loaded */
++#define DM_BHT_ENTRY_UNALLOCATED 0 /* untouched */
++#define DM_BHT_ENTRY_ERROR -1 /* entry is unsuitable for use */
++#define DM_BHT_ENTRY_ERROR_IO -2 /* I/O error on load */
++
++/* Additional possible return codes */
++#define DM_BHT_ENTRY_ERROR_MISMATCH -3 /* Digest mismatch */
++
++/* dm_bht_entry
++ * Contains dm_bht->node_count tree nodes at a given tree depth.
++ * state is used to transactionally assure that data is paged in
++ * from disk.  Unless dm_bht kept running crypto contexts for each
++ * level, we need to load in the data for on-demand verification.
++ */
++struct dm_bht_entry {
++	atomic_t state; /* see defines */
++	/* Keeping an extra pointer per entry wastes up to ~33k of
++	 * memory if a 1m blocks are used (or 66 on 64-bit arch)
++	 */
++	void *io_context;  /* Reserve a pointer for use during io */
++	/* data should only be non-NULL if fully populated. */
++	u8 *nodes;  /* The hash data used to verify the children.
++		     * Guaranteed to be page-aligned.
++		     */
++};
++
++/* dm_bht_level
++ * Contains an array of entries which represent a page of hashes where
++ * each hash is a node in the tree at the given tree depth/level.
++ */
++struct dm_bht_level {
++	struct dm_bht_entry *entries;  /* array of entries of tree nodes */
++	unsigned int count;  /* number of entries at this level */
++	sector_t sector;  /* starting sector for this level */
++};
++
++/* opaque context, start, databuf, sector_count */
++typedef int(*dm_bht_callback)(void *,  /* external context */
++			      sector_t,  /* start sector */
++			      u8 *,  /* destination page */
++			      sector_t,  /* num sectors */
++			      struct dm_bht_entry *);
++/* dm_bht - Device mapper block hash tree
++ * dm_bht provides a fixed interface for comparing data blocks
++ * against a cryptographic hashes stored in a hash tree. It
++ * optimizes the tree structure for storage on disk.
++ *
++ * The tree is built from the bottom up.  A collection of data,
++ * external to the tree, is hashed and these hashes are stored
++ * as the blocks in the tree.  For some number of these hashes,
++ * a parent node is created by hashing them.  These steps are
++ * repeated.
++ *
++ * TODO(wad): All hash storage memory is pre-allocated and freed once an
++ * entire branch has been verified.
++ */
++struct dm_bht {
++	/* Configured values */
++	int depth;  /* Depth of the tree including the root */
++	unsigned int block_count;  /* Number of blocks hashed */
++	char hash_alg[CRYPTO_MAX_ALG_NAME];
++	unsigned char salt[DM_BHT_SALT_SIZE];
++
++	/* This is a temporary hack to ease the transition to salting. It will
++	 * be removed once salting is supported both in kernel and userspace,
++	 * and the salt will default to all zeroes instead. */
++	bool have_salt;
++
++	/* Computed values */
++	unsigned int node_count;  /* Data size (in hashes) for each entry */
++	unsigned int node_count_shift;  /* first bit set - 1 */
++	/* There is one per CPU so that verified can be simultaneous. */
++	struct hash_desc hash_desc[NR_CPUS];  /* Container for the hash alg */
++	unsigned int digest_size;
++	sector_t sectors;  /* Number of disk sectors used */
++
++	/* bool verified;  Full tree is verified */
++	u8 root_digest[DM_BHT_MAX_DIGEST_SIZE];
++	struct dm_bht_level *levels;  /* in reverse order */
++	/* Callbacks for reading and/or writing to the hash device */
++	dm_bht_callback read_cb;
++	dm_bht_callback write_cb;
++};
++
++/* Constructor for struct dm_bht instances. */
++int dm_bht_create(struct dm_bht *bht,
++		  unsigned int block_count,
++		  const char *alg_name);
++/* Destructor for struct dm_bht instances.  Does not free @bht */
++int dm_bht_destroy(struct dm_bht *bht);
++
++/* Basic accessors for struct dm_bht */
++sector_t dm_bht_sectors(const struct dm_bht *bht);
++void dm_bht_set_read_cb(struct dm_bht *bht, dm_bht_callback read_cb);
++void dm_bht_set_write_cb(struct dm_bht *bht, dm_bht_callback write_cb);
++int dm_bht_set_root_hexdigest(struct dm_bht *bht, const u8 *hexdigest);
++int dm_bht_root_hexdigest(struct dm_bht *bht, u8 *hexdigest, int available);
++void dm_bht_set_salt(struct dm_bht *bht, const char *hexsalt);
++int dm_bht_salt(struct dm_bht *bht, char *hexsalt);
++
++/* Functions for loading in data from disk for verification */
++bool dm_bht_is_populated(struct dm_bht *bht, unsigned int block);
++int dm_bht_populate(struct dm_bht *bht, void *read_cb_ctx,
++		    unsigned int block);
++int dm_bht_verify_block(struct dm_bht *bht, unsigned int block,
++			struct page *pg, unsigned int offset);
++
++/* Functions for creating struct dm_bhts on disk.  A newly created dm_bht
++ * should not be directly used for verification. (It should be repopulated.)
++ * In addition, these functions aren't meant to be called in parallel.
++ */
++int dm_bht_compute(struct dm_bht *bht, void *read_cb_ctx);
++int dm_bht_sync(struct dm_bht *bht, void *write_cb_ctx);
++int dm_bht_store_block(struct dm_bht *bht, unsigned int block,
++		       u8 *block_data);
++int dm_bht_zeroread_callback(void *ctx, sector_t start, u8 *dst, sector_t count,
++			     struct dm_bht_entry *entry);
++void dm_bht_read_completed(struct dm_bht_entry *entry, int status);
++void dm_bht_write_completed(struct dm_bht_entry *entry, int status);
++#endif  /* __LINUX_DM_BHT_H */

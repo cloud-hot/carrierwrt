@@ -9,7 +9,11 @@ define Product/hotspot
 
 	CONFIG += \
 		CONFIG_BUSYBOX_CONFIG_TELNETD=n \
-		CONFIG_PACKAGE_luci=y
+		CONFIG_PACKAGE_luci=y \
+		CONFIG_PACKAGE_dmsetup=y \
+		CONFIG_PACKAGE_dm-verity=y \
+		CONFIG_PACKAGE_htpdate=y \
+		CONFIG_PACKAGE_netcat=y
 			
 	SETTINGS := uci-product.sh
 
@@ -19,7 +23,8 @@ define Customization/default
 
 	CONFIG += \
 		CONFIG_PACKAGE_luci-theme-bootstrap=y \
-		CONFIG_PACKAGE_luci-branding=y
+		CONFIG_PACKAGE_luci-branding=y \
+		CONFIG_PACKAGE_openwisp-firmware=y
 	
 	SETTINGS := uci-customization.sh
 

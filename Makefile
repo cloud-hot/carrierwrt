@@ -16,6 +16,7 @@ OPENWRT_URL  	:= $(OPENWRT_BASE)/$(CONFIG_OPENWRT_PATH)@$(CONFIG_OPENWRT_REV)
 LUCI_BASE    	:= http://svn.luci.subsignal.org/luci
 LUCI_URL     	:= $(LUCI_BASE)/$(CONFIG_LUCI_PATH)/contrib/package@$(CONFIG_LUCI_REV)
 LUCI_FEEDS_DIR  := $(OPENWRT_DIR)/feeds/luci
+PACKAGE_FEEDS_DIR  := $(OPENWRT_DIR)/feeds/packages
 PACKAGES        := $(wildcard package/*)
 
 # Build in release mode by default
@@ -221,6 +222,7 @@ _build-images:
 	# Revert openwrt and luci to pristine condition
 	scripts/svn-pristine $(OPENWRT_DIR) | sh
 	scripts/svn-pristine $(LUCI_FEEDS_DIR) | sh
+	scripts/svn-pristine $(PACKAGE_FEEDS_DIR) | sh
 
 	# The special 'files' dir is in svn:ignore so we need to manually delete it
 	rm -rf $(OPENWRT_DIR)/files/*

@@ -12,7 +12,5 @@ define Build/debug
 		CONFIG_PACKAGE_kmod-usb-storage=y \
 		CONFIG_PACKAGE_kmod-fs-ext4=y \
 		CONFIG_PACKAGE_block-mount=y \
-		CONFIG_PACKAGE_e2fsprogs=y \
-		CONFIG_PACKAGE_dmsetup=y \
-		CONFIG_PACKAGE_dm-verity=y
+		CONFIG_PACKAGE_e2fsprogs=y
 endef
