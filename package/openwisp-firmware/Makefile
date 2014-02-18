@@ -24,24 +24,24 @@ endef
 define Package/$(PKG_NAME)/install
 	# install scripts
 	$(INSTALL_DIR)  $(1)/etc/owispmanager
-	$(INSTALL_DATA) ./files/common.sh \
+	$(INSTALL_BIN) ./files/common.sh \
 			$(1)/etc/owispmanager/common.sh
-	$(INSTALL_DATA) ./files/owispmanager.sh \
+	$(INSTALL_BIN) ./files/owispmanager.sh \
 			$(1)/etc/owispmanager/owispmanager.sh
-	$(INSTALL_DATA) ./files/failover.sh \
+	$(INSTALL_BIN) ./files/failover.sh \
 			$(1)/etc/owispmanager/failover.sh
 	# install tools
 	$(INSTALL_DIR)  $(1)/etc/owispmanager/tools
-	$(INSTALL_DATA) ./files/tools/mac80211.sh \
+	$(INSTALL_BIN) ./files/tools/mac80211.sh \
 			$(1)/etc/owispmanager/tools/mac80211.sh
-	$(INSTALL_DATA) ./files/tools/madwifi.sh \
+	$(INSTALL_BIN) ./files/tools/madwifi.sh \
 			$(1)/etc/owispmanager/tools/madwifi.sh
 	# install service
 	$(INSTALL_DIR)  $(1)/etc/init.d
-	$(INSTALL_DATA) ./files/htpdate/htpdate.init \
+	$(INSTALL_BIN) ./files/htpdate/htpdate.init \
 			$(1)/etc/init.d/htpdate
 	$(INSTALL_DIR)  $(1)/etc/uci-defaults
-	$(INSTALL_DATA) ./files/htpdate/htpdate.default \
+	$(INSTALL_BIN) ./files/htpdate/htpdate.default \
 			$(1)/etc/uci-defaults/htpdate
 endef
 
