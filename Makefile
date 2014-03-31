@@ -318,5 +318,6 @@ $(OPENWRT_DIR)/feeds.conf:
 	echo "src-svn luci $(LUCI_URL)" >> $@
 	$(OPENWRT_DIR)/scripts/feeds update
 	$(OPENWRT_DIR)/scripts/feeds install luci
+	$(OPENWRT_DIR)/scripts/feeds install freecwmp
 
 .PHONY: all help _info _touch _build _build-products _build-targets _build-images

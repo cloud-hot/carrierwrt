@@ -11,9 +11,7 @@ define Product/hotspot
 		CONFIG_BUSYBOX_CONFIG_TELNETD=n \
 		CONFIG_PACKAGE_luci=y \
 		CONFIG_PACKAGE_dmsetup=y \
-		CONFIG_PACKAGE_dm-verity=y \
-		CONFIG_PACKAGE_htpdate=y \
-		CONFIG_PACKAGE_netcat=y
+		CONFIG_PACKAGE_dm-verity=y
 			
 	SETTINGS := uci-product.sh
 
@@ -24,8 +22,15 @@ define Customization/default
 	CONFIG += \
 		CONFIG_PACKAGE_luci-theme-bootstrap=y \
 		CONFIG_PACKAGE_luci-branding=y \
-		CONFIG_PACKAGE_openwisp-firmware=y
-	
+		CONFIG_PACKAGE_libcurl=y \
+		CONFIG_LIBCURL_OPENSSL=y \
+		CONFIG_LIBCURL_THREADED_RESOLVER=y \
+		CONFIG_LIBCURL_ZLIB=y \
+		CONFIG_LIBCURL_CRYPTO_AUTH=y \
+		CONFIG_PACKAGE_freecwmp=y \
+		CONFIG_FREECWMP_DEVEL=y \
+		CONFIG_FREECWMP_DEBUG=y
+
 	SETTINGS := uci-customization.sh
 
 	TESTED := \
