@@ -29,7 +29,9 @@ define Customization/default
 		CONFIG_LIBCURL_CRYPTO_AUTH=y \
 		CONFIG_PACKAGE_freecwmp=y \
 		CONFIG_FREECWMP_DEVEL=y \
-		CONFIG_FREECWMP_DEBUG=y
+		CONFIG_FREECWMP_DEBUG=y \
+		CONFIG_PACKAGE_lua-mosquitto=y \
+		CONFIG_PACKAGE_mqtt-service=y
 
 	SETTINGS := uci-customization.sh
 

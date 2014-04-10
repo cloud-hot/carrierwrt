@@ -319,5 +319,6 @@ $(OPENWRT_DIR)/feeds.conf:
 	$(OPENWRT_DIR)/scripts/feeds update
 	$(OPENWRT_DIR)/scripts/feeds install luci
 	$(OPENWRT_DIR)/scripts/feeds install freecwmp
+	$(OPENWRT_DIR)/scripts/feeds install mosquitto
 
 .PHONY: all help _info _touch _build _build-products _build-targets _build-images

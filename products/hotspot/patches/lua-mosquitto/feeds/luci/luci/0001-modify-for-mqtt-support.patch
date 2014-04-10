@@ -1,0 +1,165 @@
+From 6ec95c8d8bc91dbc488e38b68a80605acb60d4ae Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Thu, 10 Apr 2014 08:37:05 +0000
+Subject: [PATCH] modify for mqtt support
+
+---
+ libs/nixio/src/file.c |   40 +++++++++++++++++++++++++++++++++
+ libs/nixio/src/poll.c |   60 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 99 insertions(+), 1 deletion(-)
+
+diff --git a/libs/nixio/src/file.c b/libs/nixio/src/file.c
+index b86e040..f69ae72 100644
+--- a/libs/nixio/src/file.c
++++ b/libs/nixio/src/file.c
+@@ -115,6 +115,22 @@ static int nixio_open_flags(lua_State *L) {
+ 	return 1;
+ }
+ 
++static int nixio_fd_wrap(lua_State *L) {
++	int fd = luaL_checkint(L, 1);
++
++	int *udata = lua_newuserdata(L, sizeof(int));
++	if (!udata) {
++		return luaL_error(L, "out of memory");
++	}
++
++	*udata = fd;
++
++	luaL_getmetatable(L, NIXIO_FILE_META);
++	lua_setmetatable(L, -2);
++
++	return 1;
++}
++
+ static int nixio_dup(lua_State *L) {
+ 	int oldfd = nixio__checkfd(L, 1);
+ 	int newfd = (lua_gettop(L) > 1) ? nixio__checkfd(L, 2) : -1;
+@@ -223,6 +239,26 @@ static int nixio_file_read(lua_State *L) {
+ 	}
+ }
+ 
++#ifdef __linux__
++
++static int nixio_file_numexp(lua_State *L) {
++	int fd = nixio__checkfd(L, 1);
++	uint64_t numexp;
++	int readc;
++
++	do {
++		readc = read(fd, &numexp, sizeof(uint64_t));
++	} while (readc == -1 && errno == EINTR);
++
++	if (readc < 0) {
++		return nixio__perror(L);
++	} else {
++		lua_pushnumber(L, (lua_Number)numexp);
++		return 1;
++	}
++}
++
++#endif
+ 
+ static int nixio_file_seek(lua_State *L) {
+ 	int fd = nixio__checkfd(L, 1);
+@@ -350,6 +386,9 @@ static int nixio_file__tostring(lua_State *L) {
+ static const luaL_reg M[] = {
+ 	{"write",		nixio_file_write},
+ 	{"read",		nixio_file_read},
++#ifdef __linux__
++	{"numexp",		nixio_file_numexp},
++#endif
+ 	{"tell",		nixio_file_tell},
+ 	{"seek",		nixio_file_seek},
+ 	{"stat",		nixio_file_stat},
+@@ -366,6 +405,7 @@ static const luaL_reg R[] = {
+ 	{"dup",			nixio_dup},
+ 	{"open",		nixio_open},
+ 	{"open_flags",	nixio_open_flags},
++	{"fd_wrap",		nixio_fd_wrap},
+ 	{"pipe",		nixio_pipe},
+ 	{NULL,			NULL}
+ };
+diff --git a/libs/nixio/src/poll.c b/libs/nixio/src/poll.c
+index 1211bc7..dcccabb 100644
+--- a/libs/nixio/src/poll.c
++++ b/libs/nixio/src/poll.c
+@@ -171,7 +171,7 @@ static int nixio_poll(lua_State *L) {
+ 
+ 	if (status == 0) {
+ 		free(fds);
+-		lua_pushboolean(L, 0);
++		lua_pushinteger(L, status);
+ 		return 1;
+ 	} else if (status < 0) {
+ 		free(fds);
+@@ -196,8 +196,66 @@ static int nixio_poll(lua_State *L) {
+ 	return 2;
+ }
+ 
++#ifdef __linux__
++
++#include <stdint.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <sys/timerfd.h>
++
++static int nixio_timerfd(lua_State *L) {
++	struct itimerspec its;
++
++	its.it_value.tv_sec = (time_t)luaL_optinteger(L, 1, 0);
++	its.it_value.tv_nsec = (long)luaL_optinteger(L, 2, 0);
++
++	its.it_interval.tv_sec = (time_t)luaL_optinteger(L, 3, 0);
++	its.it_interval.tv_nsec = (long)luaL_optinteger(L, 4, 0);
++
++	/* Create a timer object and associated fd */
++	int fd = timerfd_create(CLOCK_REALTIME, 0);
++
++	if (fd == -1) {
++		return nixio__perror(L);
++	}
++
++	/* Workaround for TFD_NONBLOCK 'invalid argument' in uClibc*/
++	int flags;
++	flags = fcntl(fd, F_GETFL);
++	if (flags == -1)
++		return nixio__perror(L);
++	flags |= O_NONBLOCK;
++	if(fcntl(fd, F_SETFL, flags) == -1)
++		return nixio__perror(L);
++
++	/* Arm the timer */
++	if (timerfd_settime(fd, 0, &its ,NULL) == -1) {
++		close(fd);
++		return nixio__perror(L);
++	}
++
++	/* Create a userdatum for fd */
++	int *udata = lua_newuserdata(L, sizeof(int));
++	if (!udata) {
++		close(fd);
++		return luaL_error(L, "out of memory");
++	}
++
++	*udata = fd;
++
++	luaL_getmetatable(L, NIXIO_FILE_META);
++	lua_setmetatable(L, -2);
++
++	return 1;
++}
++
++#endif
++
+ /* module table */
+ static const luaL_reg R[] = {
++#ifdef __linux__
++	{"timerfd",	nixio_timerfd},
++#endif
+ 	{"gettimeofday", nixio_gettimeofday},
+ 	{"nanosleep",	nixio_nanosleep},
+ 	{"poll",		nixio_poll},
+-- 
+1.7.9.5
+
