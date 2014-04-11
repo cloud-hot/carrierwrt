@@ -24,7 +24,7 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR)  $(1)/lib/mqtt
-	$(INSTALL_DATA) ./files/lib/mqtt/mqtt-tr069.lua \
+	$(INSTALL_BIN) ./files/lib/mqtt/mqtt-tr069.lua \
 			$(1)/lib/mqtt/mqtt-tr069.lua
 endef
 
