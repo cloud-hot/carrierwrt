@@ -1,0 +1,74 @@
+#!/bin/sh /etc/rc.common
+# Copyright (c) 2011 Bart Van Der Meerssche
+
+START=98
+
+set_version()
+{
+	VERSION=$(opkg info hotspot | grep -o -e '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\.//g')
+	uci set easycwmp.@device[0].software_version=$VERSION
+	uci commit
+
+	logger 'copying hotspot package version into system uci file at firstboot'
+}
+
+load_config()
+{
+	# lack of hardware version and software version
+#	MODEL_HEX=$(hexdump -v -e '1/1 "%.2x"' -s $((0x11800)) -n 6 /dev/mtd6)
+#	MODEL=$(hexdump -v -e '"%.6s"' -s $((0x11800)) -n 6 /dev/mtd6)
+#	SERIAL=$(hexdump -v -e '"%.10s"' -s $((0x11806)) -n 10 /dev/mtd6)
+	MODEL_HEX=0
+	MODEL=AP
+	SERIAL=000000000001
+
+	if [ $MODEL_HEX != ffffffffffff ]
+	then
+		uci set easycwmp.@device[0].product_class=$MODEL
+		uci set easycwmp.@device[0].serial_number=$SERIAL
+	fi
+
+#	uci set system.@system[0].hostname=hotspot-$(hexdump -v -e '1/1 "%.2x"' -s $((0x11020)) -n 3 /dev/mtd6)
+
+	uci commit
+
+	logger 'configuring hotspot device at firstboot'
+}
+
+start()
+{
+	FIRSTBOOT=$(uci get hotspot.daemon.firstboot)
+
+	if [ $FIRSTBOOT -eq '1' ]
+	then
+		set_version
+		load_config
+	fi
+
+	/usr/sbin/supd
+	/usr/sbin/hotspotd
+
+	if [ $FIRSTBOOT -eq '1' ]
+	then
+		uci set hotspot.daemon.firstboot='0'
+		uci commit
+	fi
+
+	FCHECK=/usr/bin/fcheck
+	MINUTE=$(date '+%M')
+
+	# Configure cron
+	echo -e "*/15 * * * * $FCHECK" | crontab -
+}
+
+stop()
+{
+	crontab -r
+
+	/usr/sbin/hotspotd -k
+	rm -rf /var/run/hotspotd
+
+	/usr/sbin/supd -k
+	rm -rf /var/run/supd
+}
+

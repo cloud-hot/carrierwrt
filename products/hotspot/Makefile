@@ -31,7 +31,8 @@ define Customization/default
 		CONFIG_PACKAGE_mqtt-service=y \
 		CONFIG_PACKAGE_easycwmp=y \
 		CONFIG_EASYCWMP_DEVEL=y \
-		CONFIG_EASYCWMP_DEBUG=y
+		CONFIG_EASYCWMP_DEBUG=y \
+		CONFIG_PACKAGE_hotspot=y
 
 	SETTINGS := uci-customization.sh
 
