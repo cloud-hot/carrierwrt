@@ -1,0 +1,67 @@
+From 94fe71a14b87058709acce0180ae55dbb499a082 Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Tue, 15 Apr 2014 02:12:12 +0000
+Subject: [PATCH] compatible with genieacs cwmp version to 1-0 and fix
+ genieacs can not deal with empty inform parameter value
+
+---
+ src/messages.h |    8 ++++----
+ src/xml.c      |    2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/messages.h b/src/messages.h
+index ffdaaab..29a7f89 100644
+--- a/src/messages.h
++++ b/src/messages.h
+@@ -20,7 +20,7 @@
+ 	"xmlns:soap_enc=\"http://schemas.xmlsoap.org/soap/encoding/\" " 			\
+ 	"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "							\
+ 	"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "					\
+-	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">" 								\
++	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">" 								\
+ 		"<soap_env:Header>" 													\
+ 		"<cwmp:ID soap_env:mustUnderstand=\"1\"/>"								\
+ 	"</soap_env:Header>"														\
+@@ -50,7 +50,7 @@
+ 	"xmlns:soap_enc=\"http://schemas.xmlsoap.org/soap/encoding/\" " \
+ 	"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "				\
+ 	"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "		\
+-	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">" 					\
++	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">" 					\
+ 	"<soap_env:Header>" 											\
+ 		"<cwmp:ID soap_env:mustUnderstand=\"1\"/>"					\
+ 	"</soap_env:Header>"											\
+@@ -64,7 +64,7 @@
+ 	"xmlns:soap_enc=\"http://schemas.xmlsoap.org/soap/encoding/\" " \
+ 	"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "				\
+ 	"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "		\
+-	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">" 					\
++	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">" 					\
+ 		"<soap_env:Header>" 										\
+ 		"<cwmp:ID soap_env:mustUnderstand=\"1\"/>"					\
+ 	"</soap_env:Header>"											\
+@@ -81,7 +81,7 @@
+ 	"xmlns:soap_enc=\"http://schemas.xmlsoap.org/soap/encoding/\" " \
+ 	"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "				\
+ 	"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "		\
+-	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">" 					\
++	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">" 					\
+ 		"<soap_env:Header>" 										\
+ 		"<cwmp:ID soap_env:mustUnderstand=\"1\"/>"					\
+ 	"</soap_env:Header>"											\
+diff --git a/src/xml.c b/src/xml.c
+index 58904f3..335347b 100644
+--- a/src/xml.c
++++ b/src/xml.c
+@@ -537,7 +537,7 @@ int xml_prepare_inform_message(char **msg_out)
+ 		if (!b) goto error;
+ 
+ #ifdef ACS_MULTI
+-		mxmlElementSetAttr(n, "xsi:type", external_parameter->type);
++		mxmlElementSetAttr(b, "xsi:type", external_parameter->type);
+ #endif
+ 		b = mxmlNewText(b, 0, external_parameter->data ? external_parameter->data : "");
+ 		if (!b) goto error;
+-- 
+1.7.9.5
+

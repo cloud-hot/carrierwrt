@@ -27,11 +27,11 @@ define Customization/default
 		CONFIG_LIBCURL_THREADED_RESOLVER=y \
 		CONFIG_LIBCURL_ZLIB=y \
 		CONFIG_LIBCURL_CRYPTO_AUTH=y \
-		CONFIG_PACKAGE_freecwmp=y \
-		CONFIG_FREECWMP_DEVEL=y \
-		CONFIG_FREECWMP_DEBUG=y \
 		CONFIG_PACKAGE_lua-mosquitto=y \
-		CONFIG_PACKAGE_mqtt-service=y
+		CONFIG_PACKAGE_mqtt-service=y \
+		CONFIG_PACKAGE_easycwmp=y \
+		CONFIG_EASYCWMP_DEVEL=y \
+		CONFIG_EASYCWMP_DEBUG=y
 
 	SETTINGS := uci-customization.sh
 
