@@ -1,0 +1,3 @@
+[ "$INTERFACE" = "br-lan" ] && ifconfig br-lan 2>/dev/null >/dev/null && {
+/etc/init.d/mgmtnetwork start
+}

@@ -1,0 +1,66 @@
+config lucid main
+	option pollinterval 4000
+	option threadlimit 10
+	option daemonize 1
+	option debug 0
+	list supports tcpserver
+	list supports server
+
+config DirectoryPublisher webroot
+	option name 'Webserver Share'
+	option physical /www
+	list read ':br-lan'
+	list read ':lo'
+	list read 'root'
+	option virtual ''
+	option domain ''
+	
+config DirectoryPublisher discs
+	option name 'Attached Discs'
+	option physical /tmp/run/mountd
+	list read ':lo'
+	list read 'root'
+	option virtual '/files'
+	option daemon ''
+
+config LuciWebPublisher luciweb
+	option name 'LuCI Webapplication'
+	option physical ''
+	option home 1
+	list virtual /luci
+	list virtual /cgi-bin/luci
+	list exec ':br-lan'
+	list exec ':lo'
+	list exec 'root'
+	option domain ''
+
+config tcpserver httpd
+	option entrypoint "luci.lucid.http"
+	list supports DirectoryPublisher
+	list supports LuciWebPublisher
+
+config daemon http
+	option slave httpd
+	list address 80
+	list publisher webroot
+	list publisher luciweb
+	list publisher discs
+#	option nokeepalive 1
+	option enabled 1
+
+config daemon https
+	option slave httpd
+	list address 443
+	list publisher webroot
+	list publisher luciweb
+	list publisher discs
+	option tls maincert
+	option enabled 1
+	option encryption enable
+
+config tls maincert
+	option key /etc/nixio/rsa_main.der
+	option cert /etc/nixio/cert_main.der
+	option type asn1
+	option generate 1
+

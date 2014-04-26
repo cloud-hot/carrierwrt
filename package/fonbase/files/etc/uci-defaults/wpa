@@ -1,0 +1,4 @@
+# this gets the wpa key based on serial
+/lib/fon/config.sh fon
+/lib/fon/config.sh wireless
+uci commit

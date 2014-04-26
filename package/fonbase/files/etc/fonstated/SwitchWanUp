@@ -1,0 +1,9 @@
+#!/usr/bin/lua
+
+-- (c) john@phrozen.org gplv2
+
+local wan = require("luci.fon.net.wan")
+wan.up()
+
+-- Restart onlined to make it check connectivity right away.
+os.execute("fs -l StartOnlined")

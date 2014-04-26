@@ -1,0 +1,3 @@
+# so we do not have to change openwrt/packages/basefiles
+rm /etc/resolv.conf
+ln -s /tmp/resolv.conf.auto /etc/resolv.conf

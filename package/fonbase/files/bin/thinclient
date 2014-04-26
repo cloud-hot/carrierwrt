@@ -1,0 +1,64 @@
+#!/bin/ash
+# FON Thinclient v2.0
+
+SHARE=`uci get fon.advanced.sharewifi`
+SWITCH=`cat /proc/gpio_switch`
+[ "$SHARE" == "0" -o "$SWITCH" == "1" ] && return 1
+
+. /etc/functions.sh
+. /lib/fon/config.sh
+
+connect()
+{
+	MODE=$1
+	VOUCHER=$2
+	DEVICE="$(cat /etc/fon_device)"
+	# gather the MAC addresses
+	ETMAC=$( ifconfig $lan_ifname|grep HWaddr|sed -e "s/^.*HWaddr //" |sed -e "s/ //g" )
+	if [ "${DEVICE}" == "fonera20n" ]; then
+		# The first few firmware versions had their MAC address
+		# assignments swapped. This was later corrected, but a lot of
+		# devices had been registered at fon with the "wrong" mac
+		# address already.
+		# To fix this, we send the eth0 (WAN) mac address instead of the
+		# real public wifi mac address (which used to be the public wifi
+		# mac address).
+		wl_if=eth0.1
+	else
+		wl_if=$wifi_ifname
+	fi
+	WLMAC=$( ifconfig $wl_if|grep HWaddr|sed -e "s/^.*HWaddr //" |sed -e "s/ //g" )
+	FONREV="$(cat /etc/fon_revision)"
+	FIRMWARE="$(cat /etc/fon_version)"
+	SERVER=fatserver.fon.com
+	PORT=1938
+	USER=foneraplus
+	KEY=/etc/dropbear/key
+
+
+	echo "mode='$MODE' wlmac='$WLMAC' mac='$ETMAC' fonrev='$FONREV' firmware='$FIRMWARE' device='$DEVICE' voucher='$VOUCHER'" | ssh -T ${PORT:+ -p $PORT}${KEY:+ -i $KEY} "${USER}@${SERVER}" > /tmp/.thinclient.sh
+	. /tmp/.thinclient.sh
+	rm /tmp/.thinclient.sh
+}
+
+case "$1" in
+	dummy)
+		connect dummy dummy
+		;;
+	start)
+		connect dummy start
+		;;
+	config|upgrade)
+		if [ $# -eq 2 ] && [ -f $2 ]
+		then
+			connect $1 $(cat $2)
+		else
+			echo "Usage $0 (dummy|start|config|upgrade) [voucher_file]"
+		fi
+		;;
+	*)
+		echo "Usage $0 (dummy|start|config|upgrade) [voucher_file]"
+		exit
+		;;
+esac
+exit

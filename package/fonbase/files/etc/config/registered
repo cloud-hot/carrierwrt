@@ -1,0 +1,3 @@
+config fonreg fonreg
+	option	registered	0
+	option	dev		1

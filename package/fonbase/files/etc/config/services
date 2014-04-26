@@ -1,0 +1,61 @@
+config service dnsd 
+	option path "/usr/sbin/dnsmasq"
+	option boot "RestartDnsmasq"
+	option order early 
+
+config service httpdredirect
+	option path "/usr/bin/lucittpd"
+	option boot "Redirect"
+	option order 00
+
+config service fonsmcd
+	option path "/usr/sbin/fonsmcd"
+	option boot "StartFonsmcd"
+	option order 05 
+
+config service automount
+	option path "/sbin/mountd"
+	option boot "RestartMountd"
+	option order 10
+	option process mountd
+
+config service httpd
+	option path "/Apps/lucid"
+	option process 1
+	option boot "StartHttpd"
+	option order 15
+	option name "WebGUI"
+	option mdns 'luci.service'
+	option fwall 0
+	list tcp_port 443
+
+config service ssh
+	option name "SSH Access"
+	option path "/usr/sbin/dropbear"
+	option boot "RestartSSH"
+	option mdns 'ssh.service'
+	option fwall 0
+	option hammer 5
+	option protect 1
+	list tcp_port   22
+
+config service pppdumts
+	option name "pppd for umts"
+	option path "/usr/sbin/pppd"
+
+config service onlined
+	option path "/sbin/onlined"
+	option boot "StartOnlined"
+
+config service watchdog
+	option path "/sbin/watchdog"
+	option order early
+	option boot "StartWDT"
+
+config service upnp
+	option path "/usr/bin/miniupnpd"
+	option boot "RestartUPNP"
+
+config 'service' 'uploadd'
+	option 'boot' 'StartUploadd'
+	option 'path' '/Apps/uploadd'

@@ -1,0 +1,7 @@
+config	weixin	weixin
+	option	user	''
+	option	pass	''
+
+config	event	hotspot	
+	option	desc	FonSpot
+	option	enable	1

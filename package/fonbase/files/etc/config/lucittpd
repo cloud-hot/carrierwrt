@@ -1,0 +1,2 @@
+config luittpd lucittpd
+	option port 80

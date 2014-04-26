@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+
+START=00
+
+boot () {
+	/lib/fon/config.sh 3g
+	/lib/fon/config.sh firewall
+	/lib/fon/config.sh network
+	/lib/fon/config.sh wireless
+	/lib/fon/config.sh dhcp
+	/lib/fon/config.sh timezone
+	echo -n "Offline" > /tmp/run/fonstate
+}

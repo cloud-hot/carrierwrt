@@ -1,0 +1,3 @@
+config host default
+	option host "registerlafonera.fon.com www.registerlafonera.fon.com fonera lafonera myfonera"
+

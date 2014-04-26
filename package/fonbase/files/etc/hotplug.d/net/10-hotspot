@@ -1,0 +1,8 @@
+case "$ACTION" in
+	add|register)
+		[ "$INTERFACE" = "tun0" ] && {
+			/usr/lib/qos/generate.sh interface hotspot | sh
+			iptables -t mangle -I PREROUTING 1 -i ath0 -j DROP
+		}
+		;;
+esac

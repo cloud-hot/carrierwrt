@@ -1,0 +1,30 @@
+[ "$ACTION" == "ifup" ] || exit 0
+
+MODE=`uci get fon.wan.mode`
+LAN_IFNAME="br-lan"
+
+if [ "$MODE" == "bridge" -o "$MODE" == "wifi-bridge" ]; then
+	[ "$INTERFACE" == "lan" ] || exit 0
+	IFNAME="$LAN_IFNAME"
+else
+	[ "$INTERFACE" == "wan" ] || exit 0
+	IFNAME=`uci get -P /var/state network.wan.ifname`
+fi
+
+IP=`ifconfig $IFNAME | grep addr: | cut -d":" -f 2 | cut -d" " -f 1`
+MASK=`ifconfig $IFNAME | grep addr: | cut -d":" -f 4 | cut -d" " -f 1`
+
+NET=`ipcalc.sh $IP $MASK | grep NETWORK | cut -d= -f2`
+PREFIX=`ipcalc.sh $IP $MASK | grep PREFIX | cut -d= -f2`
+
+LAN_IP=`ifconfig $LAN_IFNAME | grep addr: | cut -d":" -f 2 | cut -d" " -f 1`
+
+iptables -F input_inter
+L=`uci get fon.firewall.lan_wan`
+H=`uci get fon.firewall.hotspot_wan`
+[ "$L" == "1" ] || iptables -A input_inter -i $LAN_IFNAME -d $NET/$PREFIX -j DROP
+[ "$H" == "1" ] || iptables -A input_inter -i tun0 -d $NET/$PREFIX -j DROP
+iptables -F block_public 
+iptables -I block_public 1 -i tun0 -d $IP -j DROP
+iptables -I block_public 1 -i tun0 -d $LAN_IP -j DROP 
+iptables -I block_public 1 -i tun0 -d 192.168.182.1 -p tcp --dport ! 3990 -j DROP

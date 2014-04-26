@@ -1,0 +1,3 @@
+# This is a shell script that is run whenever the firewall is being
+# completely reloaded. You can add iptables commands here if you need
+# specific custom firewalling rules.

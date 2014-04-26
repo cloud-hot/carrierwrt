@@ -1,0 +1,17 @@
+uci del qos.wan
+uci import -m qos <<EOF
+config interface hotspot 
+	option classgroup  "Default"
+	option enabled      0
+	option overhead     1
+	option upload      	512
+	option download     128
+
+config interface wan
+	option classgroup  "Default"
+	option enabled      0
+	option overhead     1
+	option download      	6144
+	option upload     1024
+EOF
+uci commit

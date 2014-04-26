@@ -1,0 +1,39 @@
+config lan lan
+	option	mode	static
+	option	ipaddr	192.168.10.1
+	option	netmask	255.255.255.0
+	option	dhcp	1
+
+config wan wan
+	option	mode	dhcp
+	option dns_static 0
+
+config public public
+	option	essid		FREE_INTERNET
+	option	isolate		1
+
+config private private
+	option	essid		MyPlace
+	option	encryption	wpa
+	option	wpa_crypto	tkip
+
+config firewall firewall
+	option	lan_wan		1
+	option	hotspot_wan	0
+	option	hotspot_lan	0
+	option	icmp_wan	1
+
+config advanced advanced
+	option	bgmode	mixed
+	option	channel	auto
+	option	diversity	0
+	option	rtxant	1
+	option	umts	1
+	option 'umts_dns_override' '0'
+	option 'umts_net' '3'
+	option 'sharewifi'	'1'
+
+# do not remove, this is used by fonstated to store its state
+config state state 
+
+

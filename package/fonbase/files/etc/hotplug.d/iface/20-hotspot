@@ -1,0 +1,5 @@
+[ "$ACTION" == "ifup" ] && {
+		[ "$INTERFACE" = "hotspot" ] && {
+			iptables -t mangle -I PREROUTING 1 -i ath0 -j DROP
+		}
+}

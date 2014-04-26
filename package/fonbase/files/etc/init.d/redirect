@@ -1,0 +1,22 @@
+#!/bin/sh /etc/rc.common
+
+include /lib/network
+scan_interfaces
+config_get lanip lan ipaddr
+config_get lanmask lan netmask
+
+REDIR="-s ${lanip:-192.168.10.1}/${lanmask:-255.255.255.0} -d ! ${lanip:-192.168.10.1}/${lanmask:-255.255.255.0} -p tcp --dport 80 -j REDIRECT --to-ports 8080"
+
+start() {
+	iptables -t nat -D PREROUTING $REDIR 2> /dev/null
+	H=`ps | egrep "http.*splash" | cut -d "r" -f1`
+	[ -n "$H" ] && kill $H 2>/dev/null
+}
+
+stop() {
+	iptables -t nat -D PREROUTING $REDIR 2> /dev/null
+	iptables -t nat -I PREROUTING 1 $REDIR 2> /dev/null
+	H=`ps | grep -v grep | egrep "http.*splash" | cut -d "r" -f1`
+	[ -n "$H" ] && kill $H 2> /dev/null
+	/usr/sbin/httpd -R /cgi-bin/splash.sh -H "$lanip" -p 8080 -h /www -r OpenWrt
+}

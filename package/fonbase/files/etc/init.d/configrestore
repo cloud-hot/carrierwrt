@@ -1,0 +1,35 @@
+#!/bin/sh /etc/rc.common
+# restore the FON config from the 'config' partition - only runs at first boot
+START=05
+
+restore_config() {
+	config="$(find_mtd_part config)"
+	[ -z "$config" ] && return 0
+	configstate="$(dd if=$config bs=2 count=1 2>/dev/null | hexdump -C | awk '/00000000/{print $2 $3}')"
+	case "$configstate" in
+		1f8b)
+			echo "Restoring config..."
+			cat "$config" > /tmp/config.tar.gz
+			gunzip /tmp/config.tar.gz
+		;;
+		*)
+			return 0
+		;;
+	esac
+	cd /
+	tar xf /tmp/config.tar
+	(
+		rm -f /tmp/config.tar
+		echo -ne '\x13\x37' > "$config"
+		sync
+		rm -f /etc/init.d/configrestore
+	) &
+	mv /etc/config/passwd /etc/.
+}
+
+boot() {
+
+	. /etc/functions.sh
+
+	restore_config
+}

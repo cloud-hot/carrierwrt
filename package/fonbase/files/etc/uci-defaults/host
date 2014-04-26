@@ -1,0 +1,1 @@
+echo "192.168.10.1 registerlafonera.fon.com www.registerlafonera.fon.com fonera lafonera myfonera" >> /etc/hosts

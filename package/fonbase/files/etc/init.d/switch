@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+
+# We should run after the boot script, which starts hotplug and loads
+# the ethernet driver.
+START=12
+
+start() {
+	# Configure the hardware switch (this is a no-op when no
+	# hardware switch is used). This is called separately from the
+	# other config.sh calls in /etc/init.d/configure, since at that
+	# time, the ethernet driver is not yet loaded.
+	/lib/fon/config.sh switch
+}

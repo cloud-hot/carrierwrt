@@ -1,0 +1,23 @@
+echo "   FWallFON"
+. /etc/functions.sh
+iptables -N input_daemon
+iptables -I input_rule 1 -j input_daemon
+iptables -N input_inter
+iptables -I forwarding_rule 1 -j input_inter
+iptables -N block_public
+iptables -I input_rule 1 -j block_public
+config_load fon
+config_get icmp_wan firewall icmp_wan
+[ "$icmp_wan" == "1" ] && iptables -I input_wan 1 -p icmp --icmp-type 8 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+config_get hotspot_lan firewall hotspot_lan
+[ "$hotspot_lan" == "1" ] && $IPTABLES -I zone_hotspot_forward 1 -j zone_lan_ACCEPT
+W=`uci -p /var/state/ get network.wan.up 2>/dev/null`
+M=`uci get fon.wan.mode 2>/dev/null`
+[ "$W" == "1" ] && {
+			ACTION="ifup" INTERFACE="wan" sh /etc/hotplug.d/iface/40-interzone
+}
+[ "$M" == "bridge" -o "$M" == "wifi-bridge" ] && {
+			ACTION="ifup" INTERFACE="lan" sh /etc/hotplug.d/iface/40-interzone
+}
+echo "   FWallDaemon"
+/etc/fonstated/FWallDaemon

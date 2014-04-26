@@ -1,0 +1,17 @@
+uci -P /var/state set fon.${PORT}.speed=${SPEED}
+uci -P /var/state set fon.${PORT}.link=${LINK}
+uci -P /var/state set fon.${PORT}.resolved=${RESOLVED}
+uci -P /var/state set fon.${PORT}.duplex=${DUPLEX}
+
+M=`uci get fon.wan.mode`
+[ "$M" != "umts" -a "$M" != "wifi" -a "$M" != "bridge" -a "$M" != "wifi-bridge" ] && {
+    [ "${PORT}" == "wan" -a "${RESOLVED}" == "1" ] && {
+	    [ -f "/tmp/run/fonstate.pid" ] &&
+		     fs -l SwitchWanUp || /etc/fonstated/SwitchWanUp
+    }
+
+    [ "${PORT}" == "wan" -a "${RESOLVED}" == "0" ] && {
+	    [ -f "/tmp/run/fonstate.pid" ] &&
+		     fs -l SwitchWanDown || /etc/fonstated/SwitchWanDown
+    }
+}
