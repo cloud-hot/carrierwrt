@@ -47,7 +47,7 @@ case "$fon_device" in
 		wan_ifname="eth0.1"
 		wifi_device="radio0"
 		wifi_ifname="wlan0"
-		private_wifi_ifname="ath1"
+		private_wifi_ifname="wlan1"
 		wan_wifi_ifname="ath2"
 		# This variable is used by /etc/init.d/mgmtnetwork
 		mgmt_ifname="br-lan"
@@ -415,19 +415,12 @@ config_wireless() {
 			uci_remove "wireless" "$wifi_device" "disabled" 2> /dev/null
 			;;
 		fonera01)
-			config_get diversity advanced diversity
-			config_get rtxant advanced rtxant
-			case "$mode" in
-				B|b) mode=11b;;
-				G|g) mode=11g;;
-				N|n) mode=11n;;
-				*) mode=auto;;
-			esac
-			uci_set "wireless" "$wifi_device" "type" "atheros"
-			uci_set "wireless" "$wifi_device" "mode" "$mode"
-			uci_set "wireless" "$wifi_device" "diversity" "$diversity"
-			uci_set "wireless" "$wifi_device" "rxantenna" "$rtxant"
-			uci_set "wireless" "$wifi_device" "txantenna" "$rtxant"
+			config_get ht advanced ht
+			config_get country advanced country
+			uci_set "wireless" "$wifi_device" "type" "mac80211"
+			uci_set "wireless" "$wifi_device" "htmode" "${ht:-20}"
+			uci_set "wireless" "$wifi_device" "country" "${country}"
+			uci_set "wireless" "$wifi_device" "hwmode" "$mode"
 			uci_remove "wireless" "$wifi_device" "disabled" 2> /dev/null
 			;;
 	esac
