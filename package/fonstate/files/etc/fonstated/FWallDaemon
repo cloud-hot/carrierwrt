@@ -1,0 +1,70 @@
+#!/usr/bin/lua
+
+-- (c) john@phrozen.org gplv2
+
+os.execute("iptables -F input_daemon")
+
+local uci = require("luci.model.uci").cursor_state()
+uci:load("services")
+
+function add_srv(s)
+	if s.fwall ~= "1" then
+		return
+	end
+	local srv = require("luci.fon.service")
+	local service = srv.Service(s[".name"])
+	if service == nil or service:status() ~= true then
+		return
+	end
+	if s.tcp_port and #s.tcp_port > 0 then
+		for i,v in ipairs(s.tcp_port) do
+			if s.protect and uci:get("system", "fon", "pass_good") ~= "1" then
+				return
+			end
+			os.execute("iptables -A input_daemon -p tcp --dport "..v.." -j zone_wan_ACCEPT")
+			if s.hammer then
+				os.execute("iptables -I input_daemon -p tcp -m tcp --dport "..v.." -m state --state NEW -m recent --set --name DEFAULT --rsource")
+				os.execute("iptables -I input_daemon -p tcp -m tcp --dport "..v.." -m state --state NEW -m recent --update --seconds 180 --hitcount "..s.hammer.." --name DEFAULT --rsource -j zone_wan_DROP")
+			end
+		end
+	end
+	if s.udp_port and #s.udp_port > 0 then
+		for i,v in ipairs(s.udp_port) do
+			os.execute("iptables -A input_daemon -p udp --dport "..v.." -j zone_wan_ACCEPT")
+		end
+	end
+end
+
+uci:foreach("services", "service", add_srv)
+
+function add_fmg(s)
+	if s.state ~= "1" then
+		return
+	end
+	if s.tcp_port_static and #s.tcp_port_static > 0 then
+		for i,v in ipairs(s.tcp_port_static) do
+			os.execute("iptables -A input_daemon -p tcp --dport "..v.." -j zone_wan_ACCEPT")
+		end
+	end
+	if s.udp_port_static and #s.udp_port_static > 0 then
+		for i,v in ipairs(s.udp_port_static) do
+			os.execute("iptables -A input_daemon -p udp --dport "..v.." -j zone_wan_ACCEPT")
+		end
+	end
+	if s.fwall ~= "1" then
+		return
+	end
+	if s.tcp_port and #s.tcp_port > 0 then
+		for i,v in ipairs(s.tcp_port) do
+			os.execute("iptables -A input_daemon -p tcp --dport "..v.." -j zone_wan_ACCEPT")
+		end
+	end
+	if s.udp_port and #s.udp_port > 0 then
+		for i,v in ipairs(s.udp_port) do
+			os.execute("iptables -A input_daemon -p udp --dport "..v.." -j zone_wan_ACCEPT")
+		end
+	end
+end
+
+uci:load("fmg")
+uci:foreach("fmg", "images", add_fmg)

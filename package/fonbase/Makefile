@@ -32,7 +32,7 @@ endef
 define Build/Compile
 	$(TARGET_CC) $(TARGET_CFLAGS) \
 		-I$(STAGING_DIR)/usr/include/ \
-		-shared -Wl,-soname,azureus \
+		-fPIC -shared -Wl,-soname,azureus \
 		-o $(PKG_BUILD_DIR)/fon.so ./src/fon.c
 endef
 

@@ -1,0 +1,6 @@
+#!/usr/bin/lua
+-- (c) 2008 john@phrozen.org GPLv2
+
+-- now start all services in /etc/config/services
+local service = require("luci.fon.service")
+service.boot()

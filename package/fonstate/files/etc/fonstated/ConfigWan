@@ -1,0 +1,25 @@
+#!/usr/bin/lua
+
+-- (c) john@phrozen.org gplv2
+
+local wan = require("luci.fon.net.wan")
+local wifi = require("luci.fon.net.wifi")
+local event = require("luci.fon.event")
+local uci = require("luci.model.uci").cursor()
+local mode = uci:get("fon", "wan", "mode")
+
+os.execute("killall udhcpc")
+wan.down()
+
+-- Bring wifi-wan mode down if needed. No need to bring it up, since
+-- ConfigWifi takes care of that.
+if mode ~= "wifi" and mode ~= "wifi-bridge"  then
+	wifi.wandown()
+end
+if mode ~= "umts" then
+	os.execute("killall umtsd")
+end
+if mode ~= "pptp" then
+	os.execute("killall run_pptp.sh")
+end
+wan.up()

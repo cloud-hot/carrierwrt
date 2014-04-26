@@ -1,0 +1,6 @@
+#!/usr/bin/lua
+-- (c) john@phrozen.org gplv2
+
+local lan = require("luci.fon.net.lan")
+lan.down()
+lan.up()

@@ -1,0 +1,17 @@
+#!/bin/sh /etc/rc.common
+
+START=96
+
+start() {
+	/sbin/fonstated -D
+}
+
+stop() {
+	killall fonstated 2> /dev/null
+	rm -f /var/run/fonstate.pid
+}
+
+restart() {
+	stop
+	start
+}

@@ -1,0 +1,16 @@
+#!/usr/bin/lua
+
+local hotspotcount = require("luci.model.uci").cursor_state():get("fon", "state", "hotspotcount")
+local essid = require("luci.model.uci").cursor():get("fon", "public", "essid")
+local i18n = require("luci.i18n")
+local t = require("luci.twitter")
+if hotspotcount == "0" then
+        t.tweet(i18n.translate("fonspot_no_users", "There are no users on the FonSpot") .." (FON_"..essid..")" , "hotspot")
+end
+if hotspotcount == "1" then
+        t.tweet(i18n.translate("fonspot_1_user", "There is 1 user on the FonSpot") .." (FON_"..essid..")", "hotspot")
+end
+if tonumber(hotspotcount) > 1 then
+        t.tweet(i18n.translate("fonspot_x_users1", "There are").." "..hotspotcount.." "..
+                i18n.translate("fonspot_x_users2", "users on the FonSpot") .." (FON_"..essid..")", "hotspot")
+end

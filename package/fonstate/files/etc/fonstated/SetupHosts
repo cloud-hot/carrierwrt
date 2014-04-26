@@ -1,0 +1,4 @@
+#!/usr/bin/lua
+
+local host = require("luci.fon.host")
+host.generate()

@@ -1,0 +1,6 @@
+#!/bin/sh
+/lib/fon/config.sh network
+/lib/fon/config.sh wireless
+/lib/fon/config.sh dhcp
+/lib/fon/config.sh firewall
+#uci commit

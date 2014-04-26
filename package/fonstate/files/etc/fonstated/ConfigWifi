@@ -1,0 +1,18 @@
+#!/usr/bin/lua
+-- (c) john@phrozen.org gplv2
+
+local wifi = require("luci.fon.net.wifi")
+local event = require("luci.fon.event")
+local uci = require("luci.model.uci").cursor()
+local wifiwan = uci:get("fon", "wan", "mode")
+
+wifi.up()
+
+-- No need to bring up the wan interface in wifi-bridge mode, since it
+-- will have proto none.
+if mode == "wifi" then
+	local wan = require("luci.fon.net.wan")
+	wan.up()
+end
+
+event.runnow("RestartChilli")

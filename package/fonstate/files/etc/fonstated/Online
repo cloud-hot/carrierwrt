@@ -1,0 +1,5 @@
+#!/usr/bin/lua
+-- (c) john@phrozen.org gplv2
+
+local state = require("luci.fon").state
+state.setOnline()

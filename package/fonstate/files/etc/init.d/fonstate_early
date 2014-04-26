@@ -1,0 +1,8 @@
+#!/bin/sh /etc/rc.common
+
+START=42
+
+start() {
+		echo -n "Offline" > /tmp/run/fonstate
+		echo -n "Offline" > /tmp/run/hotspot
+}

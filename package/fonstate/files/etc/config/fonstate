@@ -1,0 +1,21 @@
+config fontimer
+	option action	"/etc/fonstated/RestartNtpclient"
+	option period	17280
+
+config fontimer
+	option action 	"/etc/init.d/fonsmcd"
+	option pidfile	"/tmp/run/fonsmcd.pid"
+	option period	12
+
+config fontimer
+	option action 	"/etc/fonstated/StartHttpd"
+	option period	2150
+
+config fonboot
+	option event	SetupHosts
+
+config fonboot		
+	option event	BootServices
+
+config fonboot
+	option event	FWallDaemon

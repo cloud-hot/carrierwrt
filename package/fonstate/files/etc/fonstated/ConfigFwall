@@ -1,0 +1,5 @@
+#!/usr/bin/lua
+-- (c) john@phrozen.org gplv2
+
+local firewall = require("luci.fon.firewall")
+firewall.start()

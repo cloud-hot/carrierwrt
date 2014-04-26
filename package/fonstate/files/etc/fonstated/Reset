@@ -1,0 +1,5 @@
+#!/usr/bin/lua
+-- (c) john@phrozen.org gplv2
+
+local sys = require("luci.fon.sys")
+sys.reset()

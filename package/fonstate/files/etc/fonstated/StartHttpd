@@ -1,0 +1,2 @@
+#!/usr/bin/lua
+os.execute("/Apps/lucid")

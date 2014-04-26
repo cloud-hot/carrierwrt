@@ -1,0 +1,5 @@
+#!/usr/bin/lua
+-- (c) john@phrozen.org gplv2
+
+local spot = require("luci.fon.spot")
+spot.restart()
