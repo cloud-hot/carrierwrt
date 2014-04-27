@@ -1,0 +1,14 @@
+#!/usr/bin/lua
+-- (c) 2008 john@phrozen.org GPLv2
+
+-- fonsmcd is a registered service, so use the api to start/stop it
+local srv = require("luci.fon.service")
+local service = srv.Service("fonsmcd")
+
+local share = require("luci.model.uci").cursor():get("fon", "advanced", "sharewifi") or "1"
+if share == "0" then
+	service:stop()
+	os.execute("killall -9 fonsmcd")
+else
+	service:restart()
+end
