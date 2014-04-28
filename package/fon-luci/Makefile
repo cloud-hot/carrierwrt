@@ -220,12 +220,6 @@ endef
 
 NIXIO_TLS:=axtls
 
-define Package/luci-nixio
-  $(call Package/luci/libtemplate)
-  TITLE:=NIXIO Socket Library
-  DEPENDS:=
-endef
-
 define Package/luci-nixio/install
 	$(call Package/luci/install/template,$(1),libs/nixio)
 endef
@@ -242,7 +236,7 @@ define Package/luci-nixio/config
 
 		config PACKAGE_luci-nixio_cyassl
 			bool "CyaSSL"
-			select PACKAGE_libcyassl-luci
+			select PACKAGE_libcyassl
 
 		config PACKAGE_luci-nixio_openssl
 			bool "OpenSSL"
@@ -252,13 +246,20 @@ endef
 
 ifneq ($(CONFIG_PACKAGE_luci-nixio_openssl),)
   NIXIO_TLS:=openssl
+  NIXIO_DEP:=libopenssl
 endif
 
 ifneq ($(CONFIG_PACKAGE_luci-nixio_cyassl),)
   NIXIO_TLS:=cyassl
   LUCI_CFLAGS+=-I$(STAGING_DIR)/usr/include/cyassl
+  NIXIO_DEP:=cyassl
 endif
 
+define Package/luci-nixio
+  $(call Package/luci/libtemplate)
+  TITLE:=NIXIO Socket Library
+  DEPENDS+=+$(NIXIO_DEP)
+endef
 
 define Package/luci-px5g
   $(call Package/luci/libtemplate)
@@ -404,16 +405,6 @@ endef
 
 define Package/luci-app-qos/install
 	$(call Package/luci/install/template,$(1),applications/luci-qos)
-endef
-
-define Package/luci-app-ushare
-  $(call Package/luci/webtemplate)
-  TITLE:=uShare
-  DEPENDS:=+ushare
-endef
-
-define Package/luci-app-ushare/install
-	$(call Package/luci/install/template,$(1),applications/luci-ushare)
 endef
 
 define Package/luci-app-upgrade
@@ -609,17 +600,6 @@ endef
 define Package/luci-app-ffrpc/install
 $(call Package/luci/install/template,$(1),applications/luci-ffrpc)
 endef
-
-define Package/luci-app-wol
-  $(call Package/luci/webtemplate)
-  TITLE:=Wake-on-LAN
-  DEPENDS+=+etherwake
-endef
-
-define Package/luci-app-wol/install
-$(call Package/luci/install/template,$(1),applications/luci-wol)
-endef
-
 
 ### Server Gateway Interfaces ###
 
@@ -906,9 +886,6 @@ endif
 ifneq ($(CONFIG_PACKAGE_luci-app-openvpn),)
 	PKG_SELECTED_MODULES+=applications/luci-openvpn
 endif
-ifneq ($(CONFIG_PACKAGE_luci-app-ushare),)
-	PKG_SELECTED_MODULES+=applications/luci-ushare
-endif
 ifneq ($(CONFIG_PACKAGE_luci-app-qos),)
 	PKG_SELECTED_MODULES+=applications/luci-qos
 endif
@@ -969,9 +946,6 @@ endif
 ifneq ($(CONFIG_PACKAGE_luci-app-fonwebcam),)
 	PKG_SELECTED_MODULES+=applications/luci-webcam
 endif
-ifneq ($(CONFIG_PACKAGE_luci-app-ushare),)
-        PKG_SELECTED_MODULES+=applications/luci-ushare
-endif
 ifneq ($(CONFIG_PACKAGE_luci-app-hd_idle),)
        PKG_SELECTED_MODULES+=applications/luci-hd_idle
 endif
@@ -987,10 +961,6 @@ endif
 ifneq ($(CONFIG_PACKAGE_luci-app-ffrpc),)
        PKG_SELECTED_MODULES+=applications/luci-ffrpc
 endif
-ifneq ($(CONFIG_PACKAGE_luci-app-wol),)
-	PKG_SELECTED_MODULES+=applications/luci-wol
-endif
-
 
 ifneq ($(CONFIG_PACKAGE_luci-sgi-cgi),)
 	PKG_SELECTED_MODULES+=libs/sgi-cgi
@@ -1096,7 +1066,6 @@ $(eval $(call BuildPackage,luci-admin-fon-rpc))
 $(eval $(call BuildPackage,luci-app-youtube))
 $(eval $(call BuildPackage,luci-app-openvpn))
 $(eval $(call BuildPackage,luci-app-qos))
-$(eval $(call BuildPackage,luci-app-ushare))
 $(eval $(call BuildPackage,luci-app-upgrade))
 $(eval $(call BuildPackage,luci-app-picasa))
 $(eval $(call BuildPackage,luci-app-flickr))
@@ -1117,7 +1086,6 @@ $(eval $(call BuildPackage,luci-app-fonwebcam))
 $(eval $(call BuildPackage,luci-app-fonlivestats))
 $(eval $(call BuildPackage,luci-app-downloadmanager))
 $(eval $(call BuildPackage,luci-app-ffrpc))
-$(eval $(call BuildPackage,luci-app-wol))
 
 $(eval $(call BuildPackage,luci-sgi-cgi))
 $(eval $(call BuildPackage,luci-sgi-luci))

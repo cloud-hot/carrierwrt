@@ -18,7 +18,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/hotspot
 	SECTION:=hotspot
 	CATEGORY:=hotspot
-	DEPENDS:=+libdaemon +liblua +luci-lib-nixio
+	DEPENDS:=+libdaemon +liblua +luci-nixio
 	TITLE:=hotspot managment daemon
 	URL:=http://www.hotspot.net
 	MAINTAINER:=wenjie.zhang <wei.a.yang@gmail.com>

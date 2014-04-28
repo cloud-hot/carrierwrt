@@ -35,7 +35,7 @@ diff -Nur tools-org/vboot_utils/Makefile tools/vboot_utils/Makefile
 +	$(Host/Prepare/Default)
 +	mkdir -p $(HOST_BUILD_DIR)
 +	$(CP) ./src/* $(HOST_BUILD_DIR)/
-+	$(CP) ./src/host/lib/extra/* $(STAGING_DIR_HOST)/lib/
++#	$(CP) ./src/host/lib/extra/* $(STAGING_DIR_HOST)/lib/
 +endef
 +
 +define Host/Compile

@@ -17,7 +17,7 @@ define Package/fonsmcd
   SECTION:=fon
   CATEGORY:=Fonera
   TITLE:=FON Status Magager Client
-  DEPENDS:=+libdaemon +liblua +luci-lib-nixio
+  DEPENDS:=+libdaemon +liblua +luci-nixio
   URL:=http://www.fon.com
 endef
 

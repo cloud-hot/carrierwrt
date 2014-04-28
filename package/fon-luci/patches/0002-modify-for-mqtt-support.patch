@@ -1,7 +1,7 @@
-diff --git a/package/fon-luci/luci/libs/nixio/src/file.c b/package/fon-luci/luci/libs/nixio/src/file.c
+diff --git luci/libs/nixio/src/file.c luci/libs/nixio/src/file.c
 index 9f99fb8..fcdc9e4 100644
---- a/package/fon-luci/luci/libs/nixio/src/file.c
-+++ b/package/fon-luci/luci/libs/nixio/src/file.c
+--- luci/libs/nixio/src/file.c
++++ luci/libs/nixio/src/file.c
 @@ -115,6 +115,22 @@ static int nixio_open_flags(lua_State *L) {
  	return 1;
  }
@@ -70,10 +70,10 @@ index 9f99fb8..fcdc9e4 100644
  	{"pipe",		nixio_pipe},
  	{NULL,			NULL}
  };
-diff --git a/package/fon-luci/luci/libs/nixio/src/poll.c b/package/fon-luci/luci/libs/nixio/src/poll.c
+diff --git luci/libs/nixio/src/poll.c luci/libs/nixio/src/poll.c
 index 4af3289..accbda1 100644
---- a/package/fon-luci/luci/libs/nixio/src/poll.c
-+++ b/package/fon-luci/luci/libs/nixio/src/poll.c
+--- luci/libs/nixio/src/poll.c
++++ luci/libs/nixio/src/poll.c
 @@ -161,7 +161,7 @@ static int nixio_poll(lua_State *L) {
  
  	if (status == 0) {
