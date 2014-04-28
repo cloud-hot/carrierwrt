@@ -13,9 +13,9 @@ V ?= 0
 OPENWRT_BASE 	:= svn://svn.openwrt.org/openwrt
 OPENWRT_DIR  	:= openwrt
 OPENWRT_URL  	:= $(OPENWRT_BASE)/$(CONFIG_OPENWRT_PATH)@$(CONFIG_OPENWRT_REV)
-LUCI_BASE    	:= http://svn.luci.subsignal.org/luci
-LUCI_URL     	:= $(LUCI_BASE)/$(CONFIG_LUCI_PATH)/contrib/package@$(CONFIG_LUCI_REV)
-LUCI_FEEDS_DIR  := $(OPENWRT_DIR)/feeds/luci
+#LUCI_BASE    	:= http://svn.luci.subsignal.org/luci
+#LUCI_URL     	:= $(LUCI_BASE)/$(CONFIG_LUCI_PATH)/contrib/package@$(CONFIG_LUCI_REV)
+#LUCI_FEEDS_DIR  := $(OPENWRT_DIR)/feeds/luci
 PACKAGE_FEEDS_DIR  := $(OPENWRT_DIR)/feeds/packages
 PACKAGES        := $(wildcard package/*)
 
@@ -221,7 +221,7 @@ _build-images:
 
 	# Revert openwrt and luci to pristine condition
 	scripts/svn-pristine $(OPENWRT_DIR) | sh
-	scripts/svn-pristine $(LUCI_FEEDS_DIR) | sh
+#	scripts/svn-pristine $(LUCI_FEEDS_DIR) | sh
 	scripts/svn-pristine $(PACKAGE_FEEDS_DIR) | sh
 
 	# The special 'files' dir is in svn:ignore so we need to manually delete it
@@ -269,7 +269,7 @@ endif
 
 
 	# Lock LuCI to specific revision
-	sed -i 's|^PKG_BRANCH\:=.*|PKG_BRANCH\:=$(CONFIG_LUCI_PATH)@$(CONFIG_LUCI_REV)|' \
+#	sed -i 's|^PKG_BRANCH\:=.*|PKG_BRANCH\:=$(CONFIG_LUCI_PATH)@$(CONFIG_LUCI_REV)|' \
 			$(LUCI_FEEDS_DIR)/luci/Makefile
 	
 	# Apply product changes
@@ -315,10 +315,9 @@ $(OPENWRT_DIR):
 
 $(OPENWRT_DIR)/feeds.conf:
 	echo "src-svn packages svn://svn.openwrt.org/openwrt/packages" > $@
-	echo "src-svn luci $(LUCI_URL)" >> $@
+#	echo "src-svn luci $(LUCI_URL)" >> $@
 	$(OPENWRT_DIR)/scripts/feeds update
-	$(OPENWRT_DIR)/scripts/feeds install luci
-	$(OPENWRT_DIR)/scripts/feeds install freecwmp
+#	$(OPENWRT_DIR)/scripts/feeds install luci
 	$(OPENWRT_DIR)/scripts/feeds install mosquitto
 
 .PHONY: all help _info _touch _build _build-products _build-targets _build-images
