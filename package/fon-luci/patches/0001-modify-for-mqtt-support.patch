@@ -1,17 +1,7 @@
-From 6ec95c8d8bc91dbc488e38b68a80605acb60d4ae Mon Sep 17 00:00:00 2001
-From: cloud-hot <157724595@163.com>
-Date: Thu, 10 Apr 2014 08:37:05 +0000
-Subject: [PATCH] modify for mqtt support
-
----
- libs/nixio/src/file.c |   40 +++++++++++++++++++++++++++++++++
- libs/nixio/src/poll.c |   60 ++++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 99 insertions(+), 1 deletion(-)
-
-diff --git a/libs/nixio/src/file.c b/libs/nixio/src/file.c
-index b86e040..f69ae72 100644
---- a/libs/nixio/src/file.c
-+++ b/libs/nixio/src/file.c
+diff --git a/package/fon-luci/luci/libs/nixio/src/file.c b/package/fon-luci/luci/libs/nixio/src/file.c
+index 9f99fb8..fcdc9e4 100644
+--- a/package/fon-luci/luci/libs/nixio/src/file.c
++++ b/package/fon-luci/luci/libs/nixio/src/file.c
 @@ -115,6 +115,22 @@ static int nixio_open_flags(lua_State *L) {
  	return 1;
  }
@@ -80,11 +70,11 @@ index b86e040..f69ae72 100644
  	{"pipe",		nixio_pipe},
  	{NULL,			NULL}
  };
-diff --git a/libs/nixio/src/poll.c b/libs/nixio/src/poll.c
-index 1211bc7..dcccabb 100644
---- a/libs/nixio/src/poll.c
-+++ b/libs/nixio/src/poll.c
-@@ -171,7 +171,7 @@ static int nixio_poll(lua_State *L) {
+diff --git a/package/fon-luci/luci/libs/nixio/src/poll.c b/package/fon-luci/luci/libs/nixio/src/poll.c
+index 4af3289..accbda1 100644
+--- a/package/fon-luci/luci/libs/nixio/src/poll.c
++++ b/package/fon-luci/luci/libs/nixio/src/poll.c
+@@ -161,7 +161,7 @@ static int nixio_poll(lua_State *L) {
  
  	if (status == 0) {
  		free(fds);
@@ -93,7 +83,7 @@ index 1211bc7..dcccabb 100644
  		return 1;
  	} else if (status < 0) {
  		free(fds);
-@@ -196,8 +196,66 @@ static int nixio_poll(lua_State *L) {
+@@ -186,8 +186,66 @@ static int nixio_poll(lua_State *L) {
  	return 2;
  }
  
@@ -157,9 +147,6 @@ index 1211bc7..dcccabb 100644
 +#ifdef __linux__
 +	{"timerfd",	nixio_timerfd},
 +#endif
- 	{"gettimeofday", nixio_gettimeofday},
  	{"nanosleep",	nixio_nanosleep},
  	{"poll",		nixio_poll},
--- 
-1.7.9.5
-
+ 	{"poll_flags",	nixio_poll_flags},
