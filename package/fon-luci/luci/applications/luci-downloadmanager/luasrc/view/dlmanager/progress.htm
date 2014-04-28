@@ -1,0 +1,11 @@
+<%+cbi/valueheader%>
+<% local text, perc = self:cfgvalue(section) %>
+
+<% if perc then %>
+<div class="dlman_progress" style="background-position: <%="%.0f"%(1.5*perc-200)%>px 0px">
+<% else %>
+<div>
+<% end %> 
+<%=text%>
+</div>
+<%+cbi/valuefooter%>

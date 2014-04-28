@@ -1,0 +1,23 @@
+<%
+local status = self._state:get("luci_dlmanager", section, "status")
+local code = self._state:get("luci_dlmanager", section, "errcode")
+local pid = self._state:get("luci_dlmanager", section, "pid")
+-%>
+<%+cbi/valueheader%>
+
+<% if status == "pending" then %>
+	<%- if pid then %>
+		<%:dlm_active%>
+	<%- else %>
+		<%:dlm_pending%>
+	<%- end %>
+<% elseif status == "suspended" then %>
+	<%:dlm_suspended%>
+<% elseif status == "done" then %>
+	<%:dlm_done%>
+<% else %>
+	<%:dlm_aborted%>
+<% end %>
+
+
+<%+cbi/valuefooter%>

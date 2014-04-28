@@ -1,0 +1,4 @@
+config fonbackup fonbackup
+	option base "/tmp/run/mountd"
+	option clurl "http://download.fonosfera.org/fonbackup/"
+	option cnt "0"

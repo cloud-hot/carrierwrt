@@ -1,0 +1,48 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008 Jo-Philipp Wich <xm@leipzig.freifunk.net>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id: upgrade.htm 3529 2008-10-07 13:10:24Z jow $
+
+-%>
+<%- boxcolor = "darkorange" %>
+<%+header%>
+<h2><%:firmware_title Firmware Update%></h2>
+<% if not ret then %>
+<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+	<div class="line">
+		<p class="tableText"><%:firmware_desc Here you can upload and install a firmware update.%></p>
+		<input type="file" size="30" name="image" />
+	</div>
+	<div>
+		<input type="submit" value="Upgrade" />
+	</div>
+</form>
+<br><br><br><h2><%:backup_setting_title Settings Update%></h2>
+<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+	<div class="line">
+		<p class="tableText"><%:backup_setting_desc Here you can upload a settings file that you previously downloaded from your LaFonera%></p>
+		<input type="file" size="30" name="settings" />
+	</div>
+	<div>
+		<input type="submit" value="Upgrade" />
+	</div>
+</form>
+<% elseif ret then %>
+	<h2><%=ret %></h2>
+<% end %>
+<br>
+<ul class="icons">
+	<li><a id="settings" class="icon" href="<%=luci.dispatcher.build_url("fon_admin", "fon_system", "LaFonera_Settings.bin")%>" style="background-image: url(<%=luci.config.main.mediaurlbase%>/icons/firmware.png);"><%:system_settings Settings%></a></li>
+	<li><a id="reboot" class="icon" href="#" onclick='if(confirm("<%:really_reboot Do you really want to reboot the Fonera ?%>")){window.location.href="<%=luci.dispatcher.build_url("fon_admin", "fon_system")%>?reboot=1";};' style="background-image: url(<%=luci.config.main.mediaurlbase%>/icons/reboot.png);"><%:reboot Reboot%></a></li>
+	<li><a id="factory" class="icon" href="#" onclick='if(confirm("<%:really_reboot Do you really want to factory reset the Fonera and loose all settings ?%>")){window.location.href="<%=luci.dispatcher.build_url("fon_admin", "fon_system")%>?factory=1";};' style="background-image: url(<%=luci.config.main.mediaurlbase%>/icons/factory.png);"><%:factory Factory Reset%></a></li>
+	<li><a id="mac" class="icon" href="<%=luci.dispatcher.build_url("fon_admin", "fon_system", "fon_advanced")%>" style="background-image: url(<%=luci.config.main.mediaurlbase%>/icons/settings.png);"><%:adv_link Advanced%></a></li>
+</ul>
+<%- require("luci.theme."..theme).footer(boxcolor) -%>

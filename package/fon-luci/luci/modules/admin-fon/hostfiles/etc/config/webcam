@@ -1,0 +1,5 @@
+config webcam webcam
+	option port		8000
+	option enable	0	
+	option auth 	0
+	option name		'My Foncam'

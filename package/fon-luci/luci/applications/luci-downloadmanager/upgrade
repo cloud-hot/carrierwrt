@@ -1,0 +1,25 @@
+#!/usr/bin/lua
+local NAME    = "dlmanager"
+local TITLE   = "Downloadmanager"
+local AUTHOR  = "fon"
+local VERSION = "0.1"
+local DB_ICON  = "dlmanager.png"
+local DB_ORDER = 100
+
+local os = require "os"
+local fs = require "luci.fs"
+local dir = require "posix".getcwd()
+local pkg = require "luci.fon.pkg"
+local plugin = pkg.Plugin(NAME)
+
+if not plugin:add(TITLE, AUTHOR, VERSION) then
+        print "plugin already installed!"
+        os.exit(1)
+end
+
+plugin:dashboard(DB_ICON, DB_ORDER, NAME)
+plugin:addfiles(dir.."/files/")
+plugin:finalize()
+
+require "luci.fon.service".add("dlmd", "/usr/bin/luci-dlmanagerd", "RestartDlmd")
+require "luci.fon.event".new("RestartDlmd")

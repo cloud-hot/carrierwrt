@@ -1,0 +1,20 @@
+<%+header%>
+<div class="box1" id="dashboardBox">
+	<div class="inner">
+		<div class="boxContent">
+			<ul class="icons">
+<% for _, obj in ipairs(objects) do %>
+				<li id="<%=obj.csscl%>"><a id="<%=obj.aclass%>" class="icon" href="<%=obj.target%>"<%-
+if obj.iconl then
+			    %> style="background-image: url(<%=obj.iconl%>)"<%-
+end -%>
+><%=obj.title%></a></li>
+<% end %>
+			</ul>
+		</div>
+		<div class="boxFooter">
+			<div class="inner"></div>
+		</div>
+	</div>
+</div>
+

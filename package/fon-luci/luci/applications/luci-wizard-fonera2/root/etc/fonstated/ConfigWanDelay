@@ -1,0 +1,9 @@
+#!/usr/bin/lua
+local uci = require("luci.model.uci").cursor_state()
+local delay = uci:get("fon", "state", "cfgwandelay")
+if delay == "1" then
+	os.execute("fs -l ConfigWan -l ConfigLan -l ConfigWifi -l RestartDnsmasq -l ReconfOpenVPN")
+else
+	uci:set("fon", "state", "cfgwandelay", "1")
+	uci:save("fon")
+end

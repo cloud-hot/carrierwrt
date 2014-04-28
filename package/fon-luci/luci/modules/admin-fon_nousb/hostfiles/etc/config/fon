@@ -1,0 +1,34 @@
+
+config 'lan' 'lan'
+	option 'mode' 'static'
+	option 'ipaddr' '192.168.10.1'
+	option 'netmask' '255.255.255.0'
+	option 'dhcp' '1'
+
+config 'wan' 'wan'
+	option 'mode' 'dhcp'
+
+config 'public' 'public'
+	option 'essid' 'FREE_INTERNET'
+	option 'isolate' '1'
+
+config 'private' 'private'
+	option 'essid' 'MyPlace'
+	option 'encryption' 'wpa'
+	option 'wpa_crypto' 'tkip'
+	option 'password' '8092000028'
+
+config 'firewall' 'firewall'
+	option 'lan_wan' '1'
+	option 'hotspot_wan' '0'
+	option 'hotspot_lan' '0'
+
+config 'advanced' 'advanced'
+	option 'bgmode' 'mixed'
+	option 'channel' 'auto'
+	option 'diversity' '0'
+	option 'rtxant' '1'
+
+config 'thinclient' 'thinclient'
+
+config 'state' 'state'

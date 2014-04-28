@@ -1,0 +1,21 @@
+<span id="<%=pname%>"></span>
+<script type="text/javascript">
+	var fon_init_progress = function() {
+	new JS_BRAMUS.jsProgressBar(
+		$('<%=pname%>'), <%=pval%>, {
+			width : 120,
+			animate : false, 
+			showText : <%=ptext or "true"%>,
+			boxImage : '<%=resource%>/icons/percentImage.png',
+			barImage : Array(
+				'<%=resource%>/icons/percentImage_back4.png',
+				'<%=resource%>/icons/percentImage_back3.png',
+				'<%=resource%>/icons/percentImage_back2.png',
+				'<%=resource%>/icons/percentImage_back1.png'
+		)});
+	};
+	document.observe('dom:loaded', fon_init_progress, false);
+	try {
+		fon_init_progress();
+	} catch (e) {}
+</script>

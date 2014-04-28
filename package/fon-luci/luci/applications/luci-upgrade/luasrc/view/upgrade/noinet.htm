@@ -1,0 +1,14 @@
+<%boxcolor = "darkorange"%>
+<%+header%>
+<div style="width: 15%">
+<img class="logo" src="/luci-static/resources/icons/plugins/fwupgrade.png"  alt="upgrade" />
+</div>
+<form method="post" enctype="multipart/form-data" action="<%=REQUEST_URI%>">
+<fieldset>
+<h2><%:upgrade_title Upgrade%></h2>
+<p class="tableText"><%:upgrade_noinet La Fonera is currently not online. Plase try again later%></p>
+</fieldset>
+</form>
+<br>
+<br>
+<%+footer%>

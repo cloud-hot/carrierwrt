@@ -1,0 +1,44 @@
+diff -Nur package/ubus/Makefile package/ubus-modify/Makefile
+--- package/ubus/Makefile	2014-04-28 08:56:10.449254846 +0000
++++ package/ubus-modify/Makefile	2014-04-28 08:57:39.961254705 +0000
+@@ -21,32 +21,32 @@
+ include $(INCLUDE_DIR)/cmake.mk
+ 
+ define Package/ubus
+-  SECTION:=luci2
+-  CATEGORY:=LuCI2
++  SECTION:=luci
++  CATEGORY:=Luci
+   SUBMENU:=System
+   DEPENDS:=+libubus +libblobmsg-json +ubusd
+   TITLE:=OpenWrt RPC client utility
+ endef
+ 
+ define Package/ubusd
+-  SECTION:=luci2
+-  CATEGORY:=LuCI2
++  SECTION:=luci
++  CATEGORY:=Luci
+   SUBMENU:=System
+   TITLE:=OpenWrt RPC daemon
+   DEPENDS:=+libubox
+ endef
+ 
+ define Package/libubus
+-  SECTION:=luci2
+-  CATEGORY:=LuCI2
++  SECTION:=luci
++  CATEGORY:=Luci
+   SUBMENU:=Libraries
+   DEPENDS:=+libubox
+   TITLE:=OpenWrt RPC client library
+ endef
+ 
+ define Package/libubus-lua
+-  SECTION:=luci2
+-  CATEGORY:=LuCI2
++  SECTION:=luci
++  CATEGORY:=Luci
+   SUBMENU:=Libraries
+   DEPENDS:=+libubus +liblua
+   TITLE:=Lua binding for the OpenWrt RPC client

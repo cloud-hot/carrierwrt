@@ -1,0 +1,41 @@
+<%
+local webadmin = require("luci.tools.webadmin")
+local class = ""
+if id%2 == 1 then
+	class = " class=\"odd\""
+end
+%>
+<tr<%=class%>><td>
+<%- if section.link then -%>
+<a style="color: #000;" href="<%=section.link%>" target="_blank"><img src="/luci-static/resources/cbi/help.gif"><%=section.name%></a>
+<%-else -%>
+<%=section.name%>
+<%-end-%>
+</td><td>
+<%-if section.install then -%>
+&nbsp;
+<%- else -%>
+<%=section.version%>
+<%- if section.fon_version then-%>
+ (<%=section.fon_version%>)
+<%-end-%>
+<%-end-%>
+</td><td><%-if section.install then -%>
+&nbsp;
+<%- else -%>
+<%=webadmin.byte_format(tonumber(section.size))%>
+<%-end-%>
+</td><td><%=section.provider%>
+</td><td>
+<%-if section.nodel == "1" then -%>
+&nbsp;
+<%- else if section.install ~= 1 then-%>
+<a href="<%=luci.dispatcher.build_url("fon_devices", "fon_plugins")%>?del=<%=section[".name"]%>"><img src="/luci-static/resources/icons/vrem.png"></a>
+<%- end end-%>
+<%-if section.install == 1 then -%>
+<a href="<%=luci.dispatcher.build_url("fon_devices", "fon_plugins")%>?install=<%=section.realname%>"><img src="/luci-static/resources/icons/vadd.png"></a>
+<%-end
+if section.fon_avail == 1 then -%>
+<a href="<%=luci.dispatcher.build_url("fon_devices", "fon_plugins")%>?update=<%=section[".name"]%>"><img src="/luci-static/resources/icons/vup.png"></a>
+<%-end-%>
+</td></tr>

@@ -1,0 +1,88 @@
+<%-
+local dev = require("luci.model.uci").cursor():get("registered", "fonreg", "dev")
+local node = require("luci.dispatcher").context.dispatched
+local reg = require("luci.fon.reg")
+local registered = require("luci.fon").registered()
+local url = reg.geturl()
+if url then
+	url = string.gsub(url, "\n", "")
+end
+local banner = require("luci.fon.spot").get_device()
+-%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>FON Router GUI</title>
+<link href="<%=media%>/fonera2.css" rel="stylesheet" type="text/css" />
+<%- if node and type(node.css) == "table" then for _, css in ipairs(node.css) do %>
+<link href="<%=resource%>/<%=css%>" rel="stylesheet" type="text/css" />
+<%- end end %>
+<link rel="shortcut icon" href="/luci-static/resources/icons/favicon.ico" />
+</head>
+<body id="dashboard" class="lang_en">
+<script type="text/javascript" src="/luci-static/resources/fon/prototype.js"></script>
+<script type="text/javascript" src="/luci-static/resources/fon/fon.js"></script>
+<script type="text/javascript" src="/luci/fon_js/main.js"></script>
+	<div id="outerContainer">
+		<div id="innerContainer">
+			<div id="secondarySection">
+				<img class="logo" src="<%=media%>/images/logo<%-if dev == "1" then -%>fonosfera<%-end-%>.png" alt="FON Logo" />
+			</div>
+			<div id="mainSection">
+				<div id="header">
+					<img class="logo" src="<%=media%>/images/la<%=banner%>.png" alt="LA FONERA 2.0" />
+					</div>
+				<div id="mainContent">
+					<div id="breadCrumbs">
+						<ul class="right">
+							<li><a id="abort" href="/luci/wizard/end"><%:wiz_abort Abort Wizard%></a></li>
+						</ul>
+					</div>
+					<div class="box1">
+						<div class="inner">
+							<div class="boxContent">
+								<div style="width: 15%">
+									<img class="logo" src="/luci-static/fon/images/logo.png"  alt="logo"/>
+								</div>
+								<fieldset style="width: 80%">
+<br><br><p class="textfield"><%:wiz_serv_offline Seems like you'r eoffline. remember to configure these services once the fonera is connected to the internet%></p>
+								<ul class="icons">
+									<img src="/luci-static/resources/icons/plugins/youtube.png">
+									<img src="/luci-static/resources/icons/plugins/picasa.png">
+									<img src="/luci-static/resources/icons/plugins/flickr.png">
+									<img src="/luci-static/resources/icons/plugins/facebook.png">
+									<img src="/luci-static/resources/rs.png">
+									<img src="/luci-static/resources/icons/plugins/torrent.png">
+								</ul>
+								<br>
+								<br>
+								<div class="buttons">
+									<form method="post" action="/luci/wizard/step4" enctype="multipart/form-data">
+										<input class="submit" type="submit" value="<%:wiz_next Next%>" />
+									</form>
+                                </div>
+								</fieldset>
+							</div>
+                            <div class="boxFooter">
+                                <div class="inner"></div>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<script type="text/javascript">
+		var cbi_css = document.createElement("link");
+		cbi_css.rel  = "stylesheet";
+		cbi_css.type = "text/css";
+		cbi_css.href = "/luci-static/resources/cbi-js-show.css";
+		document.getElementsByTagName("head")[0].appendChild(cbi_css);
+	</script>
+</body>
+</html>
+
+
+

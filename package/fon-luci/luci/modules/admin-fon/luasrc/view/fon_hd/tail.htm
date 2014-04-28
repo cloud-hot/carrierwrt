@@ -1,0 +1,28 @@
+<%- 
+local uci = require("luci.model.uci").cursor_state()
+local count = uci:get("mountd", "mountd", "count") or "0"
+local autofolder = uci:get("mountd", "mountd", "autofolder") or "0"
+local select1 = ""
+local select2 = ""
+if autofolder == "1" then
+	select1 = "selected"
+else
+	select2 = "selected"
+end
+if count and count ~= "0" then -%>
+<br><br><h2><%:settings Settings%></h2>
+<br>
+<div class="cbi-js-loadable line" id="cbi-fon-public-essid"><label class="cbi-value-title" for="cbid.fon.public.essid"><%:autofolder Create folders%></label>
+	<select class="cbi-input-select" id="autofolder" name="autofolder" size="1">
+		<option value="0" <%=select2%>><%:disable Disable%></option>
+		<option value="1" <%=select1%>><%:enable Enable%></option>
+	</select>
+	<input type="hidden" name="done" value="register">
+</div>
+<div class="buttons">
+	<input class="submit" name="chg.usb" type="submit" value="<%:submit Save%>" />
+</div><%- end -%>
+</form>
+<script type="text/javascript">cbi_d_update();</script>
+<%- boxcolor = "darkorange" %>
+<%+footer%>

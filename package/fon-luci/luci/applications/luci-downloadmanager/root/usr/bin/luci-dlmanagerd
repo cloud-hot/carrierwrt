@@ -1,0 +1,347 @@
+#!/usr/bin/lua
+--[[
+LuCI - Lua Development Framework
+
+Copyright 2009 Steven Barth <steven@midlink.org>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+]]--
+
+local fs = require "luci.fs"
+local uci = require "luci.model.uci"
+local state = uci.cursor_state()
+local nixio = require "nixio"
+local httpc = require "luci.httpclient.receiver"
+local uciname = "luci_dlmanager"
+local nuci = uci.cursor()
+
+local oflags = nixio.open_flags("creat", "wronly")
+local lockfd, code, msg = nixio.open("/tmp/.lock_lucidld", oflags)
+if not lockfd then
+	io.stderr:write("Unable to open lockfile! Aborting.")
+	os.exit(1)
+end
+
+local stat, code, msg = lockfd:lock("tlock")
+if not stat then
+	io.stderr:write("Unable to lock lockfile! Aborting.")
+	os.exit(1)
+end
+
+if not state:load(uciname) or not nuci:load(uciname) then
+	io.stderr:write("Unable to load UCI file!")
+	os.exit(1)
+end
+
+
+-- Global local variables holding thread count and thread limit
+local workers, maxworkers, nicelevel
+
+local function fetch_basedir()
+	local base = nuci:get(uciname, "dlmanager", "actual_base")
+	if not base then
+		return nil
+	end
+	
+	local path = nuci:get(uciname, "dlmanager", "path") or ""
+	return base .. "/" .. path
+end
+
+local function fetch_maxworkers()
+	local val = tonumber(state:get(uciname, "dlmanager", "threads"))
+	local hours = state:get(uciname, "dlmanager", "when") == "hours"
+	local h_from = tonumber(state:get(uciname, "dlmanager", "hours_from"))
+	local h_until = tonumber(state:get(uciname, "dlmanager", "hours_until"))
+	if not hours or not h_from or not h_until or h_from == h_until then
+		return val
+	end
+	local now = os.date("*t")
+	local n_hour = now.hour + now.min / 60
+	if h_until > h_from then
+		return (n_hour <= h_until and n_hour >= h_from) and val or 0
+	else
+		return (n_hour <= h_from and n_hour >= h_until) and 0 or val
+	end
+end
+
+local function fetch_cookies()
+	local cookies = {}
+
+	nuci:foreach(uciname, "cookie", function(s)
+		local cookie = {flags={}, key = s.key, value=s.value}
+		for k, v in pairs(s) do
+			if k:sub(1,1) ~= "." and k:sub(1,1) ~= "_"
+			and k ~= "key" and k ~= "value" then
+				cookie.flags[k] = v
+			end
+		end
+		cookies[#cookies+1] = cookie
+	end)
+
+	return cookies
+end
+
+local function process_fork(file, code, resp)
+	local newname
+	local c = resp and resp.headers and resp.headers["Content-Type"]
+	if c and c:find("text/html") then
+		return false, -6
+	end
+	if not file then
+		local basedir = fetch_basedir()
+		if basedir then
+			newname = fs.basename(resp.uri)
+			local ofl = nixio.open_flags("wronly", "creat", "trunc")
+			file = nixio.open(basedir .. "/" .. newname .. ".part", ofl)
+			if not file then
+				return false, -5
+			end
+			file:seek(0, "end")
+			if not file:lock("tlock") then
+				file:close()
+				file, newname = nil, nil
+			end
+		end
+	end
+	local pid = nixio.fork()
+	if not pid then
+		io.stderr:write("Unable to fork(). Aborting.")
+		os.exit(2)
+	elseif pid == 0 then
+		if nixio.getuid() == 0 then
+			nixio.setgid("nogroup")
+			nixio.setuid("nobody")
+		end
+		
+		-- Decrease our priority
+		nixio.nice(nicelevel)
+		return true, file
+	else
+		local size = tonumber(resp.headers["Content-Length"])
+		if size and file then
+			size = size + file:tell()
+		end
+		local rsm = size and resp.headers["Accept-Ranges"] == "bytes"
+		return false, pid, size, rsm, newname
+	end
+end
+
+-- Set finish state
+local function process_finish_state(key, stat, code, nuci)
+	if stat == "exited" then	-- Thread exited on its own
+		if code == 0 then	-- Success
+			nuci:set(uciname, key, "status", "done")
+			local fin = fetch_basedir() .. "/" .. nuci:get(uciname, key, "file")
+			fs.rename(fin .. ".part", fin)
+			state:revert(uciname, key)
+			local t = require("luci.twitter")
+			local name = nuci:get(uciname, key, "name")
+			local file = nuci:get(uciname, key, "file")
+			t.tweet("Finished downloading " .. (name or file), "dlmanager")
+			return
+		else	-- Assume a temporary error (drive or network connection gone)
+			nuci:set(uciname, key, "status", "pending")
+		end
+	elseif stat == "signaled" then	-- External shutdown, assume paused
+		if not nuci:get(uciname, key, "noresume") then
+			local nextstate = state:get(uciname, key, "nextstate")
+			nuci:set(uciname, key, "status", nextstate or "suspended")
+		else
+			nuci:set(uciname, key, "status", "aborted")
+		end
+	end
+	state:delete(uciname, key, "pid")
+end
+
+-- Check for terminated child processes
+local function process_check_ended()
+	local pid, stat, code = nixio.wait(-1, "nohang")
+	while pid do
+		for k, v in pairs(state:get_all(uciname)) do
+			if v[".type"] == "download" and v.pid == tostring(pid) then
+				process_finish_state(k, stat, code, nuci)
+			end
+		end
+		pid, stat, code = nixio.wait(-1, "nohang")
+	end
+
+	-- Ignore dead threads which dind't issue a SIGCHLD
+	for _, s in pairs(state:get_all(uciname)) do 
+		if s[".type"] == "download" and (s.dead or s.remove) then
+			state:delete(uciname, s[".name"], "pid")
+			if s.remove then
+				nuci:delete(uciname, s[".name"])
+			end
+		end
+	end
+end
+
+-- Process running / new processes
+local function process_download(dl)
+	local key = dl[".name"]
+	local basedir = fetch_basedir()
+	if dl.pid then
+		local ptime, psize = dl.steptime, dl.stepsize
+
+		-- We don't use posix.stat because it is probably not LFS safe
+		local nfd = nixio.open(basedir .. "/" .. dl.file .. ".part")
+		if not nfd then
+			return nil
+		end
+		local ntime, nsize = (os.time()), nfd:seek(0, "end")
+		nfd:close()
+
+		-- UCI tends to spam the /var/state if we don't revert
+		local nextstate = state:get(uciname, key, "nextstate")
+
+		state:revert(uciname, key)
+		state:set(uciname, key, "pid", dl.pid)
+		state:set(uciname, key, "steptime", ntime)
+		state:set(uciname, key, "stepsize", nsize)
+
+		if nextstate then
+			state:set(uciname, key, "nextstate", nextstate)
+		end
+
+		if ptime then
+			local nspeed = (nsize - psize) / (ntime - ptime)
+			state:set(uciname, key, "stepspeed", nspeed)
+		end
+	else
+		local controllerpid = nixio.getpid()
+		local cookies = fetch_cookies()
+		
+		-- Check whether download path is available otherwise suspend
+		if dl.file and not fs.access(basedir, "w") then
+			nuci:set(uciname, key, "status", "suspended")
+		elseif workers < maxworkers then
+			-- We will fork after the headers have been exchanged,
+			-- so only the controller needs to write to UCI
+			local stat, code, msg, rsm, nf = httpc.request_to_file(
+				dl.uri,
+				dl.file and (basedir .. "/" .. dl.file .. ".part"),
+				{cookies = cookies},
+				{on_header = process_fork}
+			)
+
+			-- If the callback has fork()ed  we have two flows here
+			if nixio.getpid() ~= controllerpid then
+				-- This is the worker thread
+				os.exit(stat and 0 or code)
+			end
+
+			-- Here we are back to normal: only the controller
+			if stat == false and code > 0 then
+				-- Fork was successful, code contrains pid
+				state:set(uciname, key, "pid", code)
+				if msg then
+					nuci:set(uciname, key, "size", msg)
+				end
+				if nf then
+					nuci:set(uciname, key, "file", nf)
+				end
+				if not rsm then
+					nuci:set(uciname, key, "noresume", 1)
+				end
+				workers = workers + 1
+			elseif stat == nil and code == -4 and msg == 416 then
+				-- We probably have the complete file
+				-- but we have wrong state information
+				nuci:set(uciname, key, "status", "done")
+				local fin = basedir .. "/" .. nuci:get(uciname, key, "file")
+				fs.rename(fin .. ".part", fin)
+			elseif stat == nil or (stat == false and code < 0) then
+				-- Some other error
+				nuci:set(uciname, key, "status", "error")
+				nuci:set(uciname, key, "errcode", code == -4 and msg or code)
+			end
+		elseif dl.file and not state:get(uciname, key, "stepsize") then
+			local nfd = nixio.open(basedir .. "/" .. dl.file .. ".part")
+			if not nfd then
+				return nil
+			end
+			state:set(uciname, key, "stepsize", nfd:seek(0, "end"))
+			nfd:close()
+		end
+	end
+end
+
+-- Main loop
+while true do
+	local dls = {{}, {}, {}, {}, {}}
+	workers = 0
+	maxworkers = fetch_maxworkers()
+	nicelevel = tonumber(nuci:get(uciname, "dlmanager", "nicelevel"))
+
+	local remove = {}
+	local havedls = false
+	state:foreach(uciname, "download", function(s)
+		havedls = true
+
+		-- Collect incomplete downloads
+		if s.remove then
+			remove[#remove+1] = s[".name"]
+		elseif nuci:get(uciname, s[".name"], "status") == "pending" then
+			s.priority = tonumber(s.priority) or #dls
+			s.priority = s.priority < 1 and #dls or s.priority
+			s.priority = s.priority > #dls and #dls or s.priority
+			dls[s.priority][#dls[s.priority]+1] = s
+		end
+
+
+		-- Mediate workers
+		if s.pid then
+			if fs.stat("/proc/" .. s.pid) then
+				if workers < maxworkers and not s.remove then
+					workers = workers + 1
+				else
+					nixio.kill(tonumber(s.pid), nixio.const.SIGTERM)
+					state:set(uciname, s[".name"], "nextstate", "pending")
+				end
+			else
+				state:set(uciname, s[".name"], "dead", 1)
+			end
+		end
+	end)
+	fs.mkdir(fetch_basedir())
+	if not havedls or (workers < 1 and not fs.access(fetch_basedir())) then
+		-- Nothing to do
+		os.exit(0)
+	end
+
+	for _, k in ipairs(remove) do
+		state:revert(uciname, k)
+		nuci:delete(uciname, k)
+	end
+
+	for _, dlg in ipairs(dls) do
+		for _, dl in ipairs(dlg) do
+			-- Process downloads in order of priority
+			process_download(dl)
+		end
+	end
+
+	state:save(uciname)
+
+	if next(nuci:changes()) then
+		nuci:save(uciname)
+		nuci:commit(uciname)
+	end
+
+	-- Sleep
+	nuci = uci.cursor()
+	state = uci.cursor_state()
+	collectgarbage()
+	nixio.nanosleep(10)
+	
+	state:load(uciname)
+	nuci:load(uciname)
+
+	process_check_ended()
+end

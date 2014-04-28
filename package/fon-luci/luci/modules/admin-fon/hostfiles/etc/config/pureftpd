@@ -1,0 +1,12 @@
+config pureftpd pureftpd
+	option port             '21'
+	option noanonymous      '1'
+	option chrooteveryone   '1'
+	option maxclientsperip  '1'
+	option maxclientsnumber '1'
+	option peruserlimits    '3:4'
+	option umask            '133:000'
+	option authentication   'puredb:/etc/pureftpd.pdb'
+	option enabled          '0'
+	option wan				'0'
+	option pass_set			'0'

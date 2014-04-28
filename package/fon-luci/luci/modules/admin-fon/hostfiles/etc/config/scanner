@@ -1,0 +1,4 @@
+config scanner scanner
+	option enable 0
+	option backend 0
+	option wan 0

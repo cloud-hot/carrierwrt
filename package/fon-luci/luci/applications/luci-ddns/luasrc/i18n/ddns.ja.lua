@@ -1,0 +1,7 @@
+ddns = "DDNS"
+ddns_desc = "ダイナミックDNSの設定を行います。 ダイナミックDNSサービスのアカウントが必要です。FONERAがNATの後ろにある場合ダイナミックDNSは機能しないでしょう。"
+ddns_dns = "DNS"
+ddns_dynds = "dyndns.org"
+ddns_none = "--無し--"
+ddns_srv = "サービス"
+ddns_title = "ダイナミックDNS"

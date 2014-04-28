@@ -1,0 +1,8 @@
+twitter_event_account = "Nachrichten werden mit folgendem Benutzerkonto erstellt:"
+twitter_event_desc = "Hier kannst Du angeben welche Events die Fonera twittern soll."
+twitter_event_title = "Twitter"
+twitter_title = "Twitter"
+twitter_username = "Dein Twitter Benutzername"
+twitter_reply = "Antwort"
+twitter_direct = "Direkt"
+twitter_event_desc = "Bitte gebe hier dein eigenes Twitter Konto an, damit der Fonera weis, wem er die Nachrichten schicken soll."

@@ -1,0 +1,94 @@
+<%
+local uci = luci.model.uci.cursor()
+local state = luci.model.uci.cursor_state()
+local mode = uci:get("fon", "wan", "mode")
+local dev = uci:get("registered", "fonreg", "dev") == "1"
+local selected_device = nil
+if mode == "umts" then
+	selected_device = uci:get("fon", "wan", "umts_device")
+end
+
+function simstate(state)
+	if state == 'ready' then
+		return translate('umts_sim_ready', 'Ready')
+	elseif state == 'needpin' then
+		return translate('umts_sim_needpin', 'Need PIN code')
+	elseif state == 'needpuk' then
+		return translate('umts_sim_needpuk', 'Need PUK code')
+	elseif state == 'error' then
+		return translate('umts_sim_error', 'Error getting status')
+	else
+		return translate('umts_sim_unknown', 'Unknown')
+	end
+end
+
+function devicestate(state, up, msg, dial_msg)
+	if not state then
+		return translate('umts_state_preparing', 'Initializing')
+	elseif state == 'init' then
+		return translate('umts_state_init', 'Configuring')
+	elseif state == 'dial' then
+		return translate('umts_state_dial', 'Dialing')
+	elseif state == 'connected' and not up then
+		return translate('umts_state_connecting', 'Connecting')
+	elseif state == 'connected' and up then
+		return translate('umts_state_connected', 'Connected')
+	elseif state == 'error' then
+		return translate('umts_state_error', 'Error') .. ' - ' .. (msg or 'unknown error') .. (dial_msg and (': ' .. dial_msg) or '')
+	else
+		return translate('umts_state_unkown', 'Unknown')
+	end
+end
+%>
+<table border="0" cellspacing="0" cellpadding="0">
+<thead>
+	<tr>
+		<th>Device ID</th>
+		<th>Device configuration</th>
+		<th>SIM status</th>
+		<th>Device status</th>
+		<th></th>
+	</tr>
+<tbody>
+<input type="hidden" name="device_id"/>
+<% for _, device in pairs(self.devices) do %>
+	<tr>
+		<td><%= device.id %></td>
+		<td>
+			<%= device.profile and device.profile.description or "Unknown device"%>
+			(<a href="<%=luci.dispatcher.build_url("fon_devices", "fon_umts", "device_config", device.id) %>"><%:umts_modify Modify%></a>)
+		</td>
+		<% if device.id == selected_device then %>
+			<td><%= simstate(state:get("network", "wan", "sim_state")) %></td>
+			<td><%= devicestate(state:get("network", "wan", "udiald_state"), state:get("network", "wan", "up"), state:get("network", "wan", "udiald_error_msg"), state:get("network", "wan", "udiald_dial_error_msg")) %></td>
+			<td><input type="submit" name="disconnect_<%=device.id%>" value="Disconnect"/>
+			    <input type="submit" name="reconnect_<%=device.id%>" value="Reconnect"/></td>
+		<% else %>
+			<td>Unknown</td>
+			<td><%:umts_state_disconnected Disconnected %></td>
+			<td><input type="submit" name="connect_<%=device.id%>" value="Connect"/>
+			    <% if dev then %>
+			    <input type="button" onclick="do_probe('<%=device.id%>')" value="Probe"/>
+			    <% end %>
+			</td>
+		<% end %>
+	</tr>
+<% end %>
+</tbody>
+</table>
+
+<div id="probeResults">
+</div>
+
+<script type="text/javascript">
+function do_probe(device_id) {
+	var url = '<%=luci.dispatcher.build_url("fon_devices", "fon_umts", "probe")%>';
+	url += '?device_id=' + device_id;
+
+	fon_xhr_load(url, 'probeResults');
+
+	var txt = new Element("p");
+	txt.update("Probing device. This may take a long time (up to a minute), so please be patient.");
+	$("probeResults").appendChild(txt);
+}
+</script>

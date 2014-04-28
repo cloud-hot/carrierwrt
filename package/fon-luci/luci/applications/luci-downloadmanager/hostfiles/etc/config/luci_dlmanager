@@ -1,0 +1,10 @@
+config dlmanager dlmanager
+	option base	"/tmp/mounts/foo"
+	option path	downloads
+	option threads	2
+	option nicelevel 5
+
+config dlprovider rapidshare
+	option name		Rapidshare.com
+	option loginuri https://api.rapidshare.com/cgi-bin/rsapi.cgi
+	option postdata sub=getaccountdetails_v1&withcookie=1&type=prem&login=%username%&password=%password%

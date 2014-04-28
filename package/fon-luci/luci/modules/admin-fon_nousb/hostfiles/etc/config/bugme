@@ -1,0 +1,2 @@
+config 'bugme' 'register'
+        option 'url' 'bugme/register'

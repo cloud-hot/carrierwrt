@@ -1,0 +1,14 @@
+#!/usr/bin/lua
+
+local gdata = require("luci.fon.gdata")
+local fs = require("luci.fs")
+local g = fs.glob("/tmp/mounts/*")
+if g then
+	for i,v in ipairs(g) do
+		gdata.youtube_queue_add_disc(string.sub(v, 13))
+	end
+end
+local srv = require("luci.fon.service")
+local service = srv.Service("youtube")
+service:start()
+

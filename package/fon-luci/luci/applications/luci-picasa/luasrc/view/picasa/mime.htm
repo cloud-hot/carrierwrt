@@ -1,0 +1,16 @@
+<h2><%:picasa_mime_title Image Types%></h2>
+
+<p class="textfield"><%:picasa_mime_desc The following image types are currently supported for upload%></p>
+<ol>
+<%-
+local uci = require("luci.model.uci").cursor()
+uci:load("gdata")
+local mime = uci:get_all("gdata", "mime_picasa")
+mime[".name"] = nil
+mime[".anonymous"] = nil
+mime[".type"] = nil
+for i,v in pairs(mime) do
+	%><li>*.<%=i%></li><%
+end
+-%>
+</ol>

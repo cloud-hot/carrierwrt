@@ -1,0 +1,5 @@
+config 'bugme' 'youtube_auth'
+	option 'url' 'youtube/auth_fail'
+
+config 'bugme' 'picasa_auth'
+	option 'url' 'picasa/auth_fail'

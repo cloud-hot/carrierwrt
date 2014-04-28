@@ -1,0 +1,31 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 John Crispin <john@phrozen.org>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+
+-%>
+<h2><%:samba_title Windows Network Shares%><a href="http://download.fon.com/help/video/samba"><img src="/luci-static/resources/cbi/help.gif"></a></h2>
+<%-
+local uci = require("luci.model.uci").cursor_state()
+local mode = uci:get("fon", "wan", "mode")
+local ip
+if mode == "bridge" or mode == "wifi-bridge" then
+	ip = uci:get("fon", "wan", "ipaddr")
+else
+	ip = uci:get("fon", "lan", "ipaddr")
+end
+-%>
+<br><div>
+<p class="textfield"><%:samba_desc Samba description%></p>
+<p class="textfield"> <b>Server:</b> <%=ip%> or fonera<br />
+<b><%:samba_share Share%>:</b> Media<br />
+<b><%:samba_user User%>:</b> fonero<br />
+<%:samba_link To access the Network Share from you PC you need to enter the following url into the Windows Explorer%> <br> <b>\\<%=ip%>\Media</b> </p>
+</div>

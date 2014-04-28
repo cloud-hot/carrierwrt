@@ -1,0 +1,12 @@
+config event
+	option type dummy1
+	option id	testid1
+	
+config event
+	option type dummy2
+	option id	testid2
+	
+config event
+	option type dummy1
+	option id	alreadyexpired
+	option expires 0

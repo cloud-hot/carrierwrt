@@ -1,0 +1,47 @@
+config video torrent
+	option link 'http://download.fon.com/help/video/torrent'
+
+config video dlmanager
+	option link 'http://download.fon.com/help/video/dlmanager'
+
+config video fon_dashboard
+	option link 'http://download.fon.com/help/video/dashboard'
+
+config video fon_admin
+	option link 'http://download.fon.com/help/video/settings'
+
+config video fon_admin_fon_wifi
+	option link 'http://download.fon.com/help/video/wireless'
+
+config video fon_admin_fon_inet
+	option link 'http://download.fon.com/help/video/internet'
+
+config video fon_admin_fon_net
+	option link 'http://download.fon.com/help/video/network'
+
+config video fon_admin_fon_fw
+	option link 'http://download.fon.com/help/video/firewall'
+
+config video fon_admin_fon_pass
+	option link 'http://download.fon.com/help/video/password'
+
+config video fon_admin_fon_system
+	option link 'http://download.fon.com/help/video/system'
+
+config video fon_backup
+	option link 'http://download.fon.com/help/video/fonbackup'
+
+config video fon_devices_fon_hd
+	option link 'http://download.fon.com/help/video/hdd'
+	
+config video fon_devices_fon_plugins
+	option link 'http://download.fon.com/help/video/plugins'
+	
+config video fon_devices__browser
+	option link 'http://download.fon.com/help/video/browser'
+
+config video fon_devices_fon_umts
+	option link 'http://download.fon.com/help/video/3g'
+
+config video youtube
+	option link 'http://download.fon.com/help/video/youtube'

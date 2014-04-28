@@ -1,0 +1,47 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008 Jo-Philipp Wich <xm@leipzig.freifunk.net>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+
+-%>
+<%-
+boxcolor = "black"
+if luci.dispatcher.context.requestpath[1] ~= "_maincontent" then
+%><%+header%><%
+end-%>
+<div style="width: 15%">
+	<img class="logo" src="/luci-static/fon/icons/pass.png"  alt="password" />
+</div>
+<form method="post" action="<%=REQUEST_URI%>">
+<fieldset style="width: 80%">
+	<div>
+		<h2><%:sysauth_head Authorization Required%></h2>
+		<p class="tableText">
+			<%:sysauth_prompt Please enter your password.%>
+		</p>
+		<div class="cbi-map">
+			<div class="cbi-value<%- if fuser then %> cbi-value-error<% end -%>">
+				<label class="cbi-value-title"><%:password%></label>
+				<div class="cbi-value-field">
+					<input class="cbi-input-password" type="password" name="password" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="buttons">
+		<input type="submit" value="<%:login%>" class="submit" />
+	</div>
+</fieldset>
+</form>
+
+<%if luci.dispatcher.context.requestpath[1] ~= "_maincontent" then
+%><%+footer%><%
+end-%>

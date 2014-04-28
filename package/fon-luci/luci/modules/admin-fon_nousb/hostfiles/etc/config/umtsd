@@ -1,0 +1,15 @@
+config 'umtsd' 'umtsd'
+	option '_country' '_custom'
+	option 'apn' 'internet.eplus.de'
+	option 'pin' '1234'
+	option 'user' 'internet'
+	option 'pass' 'umts'
+
+config 'umtsdstate' 'umtsdstate'
+
+config 'umtsdevice' 'option12D11003'
+	option 'vendor' 'Huawei'
+	option 'device' 'E220'
+	option 'data' '/dev/ttyUSB0'
+	option 'cmd' '/dev/ttyUSB1'
+

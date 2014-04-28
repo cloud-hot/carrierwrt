@@ -1,0 +1,15 @@
+<%+fon/page_reload%>
+<script type="text/javascript" src="<%=resource%>/fon/prototype.js"></script>
+<script type="text/javascript"> 
+function popup_webcam(size)
+{
+	window.open("<%=luci.dispatcher.build_url("fon_devices", "fon_webcam", "popup")%>/?size="+size, "_blank", "menubar=no,titlebar=no");
+}
+</script>
+<br>
+<applet code="com.charliemouse.cambozola.Viewer" archive="/luci-static/cambozola.jar" width="320" height="240" alt="Webcam">
+<param name="url" value="<%=luci.dispatcher.build_url("fon_devices", "fon_webcam", "mjpeg")%>"/>
+You need to install Java to use the webcam.
+</applet>
+<br>
+<a href="<%=luci.dispatcher.build_url("fon_devices", "fon_webcam", "big")%>"><%=translate("webcam_big", "Bigger")%></a>

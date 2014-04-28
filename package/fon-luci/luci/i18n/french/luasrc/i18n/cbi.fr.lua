@@ -1,0 +1,17 @@
+cbi_add = 'Ajouter une entrée'
+cbi_addopt = '-- Champ Additionnel --'
+cbi_applying = 'Appliquer les changements'
+cbi_browser = 'Rechercher un fichier...'
+cbi_del = 'Supprimer une entrée'
+cbi_deperror = "<strong>Echec de la validation :</strong> Au moins un des champs obligatoires n'a pas été complété ou une valeur est invalide"
+cbi_gorel = 'Rendez-vous sur la page de configuration appropriée'
+cbi_invalid = 'Valeur invalide'
+cbi_invalid_section = '<strong>Echec de la validation :</strong> Vérifiez que les valeurs entrées ne comportent aucune erreurs.'
+cbi_manual = '-- Paramétrable --'
+cbi_missing = 'Ce champ est obligatoire'
+cbi_optional = '(Facultatif)'
+cbi_replace = 'Remplacer une entrée'
+cbi_reqerror = "Paramètre requis pour cette option manquant"
+cbi_sectempty = "Cette section ne comporte aucune valeur pour l'instant"
+cbi_select = '-- Choisissez --'
+cbi_upload = 'Charger un fichier'

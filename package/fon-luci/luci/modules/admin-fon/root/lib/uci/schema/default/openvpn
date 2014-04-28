@@ -1,0 +1,7 @@
+package openvpn
+
+config section
+	option name	'openvpn'
+	option package	'openvpn'
+	option unique	true
+	option required true

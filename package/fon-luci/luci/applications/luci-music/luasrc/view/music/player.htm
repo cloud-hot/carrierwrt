@@ -1,0 +1,29 @@
+<%
+boxcolor = "darkorange"
+-%>
+<%+header%>
+<h2><%:music_title%></h2>
+<p class=textfield><%:music_desc The Music application allows you to play mp3 media from a attached storage device. In Addition, you can stream music directly from the internet.%></p>
+<div id="player"><%+music/player-status%></div>
+<div style="clear: both">&nbsp;</div>
+<div id="browser"></div>
+<script type="text/javascript" src="<%=resource%>/cbi.js"></script>
+<script type="text/javascript">
+// Refresh player status every 5 seconds
+new PeriodicalExecuter(function() {
+	new Ajax.Updater($('player'), '<%=luci.dispatcher.build_url("music", "_player")%>');
+}, 5);
+
+// Action function for player if we have JavaScript support
+player_call = function(a) {
+	new Ajax.Updater($('player'), '<%=luci.dispatcher.build_url("music", "_player")%>?' + a);
+	return false;
+};
+
+// Reload function for fon_browser
+reload = function(a) {
+	fon_xhr_load(a, "browser");
+};
+
+</script>
+<%+footer%>

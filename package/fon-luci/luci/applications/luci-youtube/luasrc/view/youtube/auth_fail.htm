@@ -1,0 +1,50 @@
+<%-
+require("luci.http").header("Set-Cookie", "fon_dont_bugme_youtube_auth=1; path=/")
+
+local dev = require("luci.model.uci").cursor():get("registered", "fonreg", "dev")
+local node = require("luci.dispatcher").context.dispatched
+-%>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>FON Router GUI</title>
+<link href="<%=media%>/fonera2.css" rel="stylesheet" type="text/css" />
+<%- if node and type(node.css) == "table" then for _, css in ipairs(node.css) do %>
+<link href="<%=resource%>/<%=css%>" rel="stylesheet" type="text/css" />
+<%- end end %>
+<link rel="shortcut icon" href="/luci-static/resources/icons/favicon.ico" />
+</head>
+<body id="dashboard" class="lang_<%=luci.i18n.context.lang%>">
+<script type="text/javascript" src="<%=resource%>/fon/prototype.js"></script>
+<script type="text/javascript" src="<%=resource%>/fon/fon.js"></script>
+<script type="text/javascript" src="<%=luci.dispatcher.build_url("fon_js","main.js")%>"></script>
+	<div id="outerContainer">
+		<div id="innerContainer">
+			<div id="secondarySection">
+				<img class="logo" src="<%=media%>/images/logo<%-if dev == "1" then -%>fonosfera<%-end-%>.png" alt="FON Logo" />
+			</div>
+			<div id="mainSection">
+				<div id="header" style="height: 125px;">
+				<ul class="persistentButtons">
+						<li id="dashboardButton"><a class="icon" href="javascript:window.close()"><%:webcam_close Close%></a></li>
+					</ul>
+					<img class="logo" src="<%=media%>/images/lafonera20.png" alt="LA FONERA 2.0" />
+				</div>
+				<div id="mainContent">
+					<div class="box1">
+						<div class="inner">
+							<div class="boxContent">
+								<pre style="text-align: center; color:<%-if dev == "1" then -%>#fbb034<%-else-%>white<%-end-%>; font-family:monospace; font-size:12px;"><%:youtube_auth_fail Your youtube credentials are invalid, please go to the youtube page.%></pre>
+							</div>
+							<div class="boxFooter">
+								<div class="inner"></div>
+							</div>
+						</div>
+					</div>
+	<div>
+		<form action="/luci/bugme/end/" method=post>
+		<input type="hidden" name="done" value="youtube_auth">
+		<input type='checkbox' onclick="javascript:document.forms[0].submit();"><%:youtube_bugme Dont bug me again%>
+		</form>

@@ -1,0 +1,29 @@
+<div id="wifi_scan_ui">
+	<h2><%:wifi_scan_title Other wifi networks %></h2>
+	<p><%:wifi_scan_desc Here you can let your Fonera scan for other
+	wifi networks. Note that starting a scan can disconnect
+	connected wireless clients. Click the column headers to sort the
+	results. %></p>
+
+	<div id="scanResults">
+	</div>
+
+	<input type="button" value="Scan now" onclick="do_scan(false);"/>
+</div>
+<script type="text/javascript">
+
+/* By default, sort by channel for finding an unused channel. */
+scan_sort_key = 'channel';
+function do_scan(sort_key) {
+	if (sort_key) {
+		/* Remember the sort key, so the "scan now" button
+		doesn't change the sort key */
+		scan_sort_key = sort_key;
+	}
+	var url = '<%=luci.dispatcher.build_url("fon_admin", "fon_wifi", "wifi_scan")%>';
+	if (scan_sort_key)
+		url += '?sort_key=' + scan_sort_key
+
+	fon_xhr_load(url, 'scanResults');
+}
+</script>

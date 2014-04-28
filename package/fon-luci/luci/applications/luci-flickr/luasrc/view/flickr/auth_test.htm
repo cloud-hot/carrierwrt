@@ -1,0 +1,19 @@
+<%-
+local flickr = require("luci.fon.flickr")
+local uci = require("luci.model.uci").cursor()
+local frob = string.gsub(uci:get("flickr", "flickr", "frob"), " ", "")
+local res = flickr.frob2auth(frob)
+
+uci:load("flickr")
+uci:delete("flickr", "flickr", "frob")
+uci:commit("flickr")
+
+if res == true then%>
+	<%:flickr_auth_ok authentication token ok%>
+<% 
+local srv = require("luci.fon.service")
+local service = srv.Service("flickr")
+service:start()
+else %>
+	<%:flickr_auth_fail authentication token failed%>
+<%end%>

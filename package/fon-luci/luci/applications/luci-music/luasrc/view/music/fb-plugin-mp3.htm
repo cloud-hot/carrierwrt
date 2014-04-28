@@ -1,0 +1,4 @@
+<%# fon_browser play / playall buttons for MP3 %>
+<% require "luci.i18n".loadc("music") %>
+<a style="margin-left: 2em;" href="<%=luci.dispatcher.build_url("music")%>?mp3=<%=luci.http.urlencode(node.fullpath)%>" title="<%:music_fb_play%>"><img style="border:none" src="<%=resource%>/music-play.png" alt="<%:music_fb_play%>" /></a>
+<a href="<%=luci.dispatcher.build_url("music")%>?dir=<%=luci.http.urlencode(luci.fs.dirname(node.fullpath))%>" title="<%:music_fb_playall%>"><img style="border:none" src="<%=resource%>/music-playall.png" alt="<%:music_fb_playall%>" /></a>

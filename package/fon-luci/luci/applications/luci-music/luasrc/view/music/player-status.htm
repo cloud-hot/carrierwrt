@@ -1,0 +1,78 @@
+<%
+-- Fallback to filename if we do not have any ID3 data
+local title = status.filename and luci.fs.basename(status.filename)
+
+if status.title and #status.title > 0 then
+	title = status.title
+end
+%>
+
+
+<div id="playing">
+<% if title then %>
+	<div>
+		<%:music_playlist_1%>
+			<span class="acstatus"><%=status.playlistname%></span>
+		<%:music_playlist_2%>
+			<span class="acstatus"><%=status.count%> <%:music_tracks%></span>
+	</div>
+	<div>
+		<%:music_playing_1%>
+			<span class="acstatus"><%=title%></span>
+		<%:music_playing_2%>
+			<span class="acstatus"><%=status.artist or "-" %></span>
+		<%:music_playing_3%>
+			<span class="acstatus"><%=status.album or "-" %></span>
+	</div>
+	<div>
+		<div id="player_open">
+			<a href="#" onclick="reload('<%=luci.dispatcher.build_url("_maincontent", "fon_devices", "fon_browser")%>');">
+				<img src="<%=resource%>/music-open.png" alt="<%:music_open%>" />
+				<span id="player_open_caption"><%:music_open%></span>
+			</a>
+			&nbsp;
+			<a href="<%=luci.dispatcher.build_url("music", "radio")%>" onclick="reload('<%=luci.dispatcher.build_url("_maincontent", "music", "_radio")%>'); return false;">
+				<img src="<%=resource%>/music-radio.png" alt="<%:music_radiodot%>" />
+				<span id="player_radio_caption"><%:music_radiodot%></span>
+			</a>
+		</div>
+		<div style="text-align: right">
+		<% for i=0, 10 do %>
+			<a href="?action=volset&value=<%=i*10%>" onclick="return player_call('action=volset&value=<%=i*10%>')">
+				<img class="volumebar<%=(tonumber(status.volume) < i*10) and "2" or ""%>" src="<%=resource%>/music-bar.png" alt="" style="height: <%=(i+1)*2%>px" />
+			</a>
+		<% end %>
+		</div>
+		
+	</div>
+<% else %>
+	<a href="#" onclick="reload('<%=luci.dispatcher.build_url("_maincontent", "fon_devices", "fon_browser")%>');">
+		<img src="<%=resource%>/music-open.png" alt="<%:music_open%>" />
+		<span id="player_open_caption"><%:music_open%></span>
+	</a>
+	&nbsp;
+	<a href="<%=luci.dispatcher.build_url("music", "radio")%>" onclick="reload('<%=luci.dispatcher.build_url("_maincontent", "music", "_radio")%>'); return false;">
+		<img src="<%=resource%>/music-radio.png" alt="<%:music_radiodot%>" />
+		<span id="player_radio_caption"><%:music_radiodot%></span>
+	</a>
+<% end %>
+</div>
+<div id="player_buttons">
+<a href="?action=prev" onclick="return player_call('action=prev')">
+	<img src="<%=resource%>/music-prev.png" alt="<%:music_prev%>" />
+</a>
+<a href="?action=start" onclick="return player_call('action=start')">
+	<img src="<%=resource%>/music-start.png" alt="<%:music_start%>" />
+</a>
+<a href="?action=stop" onclick="return player_call('action=stop')">
+	<img src="<%=resource%>/music-stop.png" alt="<%:music_stop%>" />
+</a>
+<a href="?action=next" onclick="return player_call('action=next')">
+	<img src="<%=resource%>/music-next.png" alt="<%:music_next%>" />
+</a>
+</div>
+<% if err then %>
+<div class="clear"></div>
+<div class="error"><%:music_err%>: <%=err%></div>
+<script type="text/javascript">alert('<%=err%>');</script>
+<% end %>

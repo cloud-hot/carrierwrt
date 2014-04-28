@@ -1,0 +1,17 @@
+<%
+local status = self._state:get("luci_dlmanager", section, "status")
+local noresume = self._state:get("luci_dlmanager", section, "noresume")
+-%>
+<%+cbi/valueheader%>
+
+<%# This will trigger the write() %>
+<input type="hidden" name="<%=cbid%>" value="1" />
+
+<% if status == "pending" and not noresume then %>
+	<input type="image" alt="<%:dlm_pause%>" title="<%:dlm_pause%>" src="<%=resource%>/icons/vstop.png" name="<%=cbid%>.pause" value="1" />
+<% elseif status == "suspended" or status == "error" then %>
+	<input type="image" alt="<%:dlm_start%>" title="<%:dlm_start%>" src="<%=resource%>/icons/vstart.png" name="<%=cbid%>.start" value="1" />
+<% end %>
+<input alt="<%:dlm_delete%>" title="<%:dlm_delete%>" type="image" src="<%=resource%>/icons/vdel.png" name="<%=cbid%>.delete" value="1" />
+
+<%+cbi/valuefooter%>

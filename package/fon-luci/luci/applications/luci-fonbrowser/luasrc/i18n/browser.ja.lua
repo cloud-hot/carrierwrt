@@ -1,0 +1,5 @@
+date = "データ"
+filebrowser = "ファイルブラウザ"
+filename = "ファイル名"
+one_level_up = "上へ"
+size = "サイズ"

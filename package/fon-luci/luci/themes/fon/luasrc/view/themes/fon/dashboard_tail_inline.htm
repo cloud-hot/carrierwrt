@@ -1,0 +1,15 @@
+</ul>
+<script type="text/javascript" src="<%=resource%>/cbi.js"></script>
+<script type="text/javascript">
+	simple_reload = function(a) {
+		fon_spinner('inlinecontent');
+		new Ajax.Updater($('inlinecontent'), a);
+	}
+	
+	reload = function(a) {
+		fon_xhr_load("" + a,
+			"inlinecontent",
+			'<%=luci.dispatcher.build_url("vuze", "none")%>',
+			null
+	);}
+</script>

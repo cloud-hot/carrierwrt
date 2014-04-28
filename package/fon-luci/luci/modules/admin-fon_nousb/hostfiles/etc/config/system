@@ -1,0 +1,41 @@
+config system
+	option hostname Fonera 
+	option timezone UTC
+
+config led
+	option name		usb
+	option sysfs	gpio3
+	option default	0
+
+config led
+	option name		powerg
+	option sysfs	gpio4
+	option default	0
+
+config led
+	option name		powero
+	option sysfs	gpio7
+	option default	1	
+
+config led
+	option name		wifio
+	option sysfs	gpio1
+	option default	0
+
+config button
+	option button	reset
+	option action	released
+	option handler	"/etc/fonstated/Reset"
+	option min		0
+	option max		5
+
+config button
+	option button	reset
+	option action	released
+	option handler	"/etc/fonstated/ResetFactory"
+	option min		6
+	option max		100
+
+config fon fon
+        option serial AAAAAAAAAA
+

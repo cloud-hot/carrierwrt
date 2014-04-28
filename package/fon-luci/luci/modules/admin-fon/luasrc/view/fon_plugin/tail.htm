@@ -1,0 +1,19 @@
+	</tbody>
+</table>
+<br><br>
+<%
+local dev = require("luci.model.uci").cursor():get("registered", "fonreg", "dev")
+if dev == "1" then %>
+	<div class="line">
+		<%=priv.message_install%>
+		<h2><%:plugin_file FON plugin file%></h2>
+		<p class="textfield"><%:plugin_upload Here you can upload and install a plugin.%></p>
+		<input type="file" size="30" name="image" />
+	</div>
+	<div>
+		<input type="submit" value="<%:plugin_upgrade Upgrade%>" />
+	</div>
+</form>
+<%end%>
+<%- boxcolor = "darkorange" %>
+<%+footer%>

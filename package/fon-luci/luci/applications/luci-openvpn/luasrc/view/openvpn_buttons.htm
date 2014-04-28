@@ -1,0 +1,17 @@
+<table>
+<tr class=odd>
+	<td>
+		<a style="color: #000;" href="<%=require("luci.dispatcher").build_url("fon_admin", "openvpn", "new")%>">
+			<img src="<%=luci.config.main.resourcebase%>/icons/vadd.png"><%:openvpn_add Add a new client%></a>
+	</td>
+	<td>
+		<a style="color: #000;" href="<%=require("luci.dispatcher").build_url("fon_admin", "openvpn", "firewall")%>">
+			<img src="<%=luci.config.main.resourcebase%>/icons/vadd.png"><%:settings Settings%></a>
+	</td>
+	<td colspan=2>
+		<a style="color: #000;" href="<%=require("luci.dispatcher").build_url("fon_admin", "openvpn", "cert")%>">
+			<img src="<%=luci.config.main.resourcebase%>/icons/vadd.png"><%:openvpn_cert Manage Certificates%></a>
+	</td>
+</tr>
+</table>
+

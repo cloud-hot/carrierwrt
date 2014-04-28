@@ -1,0 +1,114 @@
+<%+header%>
+<%- local maincontent = luci.dispatcher.context.requestpath[1] == "_maincontent"
+local show_href = luci.dispatcher.context.requestpath[5] == "torrent"
+local up_link = true
+if luci.dispatcher.context.requestpath[5] == "torrent" and not(luci.dispatcher.context.requestpath[6]) then
+	up_link = false
+end
+if maincontent ~= true then -%>
+<div class="box1">
+	<div class="inner">
+		<div class="boxContent">
+<%-end if not(maincontent) then-%>
+			<h2><%:filebrowser File Browser%></h2>
+			<p class="textfield"><%:filebrowser_desc Desc%></p>
+<%else%><h4>\\fonera\
+<%-	for i,v in ipairs(luci.dispatcher.context.requestpath) do if i > 3 then -%>
+<%=v%>\
+<%-	end end%></h4><br><%-
+end-%>
+			<table>
+			<% 
+				local i = 1
+				local tag = ""
+				local rargs = luci.dispatcher.context.requestargs
+				if rargs and #rargs > 0 then
+			%>
+			<thead>
+			<tr>
+			  <th>
+			    <%:filename File Name%>
+			  </th>
+			  <th>
+			    <%:date Date%>
+			  </th>
+			  <th>
+			    <%:size Size%>
+			  </th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<% 
+				if up_link or not(maincontent) then
+				local up = luci.util.clone(luci.dispatcher.context.requestpath)
+				up[#up] = nil
+				i = 0
+				%>
+				<td>
+				<%- if maincontent == true then -%>
+					<a style="color:#000;" onclick="reload('<%=luci.dispatcher.build_url(unpack(up))%>')">
+				<%-else-%>
+					<a style="color:#000;" href="<%=luci.dispatcher.build_url(unpack(up))%>">
+				<%-end-%>
+				<img style="border: none" src="<%=resource%>/up-small.png" alt="" /><%:one_level_up One Level Up%></a>
+			</tr>
+			<%	end
+			else%>
+			<thead>
+			<tr>
+			  <th colspan=3>
+			    <%:usb_disc Disc%>
+			  </th>
+			</tr>
+			</thead>
+			<tbody>
+			<%end
+			for _, object in ipairs(dir) do
+				i = i + 1
+				if i % 2 == 1 then
+					tag = " class=\"odd\""
+				else
+					tag = ""
+				end
+			%>
+			<% node = object %>
+				<tr<%=tag%>>
+					<td>
+					<%- local close_a = true 
+					if maincontent == true then
+						if object.type == "directory" then -%>
+							<a style="color:#000;" onclick="reload('<%=object.href%>')">
+						<%-else
+							if show_href then-%>
+							<a style="color:#000;" href="<%=object.href%>">
+							<%else
+								close_a = false
+							end
+						end
+					else-%>
+						<a style="color:#000;" href="<%=object.href%>">
+					<%-end-%>
+					<img style="border: none" src="<%=resource%>/mime/<%=object.icon%>.png" alt="" /> <%=object.name%>
+				<%-if close_a == true then -%></a>
+				<%- end
+				for _, m in ipairs(object.modules) do if m.template then%>
+					<% include(m.template) %>
+				<% end end %>
+					</td>
+					   <td> <%=object.mod_time%></td>
+					   <td> <%=object.human_size %></td>
+				</tr>
+			<% end %>
+			</tbody>
+			</table>
+<%-if maincontent ~= true then -%>
+		</div>
+		<div class="boxFooter">
+			<div class="inner"></div>
+		</div>
+	</div>
+</div>
+<%-end-%>
+<%+footer%>
+

@@ -1,0 +1,37 @@
+<script type="text/javascript">fon_site_update();</script>
+<% local maincontent = luci.dispatcher.context.request and luci.dispatcher.context.requestpath[1] == "_maincontent"
+if not(maincontent) then%><div class="box3" id="quickEditBox"><%end%>
+	<div class="inner">
+		<div class="boxContent">
+			<ul class="icons">
+<%
+local subnodes = luci.dispatcher.node("fon_admin").nodes
+if subnodes then
+	for k, v in luci.util.spairs(subnodes, function (a,b)
+			return (subnodes[a].order or 100) < (subnodes[b].order or 100)
+		end) 
+	do
+		if v.title and #v.title > 0 and not v.ignoreindex and (v.index or v.target) then
+			local csscl = "%s" % (v.style or k)
+			local iconl = v.icon
+			if iconl then
+				luci.template.render("themes/fon/dashboard_item", {
+					csscl = csscl,
+					aclass = k,
+					adisplay = adisplay,
+					target = luci.dispatcher.build_url("fon_admin", k),
+					iconl = (v.icon_path or luci.config.main.mediaurlbase) .. "/"..(iconl or ""),
+					title = v.title
+					})
+			end
+		end
+	end
+end
+%>
+			</ul>
+		</div>
+		<div class="boxFooter">
+			<div class="inner"></div>
+		</div>
+	</div>
+<% if not(maincontent) then%></div><%end%>

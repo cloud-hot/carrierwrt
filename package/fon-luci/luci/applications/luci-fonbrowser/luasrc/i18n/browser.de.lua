@@ -1,0 +1,5 @@
+date = "Datum"
+filebrowser = "Dateimanager"
+filename = "Dateiname"
+one_level_up = "Eine Ebene hoch"
+size = "Gr&ouml;&szlig;e"

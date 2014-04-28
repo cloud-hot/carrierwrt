@@ -1,0 +1,6 @@
+<%#
+	Modified copy of cbi/button.htm
+-%>
+<%+cbi/valueheader%>
+	<input onclick='return confirm("<%:openvpn_remove Do you really want to remove the clients keys ?%>")' class="cbi-input-<%=self.inputstyle or "button" %>" type="submit"<%= attr("name", cbid) .. attr("id", cbid) .. attr("value", self.button_title or self.title)%> />
+<%+cbi/valuefooter%>

@@ -1,0 +1,11 @@
+<% boxcolor = "darkorange" %>
+<%+header%>
+<p class="textfield">
+	<%if (require("luci.model.uci").cursor():get("facebook", "facebook", "expires") or "0") ~= "0" then%>
+	<%:facebook_auth_perm Your Authentication is only valid for 24 hours. To make it permanent, click the link below%>
+	<br /><br /><a href="http://www.facebook.com/authorize.php?api_key=<%=require("luci.model.uci").cursor():get("facebook", "facebook", "api_key")%>&v=1.0&ext_perm=offline_access" target="_blank" ><img src="http://static.ak.facebook.com/images/devsite/facebook_login.gif" /></a><br /><br />
+	<%end%>
+	<%:facebook_auth_clear You can reset the authentication by clicking the link below%><br>
+	<a href="<%=luci.dispatcher.build_url("facebook", "clear_session")%>"><%:facebook_auth_clear2 Clear Authentication%></a>
+</p>
+<%+footer%>

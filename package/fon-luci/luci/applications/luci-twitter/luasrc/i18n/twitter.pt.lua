@@ -1,0 +1,7 @@
+twitter_event_desc = "Aqui pode escolher que eventos pretende 'twittar'."
+twitter_event_title = "Twitter"
+twitter_title = "Twitter"
+twitter_username = "Nome de Utilizador do Twitter"
+twitter_reply = "Responder"
+twitter_direct = "Direct"
+twitter_event_desc = "Certifique-se que introduz a conta do twitter para a qual deseja enviar os eventos. Aqui pode escolher que eventos pretende \"twittar\"."

@@ -1,0 +1,30 @@
+					<div id="breadCrumbs">
+					  <a id="logout" href="<%=luci.dispatcher.build_url('fon_logout')%>"><%:logout Logout%></a>
+					  <% local request = luci.dispatcher.context.requestpath
+					     local suffix = {} 
+					     local name = '' 
+						 local dev = false%>
+					  <ul>
+					    <li><a href="<%=luci.dispatcher.build_url('fon_dashboard')%>"><%:dashboard Dashboard%></a></li>
+					     <% for i, j in ipairs(request) do
+						-- filter dash_board, we are putting it on top always
+						if j == 'fon_devices' then
+							dev = true
+						end
+						if j ~= 'fon_dashboard' and j ~= 'fon_devices' then
+						   if i == 1 then
+						      suffix = {j} 
+						   else
+						      suffix[#suffix+1] = j 
+						   end
+						name = (luci.dispatcher.node(unpack(request, 1, i)).title or j)
+						ref = luci.dispatcher.build_url(unpack(suffix))
+						if dev then
+							ref = luci.dispatcher.build_url("fon_devices", unpack(suffix))
+						end
+						%>
+					        <li><b>&gt;&gt;</b>&nbsp;<a href="<%=ref%>"><%=name%></a></li>
+					     <% end %>
+					     <% end %>
+						</ul>
+					</div>

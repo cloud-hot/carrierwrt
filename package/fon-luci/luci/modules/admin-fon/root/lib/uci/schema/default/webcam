@@ -1,0 +1,15 @@
+package webcam 
+
+config section
+	option name	'webcam'
+	option package	'webcam'
+	option unique	true
+	option required true
+
+config variable
+	option name	'name'
+	option section	'webcam.webcam'
+	option datatype	'string'
+	option minlength 1
+	option maxlength 32
+	option required	true

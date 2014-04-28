@@ -1,0 +1,50 @@
+<table>
+	<thead>
+		<tr>
+			<th><a onclick="do_scan('channel'); return false;">
+					<%:channel Channel%>
+			</a></th>
+			<th><a onclick="do_scan('essid'); return false;">
+					<%:ssid SSID%>
+			</a></th>
+			<th><a onclick="do_scan('bssid'); return false;">
+					<%:bssid BSSID%>
+			</a></th>
+			<th><a onclick="do_scan('auth_display'); return false;">
+					<%:encryption Encryption%>
+			</a></th>
+			<%if have_mode then%>
+			<th><a onclick="do_scan('mode'); return false;">
+					<%:mode Mode%>
+			</a></th>
+			<%end%>
+			<th><a onclick="do_scan('strength'); return false;">
+					<%:strength Strength%>
+			</a></th>
+			<%if connect_links then%>
+			<th style="min-width: 100px;"></th>
+			<%end%>
+		</tr>
+	</thead>
+	<tbody>
+<%
+for n, ap in ipairs(results) do
+%>
+		<tr style="border-bottom: solid #CCCCCC 1px;">
+			<td><%=ap.channel%></td>
+			<td><%=ap.essid%></td>
+			<td><%=ap.bssid%></td>
+			<td><%=ap.auth_display%></td>
+			<%if have_mode then%>
+			<td><%=ap.mode%></td>
+			<%end%>
+			<td><%=ap.strength%> (<%=ap.rssi%>dBm)</td>
+			<%if connect_links then%>
+			<td><a href="#" style="color: #000;" onclick="use_scan_result('<%=ap.essid%>','<%=ap.auth_use%>'); return false;"><img style=" vertical-align: middle;" src="<%=luci.config.main.resourcebase%>/icons/vadd.png">&nbsp;<%:connect Connect%></a></td>
+			<%end%>
+		</tr>
+<%
+end
+%>
+	</tbody>
+</table>

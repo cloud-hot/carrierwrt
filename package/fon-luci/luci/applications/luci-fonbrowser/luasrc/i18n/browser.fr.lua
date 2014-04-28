@@ -1,0 +1,5 @@
+date = "Date"
+filebrowser = "Gestionnaire de Fichiers"
+filename = "Nom"
+one_level_up = "Niveau Supérieur"
+size = "Taille"

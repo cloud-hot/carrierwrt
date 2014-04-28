@@ -1,0 +1,12 @@
+package gdata
+
+config section
+	option name     'gd_user'
+	option package  'gdata'
+
+config variable
+	option name     'folder'
+	option section  'gdata.gd_user'
+	option datatype 'string'
+	option minlength 1
+	option required true

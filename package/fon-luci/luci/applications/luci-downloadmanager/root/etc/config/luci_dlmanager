@@ -1,0 +1,17 @@
+config dlmanager dlmanager
+	option base	""
+	option path	downloads
+	option threads	2
+	option nicelevel 5
+	option when always
+
+config dlprovider rapidshare
+	# See http://images.rapidshare.com/apidoc.txt
+	option name		Rapidshare.com
+	option loginuri	https://api.rapidshare.com/cgi-bin/rsapi.cgi
+	option postdata	sub=getaccountdetails&withcookie=1&type=prem&login=%username%&password=%password%
+
+config dlprovider hotfile
+        option name		Hotfile
+        option loginuri http://hotfile.com/login.php
+        option postdata user=%username%&pass=%password%

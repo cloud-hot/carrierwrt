@@ -1,0 +1,43 @@
+<%
+local path = string.sub(require("luci.model.uci").cursor_state():get("fmg", "torrent", "path"), 13)
+path = path:sub(1, #path - 1)
+%>
+<% boxcolor = "darkorange" %>
+<%+header%>
+<script type="text/javascript">
+reload = function(a) {
+	fon_xhr_load(a, "browser");
+};
+
+</script>
+<h2><%:torrent_title Torrent%></h2>
+<p class="textfield">
+<%:torrent_main_desc Torrent is currently running. You can view the status or add new torrents, with the firefox plugin or the transmission web interface.%>
+<br><br><%:the_disclaimer%>
+</p>
+<div id="activebox">
+	<%+torrent/queue%>
+</div>
+<script type="text/javascript">
+	new PeriodicalExecuter(
+		function(){
+			new Ajax.Updater($('activebox'), '<%=luci.dispatcher.build_url("torrent","queue")%>');
+		}
+	, 15);
+</script>
+<br>
+<script type="text/javascript">
+function popup_transmission()
+{
+	window.open("http://<%=luci.http.getenv("SERVER_ADDR")%>:9091", "_blank", "menubar=no,titlebar=no");
+}
+</script>
+<div>
+<div id="browser"></div>
+<ul class="icons">
+	<li><a id="mac" class="icon" onclick='popup_transmission();' href="#" style="background-image: url(<%=luci.config.main.resourcebase%>/icons/plugins/torrent.png);"><%:torrent_webui Transmission WebUI%></a></li>
+	<li><a id="reboot" class="icon" href="<%=luci.dispatcher.build_url("torrent", "shutdown")%>" style="background-image: url(<%=luci.config.main.mediaurlbase%>/icons/reboot.png);"><%:torrent_shutdown Shutdown%></a></li>
+	<li><a id="browser" class="icon" href="#" onclick="reload('<%=luci.dispatcher.build_url("_maincontent", "fon_devices", "fon_browser", path, "torrent")%>');" style="background-image: url(<%=luci.config.main.mediaurlbase%>/icons/browser_on.png);"><%:torrent_files Downloads%></a></li>
+</ul>
+</div>
+<%+footer%>

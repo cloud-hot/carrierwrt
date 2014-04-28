@@ -1,0 +1,92 @@
+<%-
+local uci = luci.model.uci.cursor()
+uci:add_history("/var/state")
+local netdata = luci.sys.net.getifconfig() 
+local wan = uci:get("network", "wan", "ifname")
+
+local uptime = require("luanet").uptime()
+if not(wan) or #wan < 1 then
+	wan = require("luci.model.uci").cursor_state():get("network", "wan", "ifname")
+end
+local wan_ip = "N/A"
+local wan_mask = "N/A"
+local net = require("luci.fon.net.wan")
+local wan_dns = "N/A"
+local mode = uci:get("fon", "wan", "mode")
+local wan_essid
+if mode == "wifi" then
+	wan_essid = uci:get("fon", "wan", "ssid")
+end
+local rc = uci:get("system", "fon", "rc")
+if wan then
+	if netdata[wan] then
+		wan_ip = netdata[wan]["inet addr"] or "N/A"
+		wan_mask = uci:get("network", "wan", "gateway") or "N/A"
+		if wan_mask and #wan_mask == 0 then
+			wan_mask = "N/A"
+		end
+		if wan_ip ~= "N/A" then
+			wan_dns = net.getnameserver()
+			if not(wan_dns) then
+				wan_dns = "N/A"
+			else
+				wan_dns = wan_dns[1]
+			end
+		end
+	end
+end
+-%>
+<script type="text/javascript">
+function popup_banner()
+{
+	window.open("<%=luci.dispatcher.build_url("fon_banner")%>", "_blank", "menubar=no,titlebar=no");
+}
+</script>
+	<div class="inner">
+			<div class="boxContent">
+				<h4><%:summary_firmware Firmware Version%>: <strong>
+					<a onclick='popup_banner();'><%=uci:get("system", "fon", "firmware")%>.<%=uci:get("system", "fon", "revision")%></a></strong></h4>
+				<%if rc then %><h4>Release Candidate: <strong><%=rc%></strong></h4><%end%>
+				<ul>
+					<li><%:summary_uptime Uptime%>: <%=uptime%></li>
+				</ul>
+				<h4><%:summary_inet Internet connection%></h4>
+				<ul>
+					<li><%:summary_type Connection type%>:
+						<a onclick="reload('<%=luci.dispatcher.build_url("_dashcontent", "fon_admin", "fon_inet", "internet")%>')">
+						<%=uci:get("fon", "wan", "mode")%>
+						</a>
+					</li>
+					<li><%:summary_ipaddr IP Address%>: <%=wan_ip%></li>
+					<li><%:summary_gateway Gateway address%>: <%=wan_mask%></li>
+					<li><%:summary_dns DNS Server%>: <%=wan_dns%></li>
+					<%-if wan_essid then -%><li><%:wan_ssid ESSID%>: <%=wan_essid%></li><%-end-%>
+				</ul>
+				<h4><%:summary_wifi Wi-Fi Settings%></h4>
+				<ul>
+					<li><%:summary_public Public Wi-Fi%>:
+						<a onclick="reload('<%=luci.dispatcher.build_url("_dashcontent", "fon_admin", "fon_wifi", "public")%>')">
+						FON_<%=uci:get("fon", "public", "essid")%>
+						</a>
+					</li>
+					<li><%:summary_private Private Wi-Fi%>:
+						<a onclick="reload('<%=luci.dispatcher.build_url("_dashcontent", "fon_admin", "fon_wifi", "private")%>')">
+						<%=uci:get("fon", "private", "essid")%>
+						</a>
+					</li>
+					<li><%:summary_encryption Encryption%>:
+						<a onclick="reload('<%=luci.dispatcher.build_url("_dashcontent", "fon_admin", "fon_wifi", "private")%>')">
+						<%=uci:get("fon", "private", "encryption")%>
+						</a>
+					</li>
+					<li><%:summary_ipaddr IP Address%>:
+						<a onclick="reload('<%=luci.dispatcher.build_url("_dashcontent", "fon_admin", "fon_net", "net")%>')">
+						<%=uci:get("fon", "lan", "ipaddr")%>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="boxFooter">
+				<div class="inner"></div>
+			</div>
+		</div>

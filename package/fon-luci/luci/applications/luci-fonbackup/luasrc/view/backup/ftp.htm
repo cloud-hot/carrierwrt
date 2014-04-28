@@ -1,0 +1,29 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 John Crispin <john@phrozen.org>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+
+-%>
+<h2><%:ftp_title FTP Server%><a href="http://download.fon.com/help/video/ftp"><img src="/luci-static/resources/cbi/help.gif"></a></h2>
+<%-
+local uci = require("luci.model.uci").cursor_state()
+local mode = uci:get("fon", "wan", "mode")
+local ip
+if mode == "bridge" or mode == "wifi-bridge" then
+	ip = uci:get("fon", "wan", "ipaddr")
+else
+	ip = uci:get("fon", "lan", "ipaddr")
+end
+-%>
+<br><div>
+<p class="textfield"><%:ftp_desc FTP description%></p>
+<p class="textfield"> <b>Server:</b> <%=ip%> or fonera<br />
+<b><%:ftp_user User%>:</b> fonero<br />
+</div>

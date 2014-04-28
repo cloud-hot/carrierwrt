@@ -1,0 +1,19 @@
+<div>
+	<h2><%:firmware_avail_title Firmware Upgrade%></h2>
+	<p class="textfield"><%:firmware_avail New Firmware available. Please use the link below to upgrade your La Fonera%></p>
+	<table border="0" cellspacing="0" cellpadding="0">
+	<thead>
+	<tr>
+		<th><%:plugin_name Name%></th>
+		<th><%:plugin_version Version%></th>
+		<th>&nbsp;</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td><%=priv.name%></td>
+		<td><%=priv.fw%></td>
+		<td><a href="/luci/fon_devices/fon_plugins/upgrade"><img src="/luci-static/resources/icons/vadd.png"></a></td>
+	</tr>
+	</table>
+</div>

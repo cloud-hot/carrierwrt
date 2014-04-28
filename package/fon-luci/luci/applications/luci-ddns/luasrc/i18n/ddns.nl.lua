@@ -1,0 +1,7 @@
+ddns = "DDNS"
+ddns_desc = "Hier kunt u uw Dynamische DNS instellen. U heeft hiervoor een account van een van de providers nodig. DDNS Werkt niet als u zich achter NAT bevindt."
+ddns_dns = "DNS"
+ddns_dynds = "dyndns.org"
+ddns_none = "--GEEN--"
+ddns_srv = "Dienst"
+ddns_title = "Dynamische DNS"

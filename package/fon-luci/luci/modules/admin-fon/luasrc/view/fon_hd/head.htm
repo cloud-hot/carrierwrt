@@ -1,0 +1,23 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008 Jo-Philipp Wich <xm@leipzig.freifunk.net>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id: upgrade.htm 3529 2008-10-07 13:10:24Z jow $
+
+-%>
+<%- boxcolor = "darkorange" %>
+<%+header%>
+<%+fon/page_reload%>
+<script type="text/javascript" src="/luci-static/resources/fon/prototype.js"></script>
+<script type="text/javascript" src="/luci-static/resources/cbi.js"></script>
+
+<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+<h2><%:disc_title USB Disc Support%></h2>
+<p><%:disc_desc Here you can manage your USB discs. You can give your discs names or choose to ignore them.<br><br><b>It is important not to remove drives, while the La Fonera is writing data to them. This page tells you the state of the discs and is updated when the state changes. In addition the USB led will be blinking while drives should not be removed.</b></p>%>

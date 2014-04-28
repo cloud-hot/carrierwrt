@@ -1,0 +1,14 @@
+<%
+local uci = require("luci.model.uci").cursor()
+local ret = ""
+uci:load("wizard")
+function wiz(s)
+	if s.callonce and s.called ~= "1" then
+		luci.http.redirect(luci.dispatcher.build_url("wizard", s.callonce))
+		return
+	end
+end
+uci:foreach("wizard", "wizard", wiz)%>
+<script type="text/javascript"> 
+<%=ret%>
+</script>

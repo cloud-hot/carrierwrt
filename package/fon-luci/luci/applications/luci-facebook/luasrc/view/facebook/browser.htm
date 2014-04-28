@@ -1,0 +1,5 @@
+<a style="color:#000; margin-left: 2em;" <%if luci.dispatcher.context.requestpath[1] == "_maincontent" then -%>
+    onclick="filehandler('<%=node.fullpath%>', 'facebook')"
+<%- else %>
+	href="<%=luci.dispatcher.build_url("facebook")%><%=luci.http.build_querystring({newfile=node.fullpath})%>"
+<%-end-%>><img style="border:none" src="<%=resource%>/mime/facebook.png" alt="Add" title="Upload to Facebook" /></a>

@@ -1,0 +1,6 @@
+#!/bin/sh
+uci batch <<-EOF
+	set luci.languages.zh="正體中文"
+        commit luci
+EOF
+	

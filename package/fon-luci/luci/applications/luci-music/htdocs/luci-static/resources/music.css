@@ -1,0 +1,53 @@
+.music-stations {
+	font-size: 1.5em;
+}
+
+.cbi-input-music-play {
+	background: url('music-play.png') no-repeat scroll 1px center;
+	background-color: inherit;
+	padding-left: 17px;
+	padding-right: 1px;
+}
+
+#playing {
+	-moz-border-radius: 5px;
+	font-size: 12px;
+	background-color: #0f6627;
+	color: orange;
+	float: left;
+	width: 320px;	
+	padding: 10px;
+	margin-right: 10px;
+}
+
+#player_buttons {
+	padding-top: 10px;
+	margin-left: 320px;
+}
+
+.acstatus {
+	font-weight: bold;
+}
+
+.volumebar, .volumebar2 {
+	margin-top: 2px;
+	border: 2px solid orange;
+	width: 5px;
+}
+
+.volumebar2 {
+	border-color: white;
+}
+
+#player_open {
+	float: left;
+	margin-top: 5px;
+	padding-top: 5px;
+}
+
+#player_open_caption, #player_radio_caption {
+	font-size: 12px;
+	font-weight: bold;
+	vertical-align: super;
+	color: orange;
+}

@@ -1,0 +1,13 @@
+<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+<div>
+	<script type="text/javascript" src="<%=resource%>/cbi.js"></script>
+	<script type="text/javascript">
+		var cbi_css = document.createElement("link");
+		cbi_css.rel  = "stylesheet";
+		cbi_css.type = "text/css";
+		cbi_css.href = "<%=resource%>/cbi-js-hide.css";
+		document.getElementsByTagName("head")[0].appendChild(cbi_css);
+	</script>
+	<input type="hidden" name="cbi.submit" value="1" />
+</div>
+

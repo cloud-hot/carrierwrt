@@ -1,0 +1,47 @@
+<%-
+local dev = require("luci.model.uci").cursor():get("registered", "fonreg", "dev")
+local node = require("luci.dispatcher").context.dispatched
+local banner = require("luci.fon.spot").get_device()
+-%>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>FON Router GUI</title>
+<link href="<%=media%>/fonera2.css" rel="stylesheet" type="text/css" />
+<%- if node and type(node.css) == "table" then for _, css in ipairs(node.css) do %>
+<link href="<%=resource%>/<%=css%>" rel="stylesheet" type="text/css" />
+<%- end end %>
+<link rel="shortcut icon" href="/luci-static/resources/icons/favicon.ico" />
+</head>
+<body id="dashboard" class="lang_<%=luci.i18n.context.lang%>">
+<script type="text/javascript" src="<%=resource%>/fon/prototype.js"></script>
+<script type="text/javascript" src="<%=resource%>/fon/fon.js"></script>
+<script type="text/javascript" src="<%=luci.dispatcher.build_url("fon_js","main.js")%>"></script>
+	<div id="outerContainer">
+		<div id="innerContainer">
+			<div id="secondarySection">
+				<img class="logo" src="<%=media%>/images/logo<%-if dev == "1" then -%>fonosfera<%-end-%>.png" alt="FON Logo" />
+			</div>
+			<div id="mainSection">
+				<div id="header" style="height: 125px;">
+					<img class="logo" src="<%=media%>/images/la<%=banner%>.png" alt="LA FONERA 2.0" />
+				</div>
+				<div id="mainContent">
+					<div class="box1">
+						<div class="inner">
+							<div class="boxContent">
+								<pre style="text-align: center; color:<%-if dev == "1" then -%>#fbb034<%-else-%>white<%-end-%>; font-family:monospace; font-size:12px;"><%=luci.fs.readfile("/etc/banner")%></pre>
+							</div>
+							<div class="boxFooter">
+								<div class="inner"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

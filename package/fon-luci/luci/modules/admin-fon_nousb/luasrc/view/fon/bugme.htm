@@ -1,0 +1,22 @@
+<%-
+if not(bugme) then
+	return
+end
+local uci = require("luci.model.uci").cursor()
+uci:load("bugme")
+local done = uci:get("bugme", bugme, "done")
+if done == "1" then
+	return
+end
+local url = uci:get("bugme", bugme, "url")
+if require("luci.http").getcookie("fon_dont_bugme_"..bugme) then
+	return
+end
+if not(url) then
+	return
+end
+ret = 'window.open("'..url..'", "_blank", "menubar=no,titlebar=no,height=600,width=900");'
+-%>
+<script type="text/javascript"> 
+<%=ret%>
+</script>

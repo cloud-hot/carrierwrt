@@ -1,0 +1,15 @@
+package luci_wol
+
+config section
+	option name 'mac'
+	option package 'luci_wol'
+
+config variable
+	option name 'name'
+	option datatype 'string'
+	option section 'luci_wol.mac'
+
+config variable
+	option name 'mac'
+	option datatype 'macaddr'
+	option section 'luci_wol.mac'

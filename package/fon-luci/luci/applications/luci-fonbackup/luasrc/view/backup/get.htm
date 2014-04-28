@@ -1,0 +1,18 @@
+<div>
+<a href="http://download.fonosfera.org/fonbackup/"><img src="/luci-static/resources/icons/getbackup.png"></a>
+</div>
+<br><br><br>
+<div id="backuppopup">
+</div>
+<script type="text/javascript">
+reload = function(a) {
+	fon_xhr_load("" + a,
+	"backuppopup",
+	'<%=luci.dispatcher.build_url("torrent", "none")%>'
+	);}
+
+simple_reload = function(a) {
+	fon_spinner('backuppopup');
+	new Ajax.Updater($('backuppopup'), a);
+	}
+</script>

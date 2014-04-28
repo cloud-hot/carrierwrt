@@ -1,0 +1,30 @@
+<%- boxcolor = "darkorange" %>
+<%+header%>
+<%-
+local uci = require("luci.model.uci").cursor_state()
+local wan_link = uci:get("fon", "wan", "link") or "0"
+local wan_speed = uci:get("fon", "wan", "speed") or "0"
+local wan_duplex = uci:get("fon", "wan", "duplex") or "0"
+local wan_resolved = uci:get("fon", "wan", "resolved") or "0"
+
+local lan_link = uci:get("fon", "lan", "link") or "0"
+local lan_speed = uci:get("fon", "lan", "speed") or "0"
+local lan_duplex = uci:get("fon", "lan", "duplex") or "0"
+local lan_resolved = uci:get("fon", "lan", "resolved") or "0"
+-%>
+<h2>Wan</h2>
+<p class="textfield">
+<b>Link</b> - <%=wan_link%><br>
+<b>Speed</b> - <%=wan_speed%><br>
+<b>Duplex</b> - <%=wan_duplex%><br>
+<b>Resolved</b> - <%=wan_resolved%><br>
+</p>
+<br>
+<h2>Lan</h2>
+<p class="textfield">
+<b>Link</b> - <%=lan_link%><br>
+<b>Speed</b> - <%=lan_speed%><br>
+<b>Duplex</b> - <%=lan_duplex%><br>
+<b>Resolved</b> - <%=lan_resolved%><br>
+</p>
+<%+footer%>

@@ -1,0 +1,22 @@
+.dlman_add a.icon {
+	background-image: url(add.png);
+}
+
+.dlman_settings a.icon {
+	background-image: url(settings.png);
+}
+
+.dlman_auth a.icon {
+	background-image: url(auth.png);
+}
+
+.dlman_progress {
+	background-image: url(progress.png);
+	background-repeat: no-repeat;
+	background-position: -200px 0px;
+	border: 1px solid black;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	width: 150px;
+	text-align: center;
+}

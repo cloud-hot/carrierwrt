@@ -1,0 +1,3 @@
+config 'gd_user'	'test'
+	option 'user'	'test@googlemail.com'
+	option 'pass'	'test'

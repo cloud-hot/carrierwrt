@@ -1,0 +1,13 @@
+<% boxcolor = "darkorange" %>
+<%+header%>
+<p class="textfield">
+<%:flickr_auth_fail Authentication failed, please try again%>
+<br><%:flickr_reload Page will reload in a moment%>
+</p>
+<script type="text/javascript">
+	new PeriodicalExecuter(function() {
+			window.location.href = "<%=luci.dispatcher.build_url("flickr")%>" 
+		}, 5
+	);
+</script>
+<%+footer%>

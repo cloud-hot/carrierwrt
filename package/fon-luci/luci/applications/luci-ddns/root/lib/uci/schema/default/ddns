@@ -1,0 +1,48 @@
+package ddns
+
+config package
+	option title 'ddns'
+
+config section
+	option name 'service'
+	option package 'ddns'
+	option unique true
+	option required true
+
+config variable
+	option name 'enabled'
+	option section 'ddns.service'
+	option datatype boolean
+
+config variable
+	option name 'username'
+	option section 'ddns.service'
+	option datatype string
+
+config variable
+	option name 'password'
+	option section 'ddns.service'
+	option datatype string
+
+config variable
+	option name 'domain'
+	option section 'ddns.service'
+	option datatype string
+
+config variable
+	option name 'service_name'
+	option section 'ddns.service'
+	option datatype string
+
+config variable
+	option name 'ip_source'
+	option section 'ddns.service'
+	option type enum
+
+config enum
+	option variable 'ddns.service.ip_source'
+	option value 'none'
+
+config enum
+	option variable 'ddns.service.ip_source'
+	option value 'network'

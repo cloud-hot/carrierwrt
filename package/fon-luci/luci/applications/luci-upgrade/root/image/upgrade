@@ -1,0 +1,12 @@
+#!/bin/ash
+
+VERSION=$(cat /etc/fon_version)
+FAILSAFE=$(cat /etc/failsafe)
+
+if [ "$VERSION" = "2.2.1" -o "$VERSION" = "2.2.2" -o "$VERSION" = "2.2.3" -o "$VERSION" = "2.2.4" -o "$VERSION" = "2.2.6" -o "$FAILSAFE" = 1 ]
+then
+mtd -r write fonera20_fon.image image > /dev/null 2>&1
+#(sleep 4; reboot) &
+return 0
+
+else return 1; fi

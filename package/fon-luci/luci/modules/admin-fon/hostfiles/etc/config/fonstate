@@ -1,0 +1,41 @@
+config fontimer
+	option action	"/bin/thinclient dummy"
+	option period	86400
+
+config fontimer
+	option action 	"/etc/init.d/fonsmcd"
+	option pidfile	"/tmp/run/fonsmcd.pid"
+	option period	60
+
+config fonboot
+	option event	RestartDnsmasq
+
+config fonboot
+	option event	Redirect
+
+config fonboot
+	option event	StartFonsmcd
+
+config fonboot
+	option event	FWallPortfwd
+
+config fonboot
+	option event	RestartMountd
+
+config fonboot
+	option event	RestartSamba
+
+config fonboot
+	option event	RestartFtp
+
+config fonboot
+	option event	RestartPrinter
+
+config fonboot
+	option event	RestartScanner
+
+config fonboot
+	option event	RestartWebcam
+
+config fonboot
+	option event	FWallDaemon

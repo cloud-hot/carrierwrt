@@ -1,0 +1,27 @@
+<% boxcolor = "darkorange" %>
+<%+header%>
+<p class="textfield">
+<%-
+local facebook = require("luci.fon.facebook")
+local uci = require("luci.model.uci").cursor_state()
+local auth_token =uci:get("facebook", "facebook", "auth_token")
+local key, secret, expires, uid = facebook.get_session_token(auth_token)
+
+if key and secret and expires and uid then%>
+	<%:facebook_auth_ok La Fonera is now able to talk to Facebook%>
+<%
+	local uci = require("luci.model.uci").cursor()
+	uci:set("facebook", "facebook", "session_key", key)
+	uci:set("facebook", "facebook", "secret", secret)
+	uci:set("facebook", "facebook", "expires", expires)
+	uci:set("facebook", "facebook", "uid", uid)
+	uci:commit("facebook")
+	local srv = require("luci.fon.service")
+	local service = srv.Service("facebook")
+	service:start()
+end
+if expires ~= "0" then %>
+	<%:facebook_auth_perm This Authentication is only valid for 24 hours. To make it permanent, click the link below%>
+	<br /><br /><a href="http://www.facebook.com/authorize.php?api_key=<%=require("luci.model.uci").cursor():get("facebook", "facebook", "api_key")%>&v=1.0&ext_perm=offline_access" target="_blank" ><img src="http://static.ak.facebook.com/images/devsite/facebook_login.gif" /></a><br /><br />
+<%end%>
+<%+footer%>

@@ -1,0 +1,8 @@
+livestats_incoming = "流入"
+livestats_outgoing = "流出"
+livestats_traffic = "網路流量:"
+livestats_wifi = "訊號強度:"
+livestats_loadavg = "載入平均"
+livestats_stat_wireless = "即時無線狀態"
+livestats_stat_traffic = "即時網路流量"
+livestats_stat_loadavg = "即時系統負載"

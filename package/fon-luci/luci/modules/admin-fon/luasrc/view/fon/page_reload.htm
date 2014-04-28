@@ -1,0 +1,10 @@
+<script type="text/javascript">fon_site_reload([
+<%-
+for k, node in ipairs(luci.dispatcher.context.dispatched.path) do
+	write(string.format("%q", node));
+	if k < #luci.dispatcher.context.dispatched.path then
+		write(",")
+	end
+end
+-%>
+]);</script>

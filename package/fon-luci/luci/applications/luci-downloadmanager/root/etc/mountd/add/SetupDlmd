@@ -1,0 +1,2 @@
+#!/usr/bin/lua
+require("luci.fon.event").new("SetupDlmd")

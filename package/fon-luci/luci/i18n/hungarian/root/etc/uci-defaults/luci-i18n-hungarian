@@ -1,0 +1,6 @@
+#!/bin/sh
+uci batch <<-EOF
+	set luci.languages.hu=Magyar
+        commit luci
+EOF
+	

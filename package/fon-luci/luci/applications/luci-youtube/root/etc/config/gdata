@@ -1,0 +1,9 @@
+config 'gd_user'	'youtube'
+	option 'user'	''
+	option 'pass'	''
+	option folder 'youtube'
+
+config 'gd_user' 'picasa'
+	option 'user'	''
+	option 'pass'	''
+	option folder 'picasa'

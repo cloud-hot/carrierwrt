@@ -1,0 +1,52 @@
+<%-
+local dev = require("luci.model.uci").cursor():get("registered", "fonreg", "dev")
+local node = require("luci.dispatcher").context.dispatched
+local banner = require("luci.fon.spot").get_device()
+-%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>FON Router GUI</title>
+<link href="<%=media%>/fonera2.css" rel="stylesheet" type="text/css" />
+<%- if node and type(node.css) == "table" then for _, css in ipairs(node.css) do %>
+<link href="<%=resource%>/<%=css%>" rel="stylesheet" type="text/css" />
+<%- end end %>
+<link rel="shortcut icon" href="/luci-static/resources/icons/favicon.ico" />
+</head>
+<body id="dashboard" class="lang_en">
+
+<form method="post" action="/luci/wizard/step2" enctype="multipart/form-data">
+	<div>
+		<script type="text/javascript" src="/luci-static/resources/cbi.js"></script>
+		<script type="text/javascript">
+			var cbi_css = document.createElement("link");
+			cbi_css.rel  = "stylesheet";
+			cbi_css.type = "text/css";
+			cbi_css.href = "/luci-static/resources/cbi-js-hide.css";
+			document.getElementsByTagName("head")[0].appendChild(cbi_css);
+		</script>
+		<input type="hidden" name="cbi.submit" value="1" />
+	</div>
+
+</form>
+
+<script type="text/javascript" src="/luci-static/resources/fon/prototype.js"></script>
+<script type="text/javascript" src="/luci-static/resources/fon/fon.js"></script>
+<script type="text/javascript" src="/luci/fon_js/main.js"></script>
+	<div id="outerContainer">
+
+		<div id="innerContainer">
+			<div id="secondarySection">
+				<img class="logo" src="<%=media%>/images/logo<%-if dev == "1" then -%>fonosfera<%-end-%>.png" alt="FON Logo" />
+			</div>
+			<div id="mainSection">
+				<div id="header">
+					<img class="logo" src="<%=media%>/images/la<%=banner%>.png" alt="LA FONERA 2.0" />
+					</div>
+				<div id="mainContent">
+					<div id="breadCrumbs">
+						<ul class="right">
+							<li><a id="abort" href="/luci/wizard/end"><%:wiz_abort Abort Wizard%></a></li>
+						</ul>
+					</div>

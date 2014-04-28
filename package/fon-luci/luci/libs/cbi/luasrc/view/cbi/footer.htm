@@ -1,0 +1,58 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008 Jo-Philipp Wich <xm@leipzig.freifunk.net>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+
+-%>
+<%-
+local uri = luci.dispatcher.context.dispatched.path
+if #uri > 1 then
+	uri[#uri] = nil
+end
+local link = luci.dispatcher.build_url(unpack(uri))
+local wiz = link
+if wiz ~= "/luci/wizard" then
+	wiz = nil
+end
+-%>
+	<%- if pageaction then -%>
+	<div class="buttons">
+	<%if done_btn then%>
+		<input class="submit" name="submit" type="submit" value="<%:done Done%>" >
+	<%elseif not(wiz) then -%>
+		<input class="submit" name="submit" type="submit" value="<%:save%>" >
+		<%- if cancelaction then -%>
+			<input class="cancel" name="cancel" type="button" value="<%:cancel Cancel%>" onclick="reload('<%=luci.dispatcher.build_url("_maincontent", "fon_dashboard", "_attached")%>')">
+		<%- else -%>
+		<input class="cancel" name="cancel" type="button" value="<%:cancel Cancel%>" onclick="window.location.href='<%=link%>'">
+		<%- end -%>
+	<%- else -%>
+		<input class="submit" name="submit" type="submit" value="<%:wiz_next Next%>" >
+	<%-end -%>
+	<% if flow.skip then %>
+		<input class="submit" name="cbi.skip" type="submit" value="<%:wiz_skip Skip%>" />
+	<% end %>
+		<script type="text/javascript">
+		        cbi_d_update();
+		        var cbi_css = document.createElement("link");
+		        cbi_css.rel  = "stylesheet"; 
+		        cbi_css.type = "text/css";
+		        cbi_css.href = "<%=resource%>/cbi-js-show.css";
+		        document.getElementsByTagName("head")[0].appendChild(cbi_css);
+			</script>
+	</div>
+	<%- if wiz then -%>
+	</fieldset>
+	<%- end -%>
+	<%- end -%>
+</form>
+<%- boxcolor = "darkorange" %>
+<%+footer%>

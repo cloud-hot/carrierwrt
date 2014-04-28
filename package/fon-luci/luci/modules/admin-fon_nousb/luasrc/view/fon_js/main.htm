@@ -1,0 +1,129 @@
+<% luci.http.prepare_content("text/javascript") %>
+
+function fon_spinner(div) {
+	var inner = new Element("div", {"class":"inner"});
+	var boxcontent = new Element("div", {"class":"boxContent"});
+	var center = new Element("center");
+	var spinner = new Element("img", {"src":"<%=resource%>/fon/spinner.gif"});
+	var boxfooter = new Element("div", {"class":"boxFooter"});
+	var inner2 = new Element("div",{"class":"inner"});
+
+	inner.appendChild(boxcontent);
+	center.appendChild(spinner);
+	boxcontent.appendChild(center);
+	inner.appendChild(boxfooter);
+	boxfooter.appendChild(inner2);
+
+	if(div == "quickEditBox")
+		$(div).update(inner);
+	else
+		$(div).update(center);
+}
+
+var fon_events_handled = {}
+function fon_events_scan() {
+	json_call(
+		"<%=luci.dispatcher.build_url("fon_rpc","fon")%>",
+		"event_update",
+		null,
+		fon_events_handle
+	);
+}
+
+function fon_events_handle(result) {
+	for (var i=0; i<result.length; ++i) {
+		var id = result[i].event.id;
+		var handler = result[i].handler;
+
+		if (fon_events_handled[id]) {
+			continue;
+		}
+
+		fon_events_handled[id] = true;
+
+		for (var j=0; j<handler.length; ++j) {
+			new Ajax.Request(handler[j], {
+				parameters: result[i].event,
+				evalJS: true
+			});
+		}
+	}
+}
+
+function fon_events_acknowledge(id, win, fail) {
+	json_call(
+			"<%=luci.dispatcher.build_url("fon_rpc","fon")%>",
+			"event_acknowledge",
+			[id],
+			function(result) {
+				delete fon_events_handled[id];
+				if (win) {
+					win(result);
+				}
+			},
+			fail
+	);
+}
+
+function fon_site_update() {
+	new PeriodicalExecuter(function() {
+		json_call(
+			"<%=luci.dispatcher.build_url("fon_rpc","fon")%>",
+			"device_update",
+			null,
+			function(result) {
+				for (var node in result) {
+				if (result[node] && result[node].icon) {
+					var icon = "url('" + result[node].icon + "')";
+					if ($(node).style.backgroundImage != icon) {
+						$(node).style.backgroundImage = icon;
+					}
+				}
+				if (result[node] && result[node].display) {
+					var display = result[node].display
+					if ($(node).style.display != display) {
+						$(node).style.display = display;
+					}
+				}
+			}
+		}
+		)
+		}, 10 
+	);
+}
+
+var fon_reload = -1
+function fon_site_reload(path) {
+	var param = new Array(path)
+	new PeriodicalExecuter(function() {
+		json_call(
+			"<%=luci.dispatcher.build_url("fon_rpc","fon")%>",
+			"reload_pull",
+			param,
+			function(result) {
+				if(fon_reload != -1 && result.reload != fon_reload)
+					window.location.href = window.location.href
+				fon_reload = result.reload;
+				}
+		)
+		}, 10 
+	);
+}
+
+function fon_site_state() {
+	new PeriodicalExecuter(function() {
+		json_call(
+			"<%=luci.dispatcher.build_url("fon_rpc","fon")%>",
+			"status_pull",
+			null,
+			function(result) {
+				fon_events_handle(result.events);
+				var status = result.status;
+				var icon = "url('/luci-static/fon/icons/fonera_" + status + ".png" + "')";
+				if ($("fon_state").style.backgroundImage != icon) {
+					$("fon_state").style.backgroundImage = icon;
+				}
+			}
+		)
+	}, 10);
+}

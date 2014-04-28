@@ -1,0 +1,6 @@
+config variable
+	option name	'essid'
+	option title	'essid'
+	option section	'fon.wifi'
+	option datatype	'string'
+

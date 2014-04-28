@@ -1,0 +1,101 @@
+<%- boxcolor = "darkorange" %>
+<%+header%>
+
+<!--[if IE]><script type="text/javascript" src="<%=resource%>/fon_livestats/ExCanvas.js"></script><![endif]-->
+<script type="text/javascript" src="<%=resource%>/fon_livestats/MochiKit.js"></script>
+<script type="text/javascript" src="<%=resource%>/fon_livestats/JsonRpc.js"></script>
+<script type="text/javascript" src="<%=resource%>/fon_livestats/PlotKit.js"></script>
+<script type="text/javascript" src="<%=resource%>/fon_livestats/GraphRPC.js"></script>
+<script type="text/javascript" src="<%=resource%>/fon_livestats/Legend.js"></script>
+
+<%
+	local interfaces = { }
+	local ifnames = {}
+	local uci = luci.model.uci.cursor_state()
+
+	uci:foreach("network", "interface",
+		function(s)
+			if s.ifname ~= "lo" and s[".name"] ~= "hotspotwifi" and os.execute("ifconfig " .. s.ifname) == 0 then
+				table.insert( interfaces,
+					"'" .. ( s.ifname or s['.name'] ) .. "'"
+				)
+				ifnames[s.ifname or s['.name']] = s['.name']
+			end
+		end
+	)
+-%>
+
+<script type="text/javascript">
+	function initTrafGraphs() {
+		var interval = 4; /* Seconds */
+		var rpc = new GraphRPC(
+			document.getElementById('traf_graphs'),
+			'<%=luci.dispatcher.build_url('fon_rpc', 'livestats')%>', 'traffic',
+			interval * 1000, /* ms */
+
+			// Data sources
+			[ "0", "<%:livestats_incoming%> (kiB/s)", "8", "<%:livestats_outgoing%> (kiB/s)" ],
+
+			// Graph layout options
+			{ 
+			shouldFill: true, 
+			drawBackground: true, 
+			strokeColor: null,
+			title: '<%:livestats_traffic%> %s',
+			strokeWidth: 2.5, height: 140,
+			padding: { left: 40, right: 10, top: 10, bottom: 20 },
+			instances: [ <%=table.concat(interfaces, ", ") %> ],
+			instanceNames: {
+				<%- for iface, network in pairs(ifnames) do %>
+					<%-="%q:%q," % {iface, network}-%>
+				<% end %>
+				"0": ""
+			}},
+
+			// transform function
+			function (cur, last) {
+				/* (cur - last) are bytes / interval.
+				   Translate that to kBytes / second */
+				return (cur - last) / 1024 / interval;
+			},
+			'traf_graphs'
+		);
+	}
+
+	function initWifiGraphs() {
+		var rpc = new GraphRPC(
+			document.getElementById('wifi_graphs'),
+			'<%=luci.dispatcher.build_url('fon_rpc', 'livestats')%>', 'wireless',
+			4000,
+
+			// Data sources
+			[ function(data) {
+				return parseFloat(data["Signal level"])
+				 - parseFloat(data["Noise level"]);
+			}, "S/N (dBm)"],
+
+			// Graph layout options
+			{ 	shouldFill: true, 
+				drawBackground: true, 
+				yAxis: [ 0, 50 ],
+				title: '<%:livestats_wifi%> %s',
+				strokeWidth: 2.5, height: 140,
+				padding: { left: 40, right: 10, top: 10, bottom: 20 },
+				instanceNames: {
+					<%- for k,v in pairs(luci.sys.wifi.getiwconfig()) do %>
+						<%-="%q:%q," % {k, "%s" % { tostring(v.ESSID)}}-%>
+					<% end %>  
+				"0": ""
+			  }},
+			null,
+			'wifi_graphs'
+		);
+	}
+
+	MochiKit.DOM.addLoadEvent(initTrafGraphs);
+	//MochiKit.DOM.addLoadEvent(initWifiGraphs)
+</script>
+
+<div id="traf_graphs"></div>
+<div id="wifi_graphs"></div>
+<%+footer%>

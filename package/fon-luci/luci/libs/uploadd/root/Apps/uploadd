@@ -1,0 +1,4 @@
+#!/usr/bin/lua
+
+u = require("luci.fon.uploadd")
+u.run()

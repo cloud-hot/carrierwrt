@@ -1,0 +1,59 @@
+
+config 'ntpserver'
+	option 'hostname' 'ntp.kamino.fr'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'ntp2.altarisoluzione.com'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'ntp.ourconcord.net'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'ntp1.belbone.be'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'ntp2c.mcc.ac.uk'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'time.flygplats.net'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'ntp.vik.bg'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'ntp-1.cso.uiuc.edu'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'reva.sixgirls.org'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'blade.avnf.com'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'chronos.bulma.net'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'ntp.obspm.fr'
+	option 'port' '123'
+
+config 'ntpserver'
+	option 'hostname' 'ntp.cs.strath.ac.uk'
+	option 'port' '123'
+
+config 'ntpdrift'
+	option 'freq' '0'
+
+config 'ntpclient'
+	option 'interval' '60'
+

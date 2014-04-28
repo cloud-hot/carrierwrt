@@ -1,0 +1,7 @@
+#!/usr/bin/lua
+local lucid = require("luci.lucid")
+if luci.lucid.running() then
+	luci.lucid.stop()
+	os.execute("sleep 3")
+end
+luci.lucid.start()

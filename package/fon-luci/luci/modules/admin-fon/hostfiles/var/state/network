@@ -1,0 +1,9 @@
+network.loopback.device=lo
+network.loopback.up=1
+network.wan.device=eth0.1
+network.lan.ifname=br-lan
+network.lan.device=eth0.0 ath1
+network.lan.up=1
+network.hotspotwifi.device=ath0
+network.hotspotwifi.up=1
+network.lan.device=ath1 eth0.0

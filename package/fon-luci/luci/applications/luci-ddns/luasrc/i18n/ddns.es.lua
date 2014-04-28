@@ -1,0 +1,7 @@
+ddns = "DDNS"
+ddns_desc = "Aquí puede configurar el servicio de DNS dinámico. Para ello necesita tener una cuenta en un proveedor de este servicio. El DDNS no funciona correctamente cuando está detrás de un router con NAT."
+ddns_dns = "DNS"
+ddns_dynds = "dyndns.org"
+ddns_none = "--NINGUNO--"
+ddns_srv = "Servicio"
+ddns_title = "Dynamic DNS"

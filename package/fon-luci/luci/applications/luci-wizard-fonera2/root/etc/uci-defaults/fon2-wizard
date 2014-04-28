@@ -1,0 +1,3 @@
+uci set wizard.fon2wiz=wizard
+uci set wizard.fon2wiz.callonce=step1
+uci commit wizard

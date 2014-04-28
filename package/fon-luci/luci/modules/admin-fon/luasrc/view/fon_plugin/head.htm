@@ -1,0 +1,54 @@
+<%- 
+pname = "progress"
+ptext = "true"
+boxcolor = "darkorange"
+local webadmin = require("luci.tools.webadmin")
+local luanet = require("luanet")
+local flash = require("luci.fon.pkg").get_free_space()
+pval = 100 - math.floor(flash.percent)
+-%>
+<%+header%>
+<%-if not(priv.online) then-%><center><h4><%:offline_app You are currently offline and cannot install new applications.%></h4></center><br><br><%-end-%>
+<%-if priv.fw then-%><%+fon_plugin/firmware%><%-end-%>
+<%-if priv.ret then-%><h4><%=priv.ret%></h4><br><br><br><%-end-%>
+<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+<h2><%:plugins Plugins%></h2>
+<p><%:plugin_add_remove Here you can install and remove plugins.%></p>
+<script type="text/javascript" src="<%=resource%>/fon/jsProgressBarHandler.js"></script>
+<table border="0" cellspacing="0" cellpadding="0">
+	<caption><%:plugin_free_space Space%></caption>
+	<thead>
+	<tr>
+		<th><%:plugin_storage Storage%></th>
+		<th width=20%><%:plugin_free Free%></th>
+		<th width=20%><%:plugin_total Total%></th>
+		<th width=40%>&nbsp;</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td><%:plugin_internal Internal%></td>
+		<td><%=webadmin.byte_format(tonumber(flash.avail))%></td>
+		<td><%=webadmin.byte_format(tonumber(flash.blocks))%></td>
+		<td><%+fon/status%></td>
+	</tr>
+	</tbody>
+</table>
+<table border="0" cellspacing="0" cellpadding="0">
+	<caption><%:plugin_installed_desc Installed plugins%></caption>
+	<thead>
+	<tr>
+		<th><%:plugin_name Name%></th>
+		<th><%:plugin_version Version%></th>
+		<th><%:plugin_size Size%></th>
+		<th><%:plugin_provider Provider%></th>
+		<th>&nbsp;</th>
+	</tr>
+	</thead>
+	<tbody>
+<%-if priv.count == 0 then -%>
+	<tr>
+		<td colspan=5><center>---</center></td>
+	</tr>
+<%-end-%>
+

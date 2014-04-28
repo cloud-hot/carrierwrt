@@ -1,0 +1,96 @@
+<%-
+local torrent = require("luci.transmission")
+local t = torrent.get_list()
+local list = ""
+local webadmin = require("luci.tools.webadmin")
+%>
+<form method="post" action="<%=luci.dispatcher.build_url("torrent", "add")%>/" enctype="multipart/form-data">
+<table>
+	<caption><%:torrent_queued Torrents%></caption>
+	<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<th><%:file File%></th>
+			<th><%:eta ETA%></th>
+			<th><%:progress Progress%></th>
+			<th><%:download Download%></th>
+			<th><%:upload Upload%></th>
+			<th><%:action Action%></th>
+		</tr>
+	</thead>
+	<tbody>
+<%-
+if t and t.arguments and t.arguments.torrents then
+for i,v in ipairs(t.arguments.torrents) do
+	local rateDownload = webadmin.byte_format(v.rateDownload)
+	local rateUpload = webadmin.byte_format(v.rateUpload)
+	local status = "Waiting"
+	local icon = "voff"
+	local perc = "-"
+	local actions = {}
+	local action = ""
+	if v.status == 2 then
+		status = "Checking"
+		icon = "von"
+		actions[#actions + 1] = "pause"
+	elseif v.status == 4 then
+		status = "Downloading"
+		perc = ( math.floor((((v.totalSize - v.leftUntilDone) * 10000) / v.totalSize)) / 100).. " %"
+		icon = "vup"
+		actions[#actions + 1] = "pause"
+	elseif v.status == 8 then
+		status = "Seeding"
+		icon = "vstart"
+		actions[#actions + 1] = "pause"
+	elseif v.status == 16 then
+		status = "Stopped"
+		icon = "vpause"
+		actions[#actions + 1] = "start"
+	end
+	actions[#actions + 1] = "del"
+	local name
+	if string.len(v.name) > 23 then
+		name = string.sub(v.name, 1, 25).."..."
+	else
+		name = v.name
+	end
+	local eta
+	if v.eta > 0 then
+		eta = webadmin.date_format_short(v.eta)
+	else
+		eta = "-"
+	end
+	for x,y in ipairs(actions) do
+		action = action .."<a href=\""..luci.dispatcher.build_url("torrent", y).."?id="..v.id.."\"><img src=\""..luci.config.main.resourcebase.."/icons/v"..y..".png\"></a>"
+	end
+	list = list .."<tr><td title=\""..status.."\"><img src=\""..luci.config.main.resourcebase.."/icons/"..icon ..".png\"></td><td title=\""..v.name.." - ".. webadmin.byte_format(v.totalSize or 0).."\">"..name.."</td><td>"..eta.."</td><td>"..perc.."</td><td>"..rateDownload.."</td><td>"..rateUpload.."</td><td>"..action.."</td></tr>\n"
+end end%>
+<%if list == "" then%>
+		<tr>
+			<td colspan=7 style="text-align: center;">-</td>
+		</tr>
+<%-end-%>
+	<%=list or "error"%>
+		<tr class=odd>
+			<td colspan=7>
+				<b><%:torrent_link Link%></b> : <input type=text name=torrent_link>
+				<b><%:torrent_up Up%></b> : <select name=torrent_up style="width: 60px">
+				<% local vals = {10, 20, 30, 40, 50, 75, 100, 250, 500, 750, 0}
+					local s = torrent.get_speed_limit()
+					local up = s.arguments["speed-limit-up-enabled"] and s.arguments["speed-limit-up"] or 0
+					local down = s.arguments["speed-limit-down-enabled"] and s.arguments["speed-limit-down"] or 0
+					for i,v in ipairs(vals) do
+					%><option <%=v == up and "selected" or "" %> value=<%=v%>><%= v == 0 and "-" or v.." K/s"%></option><%
+					end %>
+				</select>
+				<b><%:torrent_down Down%></b> : <select name=torrent_down style="width: 60px">
+					<%for i,v in ipairs(vals) do
+					%><option <%=v == down and "selected" or "" %> value=<%=v%>><%= v == 0 and "-" or v.." K/s"%></option><%
+					end %>
+				</select>
+				<input type=submit value="<%:submit%>">
+			</td>
+		</tr>
+	</tbody>
+</table>
+</form>

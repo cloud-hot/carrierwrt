@@ -1,0 +1,7 @@
+<%
+	local uci = require("luci.model.uci").cursor()
+	uci:set("wizard", "fon2wiz", "called", "1")
+	uci:commit("wizard")
+	require("luci.fon.event").new("ConfigWanDelay")
+	require("luci.http").redirect(require("luci.dispatcher").build_url("fon_dashboard"))
+%>

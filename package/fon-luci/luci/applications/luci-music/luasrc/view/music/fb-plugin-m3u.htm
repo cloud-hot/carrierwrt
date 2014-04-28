@@ -1,0 +1,3 @@
+<%# fon_browser Play-button for M3U %> 
+<% require "luci.i18n".loadc("music") %>
+<a style="margin-left: 2em;" href="<%=luci.dispatcher.build_url("music")%>?m3u=<%=luci.http.urlencode(node.fullpath)%>" title="<%:music_fb_play%>"><img style="border:none" src="<%=resource%>/music-play.png" alt="<%:music_fb_play%>" /></a>

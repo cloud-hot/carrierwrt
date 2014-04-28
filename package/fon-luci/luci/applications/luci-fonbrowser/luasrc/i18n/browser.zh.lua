@@ -1,0 +1,5 @@
+date = "日期"
+filebrowser = "檔案瀏覽器"
+filename = "檔案名稱"
+one_level_up = "回上一層"
+size = "大小"

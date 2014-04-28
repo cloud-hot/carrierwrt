@@ -1,0 +1,13 @@
+Index: luci-0.9+svn/libs/lucittpd/src/Makefile
+===================================================================
+--- luci-0.9+svn.orig/libs/lucittpd/src/Makefile	2009-03-12 12:41:34.000000000 +0100
++++ luci-0.9+svn/libs/lucittpd/src/Makefile	2009-03-12 12:41:37.000000000 +0100
+@@ -10,7 +10,7 @@
+ all: $(PROGS)
+ 
+ $(PROGS): $(OBJS)
+-	$(CC) $(CFLAGS)  $(LDFLAGS) $(MYLDFLAGS) $^ -o $@ 
++	$(CC) $(CFLAGS)  $(LDFLAGS) -ldl -lcrypt $(MYLDFLAGS) $^ -o $@ 
+ 	#$(CC) $(CFLAGS) -shared -Wl,-soname,gdata $(LDFLAGS) $^ -o $@ 
+ 	
+ clean:

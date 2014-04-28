@@ -1,0 +1,5 @@
+date = "Fecha"
+filebrowser = "Navegador de Archivos"
+filename = "Nombre"
+one_level_up = "Subir un nivel"
+size = "Tamaño"

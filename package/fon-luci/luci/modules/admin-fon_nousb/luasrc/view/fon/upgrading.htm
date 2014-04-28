@@ -1,0 +1,106 @@
+<%-
+local dev = require("luci.model.uci").cursor():get("registered", "fonreg", "dev")
+local node = require("luci.dispatcher").context.dispatched
+local banner = require("luci.fon.spot").get_device()
+-%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>FON Router GUI</title>
+<link href="<%=media%>/fonera2<%-if dev == "1" or require("luci.model.uci").cursor():get("system", "fon", "device") == "fonera20n" then -%>fonosfera<%-end-%>.css" rel="stylesheet" type="text/css" />
+<%- if node and type(node.css) == "table" then for _, css in ipairs(node.css) do %>
+<link href="<%=resource%>/<%=css%>" rel="stylesheet" type="text/css" />
+<%- end end %>
+<link rel="shortcut icon" href="/luci-static/resources/icons/favicon.ico" />
+</head>
+<body id="dashboard" class="lang_<%=luci.i18n.context.lang%>">
+<script type="text/javascript" src="<%=resource%>/fon/prototype.js"></script>
+<script type="text/javascript" src="<%=resource%>/fon/fon.js"></script>
+<script type="text/javascript" src="<%=luci.dispatcher.build_url("fon_js","main.js")%>"></script>
+	<div id="outerContainer">
+		<div id="innerContainer">
+			<div id="secondarySection">
+				<img class="logo" src="<%=media%>/images/logo<%-if dev == "1" then -%>fonosfera<%-end-%>.png" alt="FON Logo" />
+			</div>
+			<div id="mainSection">
+				<div id="header" style="height: 125px;">
+					<img class="logo" src="<%=media%>/images/la<%=banner%>.png" alt="LA FONERA 2.0" />
+				</div>
+				<div id="mainContent">
+					<div class="box1">
+						<div class="inner">
+							<div class="boxContent">
+<div style="width: 15%"><img class="logo" src="/luci-static/fon/icons/firmware.png"></div><fieldset style="width: 80%">
+<br><h2><%:firmware_update Firmware Update%></h2>
+<p class=textfield">
+<%:firmware_desc2 Your La Fonera is currently updateing its Firmware. Below you can see a timer. Please do not remove the Fonera from its power source, until the timer has expired.%>
+</p>
+<script type="text/javascript" src="<%=resource%>/fon/jsProgressBarHandler.js"></script>
+<center>
+<table style="width: 350px;">
+<%
+local sec = "00"
+local min
+if require("luci.fon.spot").get_device() == "fonera20" then
+	min = "30"
+else
+	min = "5"
+end
+local total_sec = (tonumber(min) * 60) + tonumber(sec)
+%>
+<tr><td><%:firmware_remaining Elapsed Time%></td><td><div id="expires"><%=min%>:<%=sec%></div></td></tr>
+<tr><td><%:firmware_total Total Time%></td><td><%=min%>:<%=sec%></td></tr>
+<tr><td><%:firmware_progress Progress%></td><td><span id="upgradebar"></span></td></tr>
+</table>
+</center>
+<script type="text/javascript">
+	pb = new JS_BRAMUS.jsProgressBar(
+		$('upgradebar'), "0", {
+			width : 120,
+			animate : false, 
+			showText : <%=ptext or "true"%>,
+			boxImage : '<%=resource%>/icons/percentImage.png',
+			barImage : Array(
+				'<%=resource%>/icons/percentImage_back4.png',
+				'<%=resource%>/icons/percentImage_back3.png',
+				'<%=resource%>/icons/percentImage_back2.png',
+				'<%=resource%>/icons/percentImage_back1.png'
+			)});
+	var done = 0;
+	var count = 0;
+	new PeriodicalExecuter(function() {
+		if(count < <%=total_sec%>)
+		{
+			count = count + 1;
+			p = (count * 100) / <%=total_sec%>;
+			var m = 0;
+			var s = <%=total_sec%> - count;
+			while(s >= 60)
+			{
+				m = m + 1;
+				s = s - 60;
+			};
+			if(s < 10){s = "0" + s;}
+			if(m < 10){m = "0" + m;}
+			$('expires').update(m+":"+s);
+			pb.setPercentage(Math.floor(p));
+		} else {
+			if(done == 0)
+			{
+				done = 1;
+				alert("<%:firmware_ready Your Fonera has finished flashing%>");
+			}
+		}
+	}, 1)
+	
+</script>
+					</fieldset>
+					</div>
+					<div class="boxFooter">
+						<div class="inner"></div>
+					</div>
+				</div>
+			</div>
+

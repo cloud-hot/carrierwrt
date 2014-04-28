@@ -1,0 +1,7 @@
+ddns = "DDNS"
+ddns_desc = "Dynamic DNS zerbitzua konfiguratu dezakezu hemen. Zerbitzu emale baten kontu bat behar duzu horretarako. DDNSek ez da behar bezala ibiliko NATen atzean badago kokatuta."
+ddns_dns = "DNS"
+ddns_dynds = "dyndns.org"
+ddns_none = "--BAT EZ--"
+ddns_srv = "Zerbitzua"
+ddns_title = "Dynamic DNS"

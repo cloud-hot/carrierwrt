@@ -1,0 +1,5 @@
+date = "Dátum"
+filebrowser = "Fájl böngésző"
+filename = "Fájl név"
+one_level_up = "Egy szintet fel"
+size = "Méret"

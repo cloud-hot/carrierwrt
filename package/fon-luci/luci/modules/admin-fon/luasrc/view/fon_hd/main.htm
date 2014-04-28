@@ -1,0 +1,44 @@
+<%
+local uci = luci.model.uci.cursor()
+local webadmin = require "luci.tools.webadmin"
+local params = luci.http.formvaluetable("del")
+local usb = "" 
+local i = 0
+local autofolder = luci.http.formvalue("autofolder")
+if autofolder then
+	uci:set("mountd", "mountd", "autofolder", autofolder)
+	uci:commit("mountd")
+end
+repeat
+	usb = luci.http.formvalue("cbid.usb"..i..".id")
+	if usb then
+		for j = 1, 8 do
+			local mode = luci.http.formvalue("cbid.usb"..i.."."..j)
+			if mode then
+				local folder = luci.http.formvalue("cbid.usb"..i.."."..j..".folder") or "nil"
+				if not(folder) then
+					folder = ""
+					if mode == "folder" then
+						mode = "ignore"
+					end
+				end
+				if mode == "folder" then
+					mode = folder
+				end
+				uci:section("mountd", "mountd_disc", usb)
+				uci:set("mountd", usb, "part"..j, mode) 
+			end
+		end
+		i = i + 1
+	end
+until not(usb)
+uci:save("mountd")
+uci:commit("mountd")
+if i > 0 then
+	local dsp = require "luci.dispatcher"
+	local http = require "luci.http"
+	http.redirect(dsp.build_url(""))
+else
+	webadmin.foreach_uci("mountd", "mountd_disc", "fon_hd/head", "fon_hd/disc", "fon_hd/tail", {ret=ret})
+end
+%>

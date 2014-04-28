@@ -1,0 +1,10 @@
+					<% if not(maincontent) and not(dashcontent) then%><div class="box1">
+						<div class="inner">
+							<div class="boxContent">
+								<%local node = require("luci.dispatcher").context and require("luci.dispatcher").context.dispatched
+								if node and node.page_icon then %>
+								<div style="width: 15%"><img class="logo" src="<%if node.icon_path then%><%=node.icon_path%><%else%>/luci-static/fon<%end%>/<%=node.page_icon%>"  alt="logo" /></div>
+									<fieldset style="width: 80%">
+									<br>
+								<%end%>
+					<%end%>

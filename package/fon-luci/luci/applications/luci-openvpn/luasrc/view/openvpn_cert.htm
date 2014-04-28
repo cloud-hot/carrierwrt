@@ -1,0 +1,37 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008 Jo-Philipp Wich <xm@leipzig.freifunk.net>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id: upgrade.htm 3529 2008-10-07 13:10:24Z jow $
+
+-%>
+<%- boxcolor = "darkorange" %>
+<%+header%>
+<h2><%:openvpn_backup_title Save/Restore Certificates%></h2>
+<form method="post" action="<%=luci.dispatcher.build_url("fon_admin", "fon_system")%>" enctype="multipart/form-data">
+	<div class="line">
+		<p class="tableText"><%:openvpn_backup_desc This function allows you to make a backup copy of your crypto keys.%></p>
+		<input type="file" size="30" name="settings" />
+	</div>
+	<div>
+		<input type="submit" value="Upgrade" />
+	</div>
+</form>
+<br>
+<ul class="icons">
+	<li>
+		<a id="settings" class="icon" 
+			href="<%=luci.dispatcher.build_url("fon_admin", "openvpn", "LaFonera_OpenVPN.bin")%>"
+			style="background-image: url(<%=luci.config.main.mediaurlbase%>/icons/firmware.png);">
+			<%:openvpn_backup Backup Certificates%>
+		</a>
+	</li>
+</ul>
+<%- require("luci.theme."..theme).footer(boxcolor) -%>

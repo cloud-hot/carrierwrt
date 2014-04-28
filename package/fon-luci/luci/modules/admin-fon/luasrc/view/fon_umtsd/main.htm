@@ -1,0 +1,22 @@
+<script type="text/javascript" src="/luci-static/resources/fon/jsProgressBarHandler.js"></script>
+<div id="quickEditBox">
+<%+fon_umtsd/device%>
+</div>
+<script type="text/javascript" src="<%=resource%>/fon/prototype.js"></script>
+<script type="text/javascript" src="<%=resource%>/cbi.js"></script>
+<script type="text/javascript">
+ new PeriodicalExecuter(function() {
+		new Ajax.Updater($("quickEditBox"), "<%=luci.dispatcher.build_url("fon_devices", "fon_umts", "device")%>", {
+		evalScripts: true,
+		onComplete: function() {
+			fon_xhr_hijack(
+			"quickEditBox",
+			win,
+			complete
+			);
+		}
+	})
+
+ }, 10)
+</script>
+

@@ -1,0 +1,8 @@
+livestats_incoming = "entrada"
+livestats_outgoing = "sortida"
+livestats_traffic = "tràfic a"
+livestats_wifi = "senyal-soroll rati per"
+livestats_loadavg = "càrrega mitja"
+livestats_stat_wireless = "Estat inalàmbric en temps real"
+livestats_stat_traffic = "Tràfic de xarxa en temps real"
+livestats_stat_loadavg = "Càrrega del sistema en temps real"

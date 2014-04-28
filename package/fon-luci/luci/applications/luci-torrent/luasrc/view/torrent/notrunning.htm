@@ -1,0 +1,36 @@
+<% boxcolor = "darkorange" %>
+<%+header%>
+<h2><%:torrent_title Torrent%></h2>
+<% if require("luci.model.uci").cursor_state():get("fmg", "torrent", "installing") == "1" then %>
+<p class="textfield"><%:torrent_install_installing Application is being installed, please wait a few minutes for installation to complete.%></p>
+<%+fon/page_reload%>
+<%else%>
+<p class="textfield"><%:torrent_notrunning_desc Transmission is currently not running. If this is the first time you use torrent, you must first download and install it to a disc. Otherwise you can choose the installation you want to run.%></p>
+<p class="textfield">
+<%:torrent_install_warning Make sure to use a real hard drive instead of
+a flash based device and make sure to not use an NTFS-formatted disk.
+Using a flash based device will cause it to wear down quickly, using an
+NTFS-formatted disk will cause severe performance degradation with the
+Torrent application and the Fonera itself. %></p>
+<ul class="icons">
+<%
+local discs = require("luci.fmg").find_discs("torrent")
+local free = nil
+for i,v in ipairs(discs) do
+	if v.installed then
+%>
+	<li>
+		<a id="startup" class="icon" href="<%=luci.dispatcher.build_url("torrent", "startup")%>?disc=<%=v.name%>" style="background-image: url(<%=luci.config.main.resourcebase%>/icons/plugins/torrent.png);"><%:torrent_startup Startup%> <%=v.name%> (<%=v.fs%>)</a>
+	</li>
+<%      end
+end
+for i,v in ipairs(discs) do
+	if not v.installed then %>
+	<li>
+	<a id="startup" class="icon" href="<%=luci.dispatcher.build_url("torrent", "download")%>?disc=<%=v.name%>" style="background-image: url(<%=luci.config.main.mediaurlbase%>/icons/firmware.png);"><%:torrent_install Install on%> <%=v.name%> (<%=v.fs%>)</a>
+	</li>
+	<%end
+end %>
+</ul>
+	<%end%>
+<%+footer%>

@@ -1,0 +1,7 @@
+twitter_direct = "ダイレクト"
+twitter_event_desc = "あなたが、ツイートを送りたいtwitterアカウントに入 るようにして下さい。ここでは、あなたがツイートしたいイベントを選択できま す。"
+twitter_event_desc = "ここで、どのイベントについてツイートするか、選択可能です。"
+twitter_event_title = "Twitter"
+twitter_reply = "返答"
+twitter_title = "Twitter"
+twitter_username = "あなたのTwitterユーザーネーム"

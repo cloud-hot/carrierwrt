@@ -1,0 +1,10 @@
+umtsd.umtsd.attached=1
+umtsd.umtsd.device=option12D11003
+umtsd.umtsdstate.vendor=huawei
+umtsd.umtsdstate.model=E220
+umtsd.umtsdstate.provider=BASE DE
+umtsd.umtsdstate.signal=16,99
+umtsd.umtsdstate.state=ONLINE
+umtsd.umtsdstate.tx=200028
+umtsd.umtsdstate.rx=1371872
+umtsd.umtsdstate.online=1244

@@ -1,0 +1,7 @@
+ddns = "DDNS"
+ddns_desc = "Aqui pots configurar el teu DNS Dinàmic. Necessites tenir un compte en un dels proveïdors. DDNS no funciona si estàs darrera NAT."
+ddns_dns = "DNS"
+ddns_dynds = "dyndns.org"
+ddns_none = "--CAP--"
+ddns_srv = "Servei"
+ddns_title = "DNS Dinàmic"

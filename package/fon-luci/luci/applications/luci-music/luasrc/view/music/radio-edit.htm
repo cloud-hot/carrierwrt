@@ -1,0 +1,27 @@
+<h1><%:music_stations%></h1>
+<div class="music-stations">
+<br />
+<br />
+
+<% if #radios > 0 then %>
+<ul>
+<% for i, v in ipairs(radios) do %>
+	<li>
+		<a href="<%=luci.dispatcher.build_url("music")%>?radio=<%=luci.http.urlencode(v.uri)%>">
+			<img src="<%=resource%>/music-play.png" alt="<%:music_start%>" />
+			<%=v._name%>
+		</a>
+	</li>
+<% end %>
+</ul>
+<% else %>
+	<em><%:music_nostations%></em>
+<% end %>
+
+<br />
+<br />
+
+<div class="">
+<a href="<%=luci.dispatcher.build_url("music", "radio")%>"><%:music_editstations%></a>
+</div>
+</div>

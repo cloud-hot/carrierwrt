@@ -1,0 +1,61 @@
+#!/usr/bin/lua
+
+-- Fonspec upgrade file
+-- (c) john@phrozen.org, steven@midlink.org gplv2
+
+-- Plugin Information
+local NAME    = "youtube"      -- Root node of plugin
+local HOME    = false           -- Make plugin root node the new homepage
+local TITLE   = "YouTube"     -- Plugin Title as shown on plugin page
+local AUTHOR  = "fon"      -- Plugin Provider as shown on plugin page
+local VERSION = "1.0"       -- Plugin Version as shown on plugin page
+
+-- Dashboard Information
+local DASHBOARD = true          -- Show plugin on dashboard
+local DB_ICON   = "icons/plugins/youtube.png", 20, "youtube"  -- Plugin icon file relative to /luci-static/resources
+local DB_ORDER  = 20          -- Plugin dashboard order number
+
+
+-- Logic
+local os = require "os"
+local fs = require "luci.fs"
+local dir = require "posix".getcwd()
+
+-- Create Plugin object
+local plugin = require "luci.fon.pkg".Plugin(NAME)
+if not plugin:add(TITLE, AUTHOR, VERSION) then
+	print "plugin already installed!"
+	os.exit(1)
+end
+
+-- Add Dashboard entry
+if DASHBOARD then
+	plugin:dashboard(DB_ICON, DB_ORDER, NAME)
+end
+
+-- Enable home redirect
+if HOME then
+	plugin:redirect()
+end
+
+-- Select files to install
+plugin:addfiles(dir.."/files/")
+
+-- Install files
+plugin:finalize()
+
+-- register mime handler
+local pkg = require "luci.fon.pkg"
+pkg.add_mime("mpg", "video/mpeg")
+pkg.add_mime("mpeg", "video/mpeg")
+pkg.add_mime_handler("youtube", "youtube/browser", 80, {"video/mpeg"})
+
+local  uci = require("luci.model.uci").cursor()
+uci:section("fonstate", "fonboot", "youtube", {event="RestartYoutube"})
+uci:commit("fonstate")
+uci:section("bugme", "bugme", "youtube_auth", {url="youtube/passwd"})
+uci:commit("bugme")
+uci:section("services", "service", "youtube", {path="/Apps/yt_uploader.lua"})
+uci:commit("services")
+
+

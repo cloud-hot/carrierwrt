@@ -1,0 +1,87 @@
+config 'general' 'browser'
+	list 'path' '/tmp/mounts'
+	list 'path' '/tmp/run/mountd'
+
+config 'general' 'mime'
+	option 'torrent' 'application/x-bittorrent'
+	option 'mpeg' 'video/mpeg'
+	option 'mpg' 'video/mpeg'
+	option 'mpeg' 'video/mpeg'
+	option 'mov' 'video/quicktime'
+	option 'mp4' 'video/mp4'
+	option jpeg 'image/jpeg'
+	option jpg 'image/jpeg'
+	option gif 'image/gif'
+	option png 'image/png'
+	option avi "video/x-msvideo"
+	option 3gp "video/3gpp"
+	option flv "video/v-flv"
+	option swf "application/x-shockwave-flash"
+	option mkv "video/x-matroska"
+	option wmv "video/x-ms-wmv"
+	option bmp "image/bmp"
+	option psd "application/photoshop"
+	option tif "image/tiff"
+	option tiff "image/tiff"
+
+#config 'module' 'torrent'
+#	option 'template' 'torrent/browser'
+#	option 'priority' '80'
+#	list 'filter' 'application/x-bittorrent'
+
+config 'module' 'youtube'
+	option 'template' 'youtube/browser'
+	option 'priority' '80'
+	list 'filter' "video/x-msvideo"
+	list 'filter' "video/3gpp"
+	list 'filter' "video/quicktime"
+	list 'filter' "video/mp4"
+	list 'filter' "video/mpeg"
+	list 'filter' "video/mpeg"
+	list 'filter' "video/mpeg"
+	list 'filter' "video/v-flv"
+	list 'filter' "application/x-shockwave-flash"
+	list 'filter' "video/x-matroska"
+	list 'filter' "video/x-ms-wmv"
+	
+config 'module' 'flickr'
+	option 'template' 'flickr/browser'
+	option 'priority' '80'
+	list 'filter' "image/jpeg"
+	list 'filter' "image/jpeg"
+	list 'filter' "image/gif"
+	list 'filter' "image/bmp"
+	list 'filter' "application/photoshop"
+	list 'filter' "image/tiff"
+	list 'filter' "image/tiff"
+	list 'filter' "image/png"
+
+config 'module' 'picasa'
+	option 'template' 'picasa/browser'
+	option 'priority' '70'
+	list 'filter' "image/jpeg"
+	list 'filter' "image/jpeg"
+	list 'filter' "image/gif"
+	list 'filter' "image/bmp"
+	list 'filter' "video/x-msvideo"
+	list 'filter' "video/quicktime"
+	list 'filter' "video/mpeg"
+	list 'filter' "video/mpeg"
+	list 'filter' "video/x-ms-wmv"
+	list 'filter' "video/x-ms-asf"
+	list 'filter' "image/png"
+
+config 'module' 'facebook'
+	option 'template' 'facebook/browser'
+	option 'priority' '60'
+	list 'filter' "image/jpeg"
+	list 'filter' "image/jpeg"
+	list 'filter' "image/jpeg"
+	list 'filter' "image/jpeg"
+	list 'filter' "image/gif"
+	list 'filter' "image/bmp"
+	list 'filter' "application/photoshop"
+	list 'filter' "image/tiff"
+	list 'filter' "image/tiff"
+	list 'filter' "image/png"
+

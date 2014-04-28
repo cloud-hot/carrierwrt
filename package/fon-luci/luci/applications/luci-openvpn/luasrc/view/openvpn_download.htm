@@ -1,0 +1,10 @@
+<%#
+	Modified copy of cbi/button.htm
+-%>
+<%+cbi/valueheader%>
+	<%-if require("luci.fs").stat("/etc/openvpn/keys/"..section..".key") then %>
+		<input class="cbi-input-<%=self.inputstyle or "button" %>" type="submit"<%= attr("name", cbid) .. attr("id", cbid) .. attr("value", self.button_title or self.title)%> />
+	<% else %>
+		<%:openvpn_generating Generating Keys%>
+	<% end %>
+<%+cbi/valuefooter%>

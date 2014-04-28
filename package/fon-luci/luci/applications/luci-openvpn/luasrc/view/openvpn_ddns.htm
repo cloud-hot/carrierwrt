@@ -1,0 +1,10 @@
+<%
+local dns = require("luci.model.uci").cursor():get("ddns", "ddns", "dns")
+if not(dns) or #dns < 1 then
+%>
+<br>
+<h4><%:openvpn_ddns You currently have no DynDns configured. <br>If you are on a dial-up line and your ip changes, you need to active DynDns.%></h4>
+<br>
+<br>
+<br>
+<% end %>

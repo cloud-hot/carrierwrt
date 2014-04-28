@@ -1,0 +1,25 @@
+<%
+util = require("luci.util")
+log = util.exec("logread")
+%>
+
+<p>Show only log lines containing: <input type="text" id="log_filter" onkeypress="filter_log(this)"></input></p>
+<textarea autocomplete="off" readonly id="log" wrap="off" style="width: 100%; height: 400px; margin-bottom: 20px;">
+<%= log:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;") %>
+</textarea>
+
+<script type="text/javascript">
+  // Store the original text, split into lines
+  var original_lines = document.getElementById("log").value.match(/^.*((\r\n|\n|\r)|$)/gm);
+  function filter_log(input) {
+    var text = "";
+    for (var i = 0; i < original_lines.length; i++) {
+        if (original_lines[i].indexOf(input.value) !== -1)
+          text += original_lines[i];
+    }
+    document.getElementById("log").value = text;
+  }
+  // Filter right away, in case the browser remembered the log_filter
+  // value through a refresh
+  filter_log(document.getElementById("log_filter"));
+</script>

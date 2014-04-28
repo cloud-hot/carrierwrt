@@ -1,0 +1,28 @@
+#!/usr/bin/lua
+
+-- Fonspec upgrade file
+-- (c) john@phrozen.org, steven@midlink.org gplv2
+
+-- Plugin Information
+local NAME    = "upgrader"      -- Root node of plugin
+local TITLE   = "Firmware Update"     -- Plugin Title as shown on plugin page
+local AUTHOR  = "fon"      -- Plugin Provider as shown on plugin page
+local VERSION = "1.0"       -- Plugin Version as shown on plugin page
+
+-- Logic
+local os = require "os"
+local fs = require "luci.fs"
+local dir = require "posix".getcwd()
+
+-- Create Plugin object
+local plugin = require "luci.fon.pkg".Plugin(NAME)
+if not plugin:add(TITLE, AUTHOR, VERSION) then
+	print "plugin already installed!"
+	os.exit(1)
+end
+
+local DB_ICON  = "icons/plugins/fwupgrade.png"
+
+plugin:dashboard(DB_ICON, 1, NAME)
+plugin:addfiles(dir.."/files/")
+plugin:finalize()

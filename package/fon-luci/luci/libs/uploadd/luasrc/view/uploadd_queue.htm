@@ -1,0 +1,62 @@
+<%-
+loader = loader or ""
+loader_name = loader_name or ""
+local i = 0
+local list = ""
+local uploadd = require("luci.fon.uploadd")
+local service = uploadd.get_state()
+local privacy = uploadd.get_privacy(loader)
+if #service > 1 and service ~= loader_name then -%>
+<h4><%:ulmanager_front Waiting for %><%=service%> <%:ulmanager_back to finish uploading%></h4>
+<%-end-%>
+<br>
+<h2><%:files_queued Files queued for upload%></h2>
+<table>
+	<thead>
+		<tr>
+			<th><%:file File%></th>
+			<th><%:status Status%></th>
+		</tr>
+	</thead>
+	<tbody>
+<%-function print_upload(s)
+	i = i + 1
+	local status = "Waiting"
+	if s.status == "1" then
+		status = "Loading"
+		if s.progress then
+			status = '<div class="dlman_progress" style="background-position: '..("%.0f"%((1.5 * s.progress)-200))..'px 0px">'..s.progress.."%</div></td></tr>\n"
+		end
+	elseif s.status == "2" then
+		status = "Done"
+	elseif s.status == "3" then
+		status = "Error"
+	elseif s.status == "4" then
+		status = "Too Big"
+	end
+	list = list .."<tr><td>"..s.file.."</td><td>"..status.."</td></tr>\n"
+end
+local uci = require("luci.model.uci").cursor_state()
+uci:load("uploadd")
+uci:foreach("uploadd", loader, print_upload)
+if i == 0 then%>
+		<tr>
+			<td colspan=2 style="text-align: center;">-</td>
+		</tr>
+<%-end-%>
+	<%=list or "error"%>
+		<tr class=odd>
+			<td colspan=2>
+				<a style="color: #000" href="<%=luci.dispatcher.build_url(loader, "auth")%>"><img src="/luci-static/resources/icons/vadd.png"><%:authentication Authentication%></a>
+				<a style="color: #000" href="<%=luci.dispatcher.build_url(loader, "flush")%>"><img src="/luci-static/resources/icons/vadd.png"><%:clear_completed Clear completed%></a>
+<%if loader == "flickr" or loader == "youtube" then
+	if privacy == "0" then%>
+				<a style="color: #000" href="<%=luci.dispatcher.build_url(loader, "privacy_on")%>"><img src="/luci-static/resources/icons/vadd.png"><%:public_upload Uploads are public%></a>
+	<%else%>
+				<a style="color: #000" href="<%=luci.dispatcher.build_url(loader, "privacy_off")%>"><img src="/luci-static/resources/icons/vadd.png"><%:private_upload Uploads are private%></a>
+<%	end
+end%>
+			</td>
+		</tr>
+	</tbody>
+</table>

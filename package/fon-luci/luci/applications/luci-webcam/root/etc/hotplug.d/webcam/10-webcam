@@ -1,0 +1,9 @@
+. /etc/functions.sh
+[ "$ACTION" == "remove" ] && {
+	uci_revert_state "webcam" "webcam"
+	uci_revert_state "services" "webcam"
+}
+[ "$ACTION" == "add" ] && {
+	uci_set_state "webcam" "webcam" "connected" "true"
+	uci_set_state "webcam" "webcam" "daemon" "true"
+}

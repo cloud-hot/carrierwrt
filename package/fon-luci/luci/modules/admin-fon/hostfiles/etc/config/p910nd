@@ -1,0 +1,8 @@
+config p910nd p910nd
+	option enable		0
+	option wan			0
+config lp0 lp0
+
+config lp1 lp1
+
+config lp2 lp2

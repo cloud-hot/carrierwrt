@@ -1,0 +1,30 @@
+<script type="text/javascript">
+	function set_tty(elem, value) {
+		/* Remove any old invalid elements */
+		var old = Selector.findElement(elem, 'option.invalid')
+		if (old) old.remove();
+
+		/* If the tty is not valid for this device, add a value to the
+		   dropdown so the user can still see what the selected
+		   profile would have used. */
+		if (!Selector.findElement(elem,'option[value=' + value + ']')) {
+			elem.insert(new Element('option', {value: value, class: 'invalid'}).update(value + ' (invalid for this device)'));
+		}
+
+		/* Finally, set the value */
+		elem.setValue(value);
+	}
+
+	var profiles = <%= self.profiles_json %>;
+	$('<%= self.field_id("base") %>').observe('change', function(event) {
+		var profile = profiles[event.element().getValue()];
+		set_tty($('<%= self.field_id('control')%>'), profile.control);
+		set_tty($('<%= self.field_id('data')%>'), profile.data);
+		$('<%= self.field_id('dialcmd')%>').setValue(profile.dialcmd.trim());
+		$('cbi.combobox.<%= self.field_id('dialcmd')%>').setValue(profile.dialcmd.trim());
+		<% for _, mode in ipairs(self.modes) do %>
+			$('<%= self.field_id('mode_' ..
+					mode)%>').setValue((profile.modes['<%=mode%>'] || ''));
+		<% end %>
+	});
+</script>

@@ -1,0 +1,36 @@
+package umtsd 
+
+config section
+	option name	'umtsd'
+	option package	'umtsd'
+	option unique	true
+
+config variable
+	option name	'apn'
+	option section	'umtsd.umtsd'
+	option datatype	'string'
+	option minlength 1
+	option maxlength 32
+	option required	true
+
+config variable
+	option name	'pin'
+	option section	'umtsd.umtsd'
+	option datatype 'uint'
+	option minlength 4
+	option maxlength 8
+	option required false
+
+config variable
+	option name	'user'
+	option section	'umtsd.umtsd'
+	option datatype	'string'
+	option minlength 0
+	option maxlength 32
+
+config variable
+	option name	'pass'
+	option section	'umtsd.umtsd'
+	option datatype	'string'
+	option minlength 0
+	option maxlength 32

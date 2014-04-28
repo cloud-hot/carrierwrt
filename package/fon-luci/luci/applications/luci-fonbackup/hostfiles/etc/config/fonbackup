@@ -1,0 +1,7 @@
+config fonbackup fonbackup
+	option base "/tmp/run/mountd"
+	option clurl "http://blog.fonosfera.org/downloads/foneraBackupv0.1.zip"
+	option enabled "1"
+	option cnt 666
+	option lastclip "6.6.6.6"
+	option lastclts 1233758200

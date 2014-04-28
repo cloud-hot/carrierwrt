@@ -1,0 +1,30 @@
+package pureftpd 
+
+config package
+	option title 'pureftpd'
+
+config section
+	option name 'pureftpd'
+	option package 'pureftpd'
+	option title 'General Settings'
+	option unique true
+	option required true
+	list depends 'enabled=0'
+	list depends 'enabled=1, port'
+
+config variable
+	option name 'port'
+	option section 'pureftpd.pureftpd'
+	option datatype uint
+	option minimum 1
+	option maximum 65535
+
+config variable
+	option name 'wan'
+	option section 'pureftpd.pureftpd'
+	option datatype boolean
+
+config variable
+	option name 'enabled'
+	option section 'pureftpd.pureftpd'
+	option datatype boolean

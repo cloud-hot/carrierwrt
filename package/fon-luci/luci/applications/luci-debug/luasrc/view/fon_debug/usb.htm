@@ -1,0 +1,10 @@
+<%
+util = require("luci.util")
+f = io.open("/proc/bus/usb/devices", "rb")
+usb = f:read("*all")
+f:close()
+%>
+
+<textarea autocomplete="off" readonly id="log" wrap="off" style="width: 100%; height: 400px; margin-bottom: 20px;">
+<%= usb:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;") %>
+</textarea>

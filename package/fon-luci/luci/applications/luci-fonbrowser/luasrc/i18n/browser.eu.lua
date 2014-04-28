@@ -1,0 +1,5 @@
+date = "Data"
+filebrowser = "Artxibo ikustatzailea"
+filename = "Izena"
+one_level_up = "Maila bat igo"
+size = "Neurria"

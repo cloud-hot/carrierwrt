@@ -1,0 +1,29 @@
+
+<%-
+local page = unpack(luci.dispatcher.context.requestpath, 1, i) or "/"
+local d = luci.dispatcher.context.dispatched
+local l = "/"
+if d then
+	l = table.concat(luci.dispatcher.context.dispatched.path, "/")
+end
+if l then
+	l = require("luci.model.uci").cursor_state():get("help", string.gsub(l, "/", "_"), "link")
+end
+local fon = require("luci.fon")
+local reg = require("luci.fon.reg")
+local state_icon = fon.state.online_str();
+local registered = fon.registered()
+local banner = require("luci.fon.spot").get_device()
+local url = reg.geturl()
+%>					<ul class="persistentButtons">
+						<li><a id="fon_state" class="icon" style='background-image: url("<%=media%>/icons/fonera_<%=state_icon%>.png");' href="<%=luci.dispatcher.build_url('fon_status')%>"><%:fon_status Fonera Status%></a></li>
+<%if page ~= "fon_dashboard" and page ~= "/" then %>						<li id="dashboardButton"><a class="icon" href="<%=luci.dispatcher.build_url('fon_dashboard')%>"><%:dashboard Dashboard%></a></li>
+<%end if not(registered) then %>						<li id="registerButton"><a class="icon" href="<%=url%>"><%:register Register%></a></li>
+<%end if l then%>
+						<li><a id="fon_help" class="icon" style='background-image: url("<%=media%>/icons/help.png");' href="#" onclick="window.open('<%=l%>', '_blank');"><%:fon_help Help%></a></li>
+<%end%>
+<%if page == "fon_dashboard" or page == "/" then %>
+						<li><a id="fon_faqs" class="icon" style='background-image: url("<%=media%>/icons/faqs.png");' href="#" onclick="window.open('https://fon.zendesk.com/forums', '_blank');"></a></li>
+<%end%>
+					</ul>
+					<img class="logo" src="<%=media%>/images/la<%=banner%>.png" alt="LA FONERA 2.0" />

@@ -1,0 +1,16 @@
+#!/bin/sh
+# Register fonbrowser mime-types and icons in SDK
+uci batch <<-EOF
+	set fon_browser.mime.m3u=audio/x-mpegurl
+	set fon_browser.mime.mp3=audio/mpeg
+
+	set fon_browser.music_m3u=module
+	set fon_browser.music_m3u.template=music/fb-plugin-m3u
+	add_list fon_browser.music_m3u.filter=audio/x-mpegurl
+
+	set fon_browser.music_mp3=module
+	set fon_browser.music_mp3.template=music/fb-plugin-mp3
+	add_list fon_browser.music_mp3.filter=audio/mpeg
+
+	commit fon_browser
+EOF

@@ -1,0 +1,44 @@
+<div id="wifi_scan_container">
+<span style="display:none;" id="wifi_scan_ui_p"></span>
+<div id="wifi_scan_ui">
+	<h2><%:inet_wifi_scan_title Wifi networks %></h2>
+	<p><%:inet_wifi_scan_desc Here you can let your Fonera scan for
+	wifi networks to connect to. Note that starting a scan can
+	disconnect connected wireless clients. Click the column headers
+	to sort the results. %></p>
+
+	<div id="scanResults">
+	</div>
+
+	<input type="button" value="Scan now" onclick="do_scan(false);"/>
+</div>
+</div>
+
+<script type="text/javascript">
+cbi_d_add("wifi_scan_ui", {"cbid.fon.wan.mode":"wifi"}, "wifi_scan_ui_p");
+cbi_d_add("wifi_scan_ui", {"cbid.fon.wan.mode":"wifi-bridge"}, "wifi_scan_ui_p");
+cbi_d_update(null, 1);
+
+function use_scan_result(essid, auth) {
+	$('cbid.fon.wan.ssid').value = essid;
+	$('cbid.fon.wan.auth').value = auth;
+	$('cbid.fon.wan.auth').onchange();
+	$('cbi-fon').scrollTo();
+	$('cbid.fon.wan.psk').focus();
+}
+
+/* By default, sort by ssid for finding a specific signal to connect to */
+scan_sort_key = 'essid';
+function do_scan(sort_key) {
+	if (sort_key) {
+		/* Remember the sort key, so the "scan now" button
+		doesn't change the sort key */
+		scan_sort_key = sort_key;
+	}
+	var url = '<%=luci.dispatcher.build_url("fon_admin", "fon_inet", "wifi_scan")%>';
+	if (scan_sort_key)
+		url += '?sort_key=' + scan_sort_key
+
+	fon_xhr_load(url, 'scanResults');
+}
+</script>

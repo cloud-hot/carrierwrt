@@ -1,0 +1,532 @@
+@charset "UTF-8";
+/*All rules starting by (* html ) are IE6 only*/
+
+
+
+/*Start of Eric Meyer's reset styles*/
+html,body,div,span,
+applet,object,iframe,
+h1,h2,h3,h4,h5,h6,p,blockquote,pre,
+abbr,acronym,address,big,cite,code,
+del,dfn,em,font,img,ins,kbd,q,s,samp,
+small,strike,strong,sub,sup,tt,var,
+dd,dl,dt,li,ol,ul,
+fieldset,form,label,legend,
+table,caption,tbody,tfoot,thead,tr,th,td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 100%;
+	line-height: 1;
+	font-family: inherit;
+	text-align: left;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+ol,ul {
+	list-style: none;
+}
+q:before,q:after,
+blockquote:before,blockquote:after {
+	content: "";
+}
+/*End of Eric Meyer's reset styles*/
+
+body {
+	font-size: 62.5%;
+	background: #1f9647 url(images/bg_rings_lt_fonosfera.png);
+	font-family: Houschka, Arial, Helvetica, sans-serif;
+}
+
+h1 {
+	margin-bottom: 12px;
+	padding: 2px;
+	padding-left: 4px;
+	-moz-border-radius: 5px;
+	background-color: #0f6627;
+	color: #fff;
+	font-size: 2.2em;
+}
+h2 {
+	margin-bottom: 12px;
+	padding: 4px;
+	padding-left: 4px;
+	-moz-border-radius: 5px;
+	background-color: #0f6627;
+	color: #fff;
+	font-size: 1.9em;
+}
+h3 {
+	color: #e86c1f;
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-bottom: 0.3em;
+}
+h4 {
+	color: #fbb034;
+	font-size: 1.3em;
+	font-weight: bold;
+}
+ul {
+	margin-bottom: 0.3em;
+}
+ol {
+	font-size: 1.2em;
+	list-style: inside decimal;
+	line-height: 1.2em;
+	margin-bottom: 1.2em;
+}
+p,
+li,
+label {
+	line-height: 1.2em;
+	color: #ddd;
+	font-size: 1.2em;
+}
+p {
+	margin-bottom: 1.5em;
+	font-size: 1.5em;
+}
+p.register {
+	 text-align:center;
+	font-size: 1.2em;
+}
+table {
+	width: 100%;
+	background-color: #fff;
+	margin-bottom: 10px;
+}
+thead {
+	background-color: #CCC;
+	font-size: 1.4em;
+	color: #e86c1f;
+}
+th,
+td {
+	padding: 5px;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-size: 1.2em;
+}
+tr.odd {
+	background-color: #CCC;
+}
+caption {
+	font-size: 1.4em;
+	margin-bottom: 5px;
+	text-align: center;
+	color: #FFF;
+}
+a {
+	color: #fbb034;
+	text-decoration: none;
+}
+
+.box1 table a {
+	color: #E86C1F;
+}
+
+.box1 a {
+	color: #fff;
+}
+
+.box1 thead a {
+	/* Don't change the color on links in thead */
+	color: inherit;
+}
+
+a:hover {
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a#logout {
+	position: absolute;
+	right: 5px;
+	top: 6px;
+	color: #fff;
+	font-size: 1.5em;
+	display: block;
+	height: 20px;
+	line-height: 1.2em;
+	color: #fff;
+}
+
+#outerContainer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: url(images/bg_movi_rb_fonosfera.png) no-repeat right bottom;
+}
+#innerContainer {
+	position: relative;
+	width: 829px;
+	margin: 0 auto;
+}
+#secondarySection {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+#secondarySection img.logo {
+	margin: 20px 0 0 0;
+}
+#mainSection {
+}
+#header {
+	margin-left: 110px;
+	margin-bottom: 50px;
+}
+#header img.logo {
+	margin: 40px 0 0 20px;
+}
+.persistentButtons {
+	display: block;
+	clear: both;
+}
+.persistentButtons li {
+	float: right;
+	display: block;
+	margin-right: 10px;
+}
+
+#mainContent {
+	clear: both;
+	width: 829px;
+	float: left;
+}
+
+
+
+
+/*FORMS*/
+
+.line {
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
+	color: #fff;
+	width: 100%;
+}
+label {
+	float: left;
+	display: block;
+	width: 150px;
+	font-weight: bold;
+	padding-top: 3px;
+}
+.textField,
+select,
+textarea {
+	width: 200px;
+	color: #e86c1f;
+}
+#portForwarding .textField,
+#portForwarding select,
+#portForwarding textarea {
+	width: 88px;
+}
+select {
+	width: 202px;
+}
+.box2 .textField,
+.box2 select,
+.box2 textarea {
+	border: 1px solid #000;
+	color: #000;
+}
+.box3 .textField,
+.box3 select,
+.box3 textarea {
+	border: 1px solid #002b5c;
+	color: #002b5c;
+}
+
+.buttons {
+	float: left;
+	clear: both;
+	width: 100%;
+}
+			* html .buttons {
+				margin-bottom: 10px;
+			}
+.buttons input {
+	float: right;
+}
+.submit {
+	cursor: pointer;
+	font-weight: bold;
+}
+.reset {
+	cursor: pointer;
+}
+.cancel {
+	cursor: pointer;
+}
+
+
+
+
+
+
+/*BLOCKS*/
+.block {
+	margin: 0 15px 15px 0;
+	float: left;
+	width: 373px;
+}
+			* html .block {
+				margin: 0 7px 7px 0;
+			}
+.blockWhole {
+	margin: 0 15px 15px 0;
+	clear: both;
+	width: 100%;
+}
+
+
+
+
+
+/*SPECIFIC BLOCKS
+#portForwarding {
+	width: 430px;
+	border: 1px solid #00FF00;
+}
+*/
+
+
+
+
+/*BREADCRUMBS*/
+#breadCrumbs {
+	height: 30px;
+	background: url(images/blackBarR.png) no-repeat right top;
+	position: relative;
+	margin-bottom: 10px;
+}
+#breadCrumbs ul {
+	display: block;
+	height: 30px;
+	margin-right: 6px;
+	background: url(images/blackBarL.png) no-repeat left top;
+	padding: 7px 0 0 5px;
+}
+#breadCrumbs ul.right {
+	text-align: right;
+}
+#breadCrumbs li {
+	display: inline;
+	color: #fff;
+	font-size: 1.5em;
+}
+#breadCrumbs li a {
+	color: #fff;
+}
+
+
+
+
+/*ICONS*/
+ul.icons li {
+	float: left;
+	display: block;
+	margin-right: 15px;
+	margin-left: 14px;
+}
+a.icon {
+	color: #000;
+	display: block;
+	padding: 90px 0 0;
+	font-size: 1.2em;
+	width: 85px;
+	height: 2.5em;
+	text-align: center;
+	background-position: center top;
+	background-repeat: no-repeat;
+}
+
+a.iconsmall {
+	color: #000;
+	display: block;
+	padding: 0px 0 0;
+	font-size: 1.2em;
+	width: 25px;
+	height: 25px;
+	text-align: center;
+	background-position: center top;
+	background-repeat: no-repeat;
+}
+
+#dashboardLogo {
+	background-image: url(images/lafonera20.png);
+}
+#foneraStatusButton a.icon {
+	background-image: url(icons/fonera_on.png);
+}
+#webcamButton a.icon {
+	background-image: url(icons/webcam_on.png);
+}
+#dashboardButton a.icon {
+	background-image: url(icons/dashboard.png);
+}
+#registerButton a.icon {
+	background-image: url(icons/register.png);
+}
+#plugins a.icon {
+	background-image: url(icons/plugins.png);
+}
+#networkServices a.icon {
+	background-image: url(icons/networkServices.png);
+}
+#settings a.icon {
+	background-image: url(icons/settings.png);
+}
+#passwd a.icon {
+	background-image: url(icons/pass.png);
+}
+#reboot a.icon {
+	background-image: url(icons/firmware.png);
+}
+.box1 a.icon,
+.box2 a.icon,
+.box3 a.icon,
+.box4 a.icon,
+.box5 a.icon {
+	color: #fff;
+}
+a.icon.register {
+	margin: 20px auto;
+	background-image: url(icons/register.png);
+}
+
+
+
+
+/*BOXES*/
+
+.box1,
+.box2,
+.box3,
+.box4,
+.box5 {
+	display: block;
+	position: relative;
+	float: left;
+	width: 817px;
+	clear: both;
+	margin: 0 12px 22px 0;
+	background-position: left top;
+	background-repeat: no-repeat;
+	background-image: url(images/Boxes/boxBlackTL.png);
+}
+			* html .box1,
+			* html .box2,
+			* html .box3,
+			* html .box4,
+			* html .box5 {
+				width: 800px;
+				margin: 0 0 10px 0;
+				background-image: none;
+				background-color: #000;
+			}
+.box1 .inner,
+.box2 .inner,
+.box3 .inner,
+.box4 .inner,
+.box5 .inner {
+	position: relative;
+	right: -12px;
+	top: 0;
+	background-position: right top;
+	background-repeat: no-repeat;
+	background-image: url(images/Boxes/boxBlackTR.png);
+}
+			* html .box1 .inner,
+			* html .box2 .inner,
+			* html .box3 .inner,
+			* html .box4 .inner,
+			* html .box5 .inner {
+				right: 0;
+				background-image: none;
+			}
+.boxFooter {
+	clear: both;
+	position: relative;
+	height: 12px;
+	bottom: -12px;
+	left: -12px;
+	background-position: left bottom;
+	background-repeat: no-repeat;
+	background-image: url(images/Boxes/boxBlackBL.png);
+}
+			* html .boxFooter {
+				height: 1px;
+				bottom: 0;
+				left: 0;
+				background-image: none;
+			}
+.boxFooter .inner {
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	background-position: right bottom;
+	background-repeat: no-repeat;
+	background-image: url(images/Boxes/boxBlackBR.png);
+}
+			* html .boxFooter .inner {
+				display: none;
+			}
+.boxContent {
+	padding: 20px 12px 0 0;
+}
+                        * html .boxContent {
+                                padding: 10px;
+                        }
+
+.boxContent img.logo {
+	float: left;
+	margin: 0 20px 0 0;
+}
+
+
+/*SPECIFIC BOXES*/
+
+
+#summaryBox {
+	width: 208px;
+	margin-right: 22px;
+	clear: left;
+}
+			* html #summaryBox {
+				margin-right: 10px;
+			}
+#quickEditBox {
+	clear: right;
+	width: 587px;
+}
+			* html #quickEditBox {
+				width: 570px;
+			}
+
+.cbi-value-error input,
+.cbi-value-error select {
+	color: red;
+	background-color: #ffcccc;
+}
+#cbi-firewall-redirect select {
+	width: 140px 
+}
+#cbi-firewall-redirect .textField {
+	width: 140px 
+}
+

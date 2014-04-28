@@ -1,0 +1,43 @@
+#!/usr/bin/lua
+
+local uci = require "luci.model.uci".cursor()
+local tbase = uci:get("luci_dlmanager", "dlmanager", "base")
+local tpath = uci:get("luci_dlmanager", "dlmanager", "path")
+local fs = require "luci.fs"
+local set
+
+if not tbase or #tbase == 0 or not fs.access(tbase) then
+	-- Preferred download location is not available, find a
+	-- replacement. Don't modify base, so the preferred location can
+	-- still be used when it becomes available (which is
+	-- particularly useful since partitions on the same disk become
+	-- available after each other, with this script running in
+	-- between).
+	for _, dir in ipairs(luci.fs.dir("/tmp/mounts")) do
+		if dir ~= "." and dir ~= ".." then
+			if fs.access("/tmp/mounts/" .. dir .. "/" .. tpath) then
+				uci:set("luci_dlmanager", "dlmanager", "actual_base", "/tmp/mounts/"..dir)
+				set = true
+				break
+			end
+			if not set then
+				uci:set("luci_dlmanager", "dlmanager", "actual_base", "/tmp/mounts/"..dir)
+				set = true
+			end
+		end
+	end
+else
+	-- Preferred download location is available, use it
+	uci:set("luci_dlmanager", "dlmanager", "actual_base", tbase)
+	set = true
+end
+
+if set then
+	uci:save("luci_dlmanager")
+	uci:commit("luci_dlmanager")
+end
+
+local dlmd = require "luci.fon.service".Service("dlmd")
+if not dlmd:status() then
+	dlmd:start()
+end

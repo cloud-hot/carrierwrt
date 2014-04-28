@@ -1,0 +1,22 @@
+<script type="text/javascript" src="/luci-static/resources/fon/jsProgressBarHandler.js"></script>
+<script type="text/javascript">
+var xyz = function() {
+	var url = '<%=luci.dispatcher.build_url("dlmanager", "_status")%>';
+	new Ajax.Request(url, {
+		"method": "get",
+		"onSuccess": function(transport) {
+			$('cbi-luci_dlmanager').replace(transport.responseText);
+			setTimeout(xyz, 5000);
+		}
+	});
+};
+
+setTimeout(xyz, 5000);
+</script>
+
+<ul class="icons">
+<li class="dlman_add"><a class="icon" href="<%=luci.dispatcher.build_url("dlmanager", "add")%>"><%=luci.dispatcher.get("dlmanager", "add").title%></a></li>
+<li class="dlman_auth"><a class="icon" href="<%=luci.dispatcher.build_url("dlmanager", "auth")%>"><%=luci.dispatcher.get("dlmanager", "auth").title%></a></li>
+<li class="dlman_settings"><a class="icon" href="<%=luci.dispatcher.build_url("dlmanager", "settings")%>"><%=luci.dispatcher.get("dlmanager", "settings").title%></a></li>
+</ul>
+<div style="clear:both"></div>

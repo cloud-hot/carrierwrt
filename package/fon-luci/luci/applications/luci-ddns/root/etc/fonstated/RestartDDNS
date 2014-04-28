@@ -1,0 +1,21 @@
+#!/bin/sh
+
+. /etc/functions.sh
+
+# Forget about any previous (succesful) updates
+rm /var/run/dynamic_dns/ddns/*.update
+
+MODE=`uci get fon.wan.mode`
+
+if [ "$MODE" = "bridge" -o "$MODE" = "wifi-bridge" ]; then
+    UP=1
+    INTERFACE=lan
+else
+    UP=`uci -P /var/state/ get network.wan.up`
+    INTERFACE=wan
+fi
+
+ACTION="ifdown"
+[ "$UP" == "1" ] && ACTION="ifup"
+
+ACTION=$ACTION INTERFACE=$INTERFACE . /etc/hotplug.d/iface/25-ddns

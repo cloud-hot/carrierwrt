@@ -1,0 +1,20 @@
+<div class="editionBoxes">
+	<div class="box3" id="summaryBox">
+		<%+fon/admin_fon_summary%>
+	</div>
+	<%+fon/admin_fon_attached%>
+</div>
+<script type="text/javascript" src="<%=resource%>/fon/prototype.js"></script>
+<script type="text/javascript" src="<%=resource%>/cbi.js"></script>
+<script type="text/javascript">
+reload = function(a) {
+	fon_xhr_load("<%=home%>" + a,
+			"quickEditBox",
+			'<%=luci.dispatcher.build_url("_maincontent", "fon_dashboard", "_attached")%>',
+			function() {
+				new Ajax.Updater($('summaryBox'), '<%=luci.dispatcher.build_url("_maincontent", "fon_dashboard", "_status")%>');
+			}
+	);
+}
+</script>
+<%+footer%>

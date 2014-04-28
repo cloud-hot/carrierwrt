@@ -1,0 +1,7 @@
+ddns = "DDNS"
+ddns_desc = "在此设置您的动态 DNS，您需要提供动态 DNS 供应商的帐号和密码。"
+ddns_dns = "DNS"
+ddns_dynds = "dyndns.org"
+ddns_none = "--无--"
+ddns_srv = "服务"
+ddns_title = "动态名称服务器"

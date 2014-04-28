@@ -1,0 +1,9 @@
+<%
+local key = require("luci.model.uci").cursor_state():get("openvpn", "openvpn", "key")
+if key == "1" then
+%>
+<br>
+<h4><%:openvpn_key OpenVPN is generating keys. This can take up to 10 minutes.%></h4>
+<br>
+<br>
+<% end %>

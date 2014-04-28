@@ -1,0 +1,7 @@
+twitter_event_desc = "Fonerak zein gertakizun twitteatu ditzan aukeratu"
+twitter_event_title = "Twitter"
+twitter_title = "Twitter"
+twitter_username = "Your Twitter Username"
+twitter_reply = "Erantzuna"
+twitter_direct = "Direct"
+twitter_event_desc = "Hemen sartu behar duzun izena zure Twitter erabiltzailearena da. Erabiltzaile honek zure Foneraren mezuak jasoko ditu. Ondoren, Fonerak zein gertakariren mezuak bidalibehar dizkizun aukeratu dezakezu."

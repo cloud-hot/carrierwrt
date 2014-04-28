@@ -1,0 +1,32 @@
+<p class=textfield><%:fwall_serv Here you can configure, which applications should be reachable over the internet%></p>
+
+<table style="width: 350px;">
+<tr>
+<td>
+	<select size=5 name="ports.disable">
+<%-
+local uci = require("luci.model.uci").cursor()
+local dev = uci:get("registered", "fonreg", "dev")
+ for i, v in ipairs(self.disable) do
+	if not(v.key == "ssh" and dev ~= "1") then
+%>
+	<option value="<%=v.key%>"><%=v.value%></option>
+<% end
+end -%>
+</select><br>
+<input type="submit" name="ports.add" value="<%:add Add%> -->">
+</form>
+<form method="post" action="/luci/fon_admin/fon_fw/services" enctype="multipart/form-data">
+</td><td>
+<select size=5 name="ports.enable">
+<%-
+for i, v in ipairs(self.enable) do 
+	if not(v.key == "ssh" and dev ~= "1") then
+%>
+	<option value="<%=v.key%>"><%=v.value%></option>
+<% end
+end -%>
+</select><br>
+<input type="submit" name="ports.remove" value="<--<%:remove Remove%>">
+</td></tr></table>
+<br>

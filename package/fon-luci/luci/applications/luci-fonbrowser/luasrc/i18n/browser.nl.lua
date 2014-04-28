@@ -1,0 +1,5 @@
+date = "Datum"
+filebrowser = "Bestands Verkenner"
+filename = "Bestands Naam"
+one_level_up = "Een Niveau Omhoog"
+size = "Grootte"

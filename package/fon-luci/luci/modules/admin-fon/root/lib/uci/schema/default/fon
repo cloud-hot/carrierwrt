@@ -1,0 +1,307 @@
+package fon
+
+config section
+	option name	'lan'
+	option package	'fon'
+	option unique	true
+	option required true
+
+config variable
+	option name 'ipaddr'
+	option section 'fon.lan'
+	option datatype ip4addr
+	option required true
+
+config variable
+	option name 'netmask'
+	option section 'fon.lan'
+	option datatype ip4addr
+	option required true
+
+config section
+	option name 'wan'
+	option package 'fon'
+	option unique true
+	option required true
+
+config variable
+	option name 'mode'
+	option section 'fon.wan'
+	option required true
+	option type enum
+
+config enum
+	option variable 'fon.wan.mode'
+	option value 'dhcp'
+
+config enum
+	option variable 'fon.wan.mode'
+	option value 'bridge'
+
+config enum
+	option variable 'fon.wan.mode'
+	option value 'static'
+
+config enum
+	option variable 'fon.wan.mode'
+	option value 'pppoe'
+
+config enum
+	option variable 'fon.wan.mode'
+	option value 'pptp'
+
+config enum
+	option variable 'fon.wan.mode'
+	option value 'wifi'
+
+config enum
+	option variable 'fon.wan.mode'
+	option value 'wifi-bridge'
+
+
+config variable 
+	option name	'macaddr' 
+	option section 'fon.wan' 
+	option datatype 'macaddr' 
+	option unique true 
+
+config variable
+	option name 'username'
+	option section 'fon.wan'
+	option required true
+	list depends 'mode=pppoe'
+	list depends 'mode=pptp'
+
+config variable
+	option name 'password'
+	option section 'fon.wan'
+	option required true
+	list depends 'mode=pppoe'
+	list depends 'mode=pptp'
+
+config variable
+	option name 'mtu'
+	option section 'fon.wan'
+	option datatype	'uint'
+	option minimum 1000
+	option maximum 1500
+	option default 1492
+	list depends 'mode=pppoe'
+
+config variable
+	option name 'mtu2'
+	option section 'fon.wan'
+	option datatype	'uint'
+	option minimum 1000
+	option maximum 1500
+	option default 1492
+	list depends 'mode=pptp'
+
+config variable
+	option name 'pptp_server'
+	option section 'fon.wan'
+	option datatype	'host'
+	option required true
+	list depends 'mode=pptp'
+
+config variable
+	option name 'ssid'
+	option section 'fon.wan'
+	option maxlength 32
+	option required true
+	list depends 'mode=wifi'
+
+config variable
+	option name 'auth'
+	option section 'fon.wan'
+	option type enum
+	list depends 'mode=wifi'
+
+config enum
+	option variable 'fon.wan.auth'
+	option value 'open'
+
+config enum
+	option variable 'fon.wan.auth'
+	option value 'wep'
+
+config enum
+	option variable 'fon.wan.auth'
+	option value 'wpa'
+
+config enum
+	option variable 'fon.wan.auth'
+	option value 'wpa2'
+
+config enum
+	option variable 'fon.wan.auth'
+	option value 'mixed'
+
+config variable
+	option name 'key1'
+	option section 'fon.wan'
+	option datatype 'wep'
+	list depends 'auth=wep'
+
+config variable
+	option name 'psk'
+	option section 'fon.wan'
+	option datatype	wpa
+	list depends 'auth=wpa'
+	list depends 'auth=wpa2'
+	list depends 'auth=mixed'
+
+config variable
+	option name 'wmode'
+	option section 'fon.wan'
+	option type enum
+	option required true
+	list depends 'mode=wifi'
+
+config enum
+	option variable 'fon.wan.wmode'
+	option value 'dhcp'
+
+config enum
+	option variable 'fon.wan.wmode'
+	option value 'static'
+
+config variable
+	option name 'ipaddr'
+	option section 'fon.wan'
+	option datatype ip4addr
+	option required true
+	list depends 'mode=bridge'
+	list depends 'mode=wifi-bridge'
+	list depends 'mode=static'
+	list depends 'wmode=static'
+
+config variable
+	option name 'netmask'
+	option section 'fon.wan'
+	option datatype ip4addr
+	option required true
+	list depends 'mode=bridge'
+	list depends 'mode=wifi-bridge'
+	list depends 'mode=static'
+	list depends 'wmode=static'
+
+config variable
+	option name 'gateway'
+	option section 'fon.wan'
+	option datatype ip4addr
+	list depends 'mode=bridge'
+	list depends 'mode=wifi-bridge'
+	list depends 'mode=static'
+	list depends 'wmode=static'
+
+config variable
+	option name 'dns'
+	option section 'fon.wan'
+	option datatype ip4addr
+	list depends 'mode=bridge'
+	list depends 'mode=wifi-bridge'
+	list depends 'mode=static'
+	list depends 'wmode=static'
+
+config section
+	option name	'public'
+	option package	'fon'
+	option unique	true
+	option required true
+
+config variable
+	option name	'essid'
+	option section	'fon.public'
+	option datatype	'string'
+	option minlength 1
+	option maxlength 28 
+	option required	true
+
+config section
+	option name	'private'
+	option package	'fon'
+	option unique	true
+	option required true
+
+config variable
+	option name	'essid'
+	option section	'fon.private'
+	option datatype	'string'
+	option minlength 1 
+	option maxlength 32
+	option required	true
+
+config variable
+	option name 'encryption'
+	option section 'fon.private'
+	option type enum
+
+config enum
+	option variable 'fon.private.encryption'
+	option value 'open'
+
+config enum
+	option variable 'fon.private.encryption'
+	option value 'wep'
+
+config enum
+	option variable 'fon.private.encryption'
+	option value 'wpa'
+
+config enum
+	option variable 'fon.private.encryption'
+	option value 'wpa2'
+
+config enum
+	option variable 'fon.private.encryption'
+	option value 'mixed'
+
+config variable
+	option name 'key'
+	option section 'fon.private'
+	option datatype 'wep'
+	option required true
+	list depends 'encryption=wep'
+
+config variable
+	option name 'password'
+	option section 'fon.private'
+	option required true
+	option datatype	'wpa'
+	list depends 'encryption=wpa'
+	list depends 'encryption=wpa2'
+	list depends 'encryption=mixed'
+
+config variable
+	option name 'wpa_crypto'
+	option section 'fon.private'
+	option type enum
+
+config enum
+	option variable 'fon.private.wpa_crypto'
+	option value 'tkip+aes'
+
+config enum
+	option variable 'fon.private.wpa_crypto'
+	option value 'aes'
+
+config enum
+	option variable 'fon.private.wpa_crypto'
+	option value 'tkip'
+
+config section
+	option name	'advanced'
+	option package	'fon'
+	option unique	true
+	option required true
+
+config variable
+	option name	'channel'
+	option section	'fon.advanced'
+	option required	true
+
+config variable
+	option name 'bgmode'
+	option section 'fon.advanced'
+	option required true

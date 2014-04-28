@@ -1,0 +1,21 @@
+package facebook
+
+config section
+	option name     'facebook'
+	option package  'facebook'
+	option unique   true
+	option required true
+
+config variable
+	option name     'folder'
+	option section  'facebook.facebook'
+	option datatype 'string'
+	option minlength 1
+	option required true
+	
+config variable
+	option name     'album'
+	option section  'facebook.facebook'
+	option datatype 'string'
+	option minlength 1
+	option required true

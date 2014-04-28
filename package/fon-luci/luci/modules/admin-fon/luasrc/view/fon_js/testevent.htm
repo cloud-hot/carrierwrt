@@ -1,0 +1,8 @@
+<%
+luci.http.prepare_content("text/javascript") 
+local id = luci.http.formvalue("id")
+%>
+if (confirm("Testevent <%=id%> received! Acknowledge?")) {
+	fon_events_acknowledge("<%=id%>");
+}
+location.reload();

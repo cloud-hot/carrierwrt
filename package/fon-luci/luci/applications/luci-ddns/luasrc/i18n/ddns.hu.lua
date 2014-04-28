@@ -1,0 +1,7 @@
+ddns = "DDNS"
+ddns_desc = "Itt tudod beállítani a Dinamikus DNS szolgáltatást. <br>Ehhez először regisztrálnod kell az adott DDNS szolgáltatónál. <br>A DDNS nem működik, ha NAT mögött vagy."
+ddns_dns = "DNS-cím"
+ddns_dynds = "dyndns.org"
+ddns_none = "nincs megadva"
+ddns_srv = "Szolgáltató"
+ddns_title = "Dinamikus DNS"

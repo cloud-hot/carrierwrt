@@ -1,0 +1,69 @@
+<%-
+local uci = require("luci.model.uci").cursor()
+local uci_state = require("luci.model.uci").cursor_state()
+local dev = uci:get("registered", "fonreg", "dev")
+local dsp = require("luci.dispatcher")
+local node
+if dsp and dsp.context then
+	node = dsp.context.dispatched
+end
+uci:load("wizard")
+local redir
+local called
+function wiz(s)
+	if s.callonce and s.called ~= "1" and not(redir) then
+		called = s[".name"]
+		redir = s.callonce
+	end
+	if s.buguser and s.called ~= "1" and not(redir) and uci_state:get("wizard", s[".name"], "done") ~= "1" then
+		uci_state:set("wizard", s[".name"], "done", "1")
+		uci_state:save("wizard")
+		redir = s.callonce
+	end
+end
+uci:foreach("wizard", "wizard", wiz)
+if redir then
+	require("luci.http").redirect(require("luci.dispatcher").build_url("wizard", redir))
+	return
+end
+if node and node.bugme ~= nil then
+	bugme = node.bugme
+end
+-%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><%:page_title FON Router GUI%></title>
+<link href="<%=media%>/fonera2.css" rel="stylesheet" type="text/css" />
+<%- if node and type(node.css) == "table" then for _, css in ipairs(node.css) do %>
+<link href="<%=resource%>/<%=css%>" rel="stylesheet" type="text/css" />
+<%- end end %>
+<link rel="shortcut icon" href="/luci-static/resources/icons/favicon.ico" />
+</head>
+<body id="dashboard" class="lang_<%=luci.i18n.context.lang%>">
+<script type="text/javascript" src="<%=resource%>/fon/prototype.js"></script>
+<script type="text/javascript" src="/luci-static/resources/fon/jsProgressBarHandler.js"></script>
+<script type="text/javascript" src="<%=resource%>/fon/fon.js"></script>
+<script type="text/javascript" src="<%=luci.dispatcher.build_url("fon_js","main.js")%>"></script>
+<script type="text/javascript">
+	var cbi_css = document.createElement("link");
+	cbi_css.rel  = "stylesheet";
+	cbi_css.type = "text/css";
+	cbi_css.href = "<%=resource%>/cbi-js-hide.css";
+	document.getElementsByTagName("head")[0].appendChild(cbi_css);
+	fon_site_state();
+</script>
+<%+fon/bugme%>
+<div id="outerContainer">
+		<div id="innerContainer">
+			<div id="secondarySection">
+				<img class="logo" src="<%=media%>/images/logo<%-if dev == "1" then -%>fonosfera<%-end-%>.png" alt="FON Logo" />
+			</div>
+			<div id="mainSection">
+				<div id="header">
+<%+themes/fon/systray%>
+				</div>
+				<div id="mainContent">
+<%+themes/fon/bread%>
