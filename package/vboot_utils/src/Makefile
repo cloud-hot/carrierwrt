@@ -258,15 +258,6 @@ utils_install: ${UTIL_BINS} ${UTIL_SCRIPTS}
 	${Q}mkdir -p ${UB_DIR}
 	${Q}${INSTALL} -t ${UB_DIR} ${UTIL_BINS} ${UTIL_SCRIPTS}
 
-# fonrsa.so
-#.PHONY: libfonrsa.so.1.0.1
-#${BUILD}/utility/lua.o:	INCLUDES += \
-	-I/usr/include/lua5.1 \
-	-Iutility
-#libfonrsa.so.1.0.1: ${BUILD}/utility/vbutil_firmware.o ${BUILD}/utility/lua.o
-#	@$(PRINTF) "    LD            fonrsa.so\n"
-#	${Q}${LD} -o $@ -shared -Wl,-soname,libfonrsa.so.1 ${CFLAGS} ${LDFLAGS} $< ${OBJS} ${LDLIBS}
-
 # ----------------------------------------------------------------------------
 # Generic build rules. LIBS and OBJS can be overridden to tweak the generic
 # rules for specific targets.
