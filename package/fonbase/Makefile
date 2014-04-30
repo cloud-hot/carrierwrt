@@ -17,7 +17,7 @@ define Package/fonbase
   SECTION:=fon
   CATEGORY:=Fonera
   TITLE:=FON Base System
-  DEPENDS:=+ntpclient +foncheckrsa +fonstate +fonsmcd +iptables-mod-nat-extra
+  DEPENDS:=+ntpclient +vboot_utils +fonstate +fonsmcd +iptables-mod-nat-extra
   URL:=http://www.fon.com
 endef
 

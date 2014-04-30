@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Copyright (c) 2011 The Chromium OS Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -19,7 +19,7 @@ SCRIPT_DIR="$(dirname "$0")"
 # 9 = (RSA8192 SHA1)
 # 10 = (RSA8192 SHA256)
 # 11 = (RSA8192 SHA512)
-function alg_to_keylen {
+alg_to_keylen() {
   echo $(( 1 << (10 + ($1 / 3)) ))
 }
 
@@ -53,7 +53,7 @@ INSTALLER_KERNEL_KEYBLOCK_MODE=10  # Only allow in Dev + Recovery.
 # likely to cause problems than just keeping an eye out for any differences. If
 # you feel the need to change this file, check the history of that other file
 # to see what may need updating here too.
-function make_pair {
+make_pair() {
   local base=$1
   local alg=$2
   local key_version=${3:-1}
@@ -93,7 +93,7 @@ function make_pair {
 #   0x02  Developer switch on
 #   0x04  Not recovery mode
 #   0x08  Recovery mode
-function make_keyblock {
+make_keyblock() {
   local base=$1
   local flags=$2
   local pubkey=$3
