@@ -63,7 +63,7 @@ endif
 
 # Flag ordering: arch, then -f, then -m, then -W
 DEBUG_FLAGS := $(if ${DEBUG},-g -O0,-Os)
-COMMON_FLAGS := -pipe \
+COMMON_FLAGS := -fPIC -pipe \
 	-ffreestanding -fno-builtin -fno-stack-protector \
 	-Wstrict-prototypes ${DEBUG_FLAGS}
 
@@ -119,7 +119,8 @@ VBSF_SRCS = \
 # Additional firmware library sources needed by VbSelectAndLoadKernel() call
 VBSLK_SRCS = \
 	firmware/lib/utility_string.c \
-	utility/lua.c
+	utility/lua.c \
+	utility/fonrsa.c
 
 VBSF_SRCS += ${VBINIT_SRCS}
 FWLIB_SRCS += ${VBSF_SRCS} ${VBSLK_SRCS}
@@ -207,12 +208,12 @@ ${FWLIB_OBJS}: CFLAGS += -DDISABLE_ROLLBACK_TPM
 .PHONY: fwlib
 fwlib: ${FWLIB}
 
-${FWLIB}: ${FWLIB_OBJS}
+${FWLIB}:  ${HOSTLIB_OBJS} ${FWLIB_OBJS}
 	@$(PRINTF) "    RM            $(subst ${BUILD}/,,$@)\n"
 	${Q}rm -f $@
 	@$(PRINTF) "    AR            $(subst ${BUILD}/,,$@)\n"
 #	${Q}ar qc $@ $^
-	${Q}${LD} -o $@ -shared -Wl,-soname,fwlib.so ${CFLAGS} ${LDFLAGS} $< ${OBJS} ${LDLIBS}
+	${Q}${LD} -o $@ -shared -Wl,-soname,libfonrsa.so.1 ${CFLAGS} ${LDFLAGS} $^ ${LDLIBS} -llua
 
 # ----------------------------------------------------------------------------
 # Host library

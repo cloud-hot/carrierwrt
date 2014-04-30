@@ -91,7 +91,7 @@ function fonupgrade(directory)
 end
 
 function dotest()
-	dir, str = fonverify("example_plugin.tgz", "./", "signed")
+	dir, str = fonverify("firmware.fon", "./", "signed")
 	if dir == nil then
 		print(str)
 		return 1
@@ -106,7 +106,7 @@ function dotest()
 end
 
 function doanothertest()
-	dir, str = fonverify("example_plugin.tgz", "./", "unsigned")
+	dir, str = fonverify("firmware.fon", "./", "unsigned")
 	if dir == nil then
 		print(str)
 		return 1

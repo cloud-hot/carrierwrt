@@ -10,4 +10,6 @@
 extern int Verify(const char* infile, const char* signpubkey,
                   const char* fv_file, const char* kernelkey_file,
                   const char* fv_out_file);
+extern int Fon_Verify(const char* infile, const char* signpubkey,
+                  const char* fv_out_file);
 #endif

@@ -21,7 +21,7 @@ define Package/vboot_utils
   SECTION:=fon
   CATEGORY:=Fonera
   TITLE:=FON firmware RSA check tools
-  DEPENDS:=+libopenssl
+  DEPENDS:=+libopenssl +liblua
   URL:=http://www.fon.com
 endef
 

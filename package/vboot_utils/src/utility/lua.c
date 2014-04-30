@@ -26,7 +26,7 @@ static int fr_verify(lua_State *L)
 	file_path = (char *)lua_tostring (L, 1);
 	signature_path = (char *)lua_tostring (L, 2);
 	out_path = (char *)lua_tostring (L, 3);
-	err = Verify(file_path, signature_path, NULL, NULL, out_path);
+	err = Fon_Verify(file_path, signature_path, out_path);
 	if (err == 0)
 		lua_pushboolean(L, 1);
 	else
