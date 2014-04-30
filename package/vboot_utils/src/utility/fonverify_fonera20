@@ -83,8 +83,6 @@ if [ ! $# -eq 2 ]; then
 fi
 KEY_FILE=$1
 FON_FILE=$2
-SHA1_FILE=/tmp/$$image.sha1
-SIGNATURE_FILE=/tmp/$$signature.bin
 MIN_FON_FILE_SIZE=100
 EXTENSION=$(basename $FON_FILE | cut -d'.' -s -f2)
 DIRECTORY=$(dirname $FON_FILE)
@@ -97,9 +95,6 @@ NAME=$(basename $FON_FILE | sed 's/....$//')
 UPGRADE_DIRECTORY=/tmp/$$upgrade/
 mkdir $UPGRADE_DIRECTORY
 TAR_FILE=$UPGRADE_DIRECTORY/$NAME.tgz
-VERSION_FILE=/tmp/$$version
-OFFSET_FILE=/tmp/$$offset
-SIGNATURE_FILE=/tmp/$$signature
 for i in $FON_FILE $KEY_FILE; do
 	if [ ! -f $i ]; then
 		echo "ERROR: $i does not exist. Bailing out..."
@@ -111,39 +106,10 @@ if [ $FON_FILE_SIZE -lt $MIN_FON_FILE_SIZE ]; then
 	echo "ERROR: input file size too small"
 	exit 1
 fi
-dd if=$FON_FILE of=$VERSION_FILE bs=1 count=4 > /dev/null 2>&1
-VERSION=$(cat $VERSION_FILE)
-if [ "$VERSION" = "FON9" ]; then
-	echo "This is a FON reflash v2 archive"
-elif [ "$VERSION" = "FONA" ]; then
-	echo "This is a FON hotfix v2 archive"
-elif [ "$VERSION" = "FONB" ]; then
-	echo "This is a FONOSFERA reflash archive"
-elif [ "$VERSION" = "FONC" ]; then
-	echo "This is a FONOSFERA plugin package"
-else
-	echo "ERROR: This is neither a FON nor FONOSFERA archive"
-	rm $VERSION_FILE
-	rm $FON_FILE
-	exit 1
-fi
-rm $VERSION_FILE
-dd if=$FON_FILE of=$OFFSET_FILE bs=1 count=3 skip=4 > /dev/null 2>&1
-OFFSET=$(expr $(cat $OFFSET_FILE))
-if [ $OFFSET -eq 0 ]; then
-	echo "ERROR: Offset too small"
-	rm $OFFSET_FILE
-	rm $FON_FILE
-	exit 1
-fi
-dd if=$FON_FILE of=$SIGNATURE_FILE bs=1 count=$OFFSET skip=7 > /dev/null 2>&1
-TO_SKIP=$(expr $OFFSET + 7)
-dd if=$FON_FILE of=$TAR_FILE bs=1 skip=$TO_SKIP > /dev/null 2>&1
-foncheckrsa $KEY_FILE $SIGNATURE_FILE $TAR_FILE
+
+vbutil_firmware --verify $FON_FILE --signpubkey $SIGNATURE_FILE --fv_out $TAR_FILE
 RESULT=$?
 rm $FON_FILE
-rm $OFFSET_FILE
-rm $SIGNATURE_FILE
 if [ ! $RESULT -eq 0 ]; then
 	echo "ERROR: Validation failure"
 	rm $TAR_FILE
