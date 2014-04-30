@@ -63,9 +63,9 @@ endif
 
 # Flag ordering: arch, then -f, then -m, then -W
 DEBUG_FLAGS := $(if ${DEBUG},-g -O0,-Os)
-COMMON_FLAGS := -nostdinc -pipe \
+COMMON_FLAGS := -pipe \
 	-ffreestanding -fno-builtin -fno-stack-protector \
-	-Werror -Wall -Wstrict-prototypes ${DEBUG_FLAGS}
+	-Wstrict-prototypes ${DEBUG_FLAGS}
 
 # Note: FIRMWARE_ARCH is defined by the Chromium OS ebuild.
 # FIRMWARE_ARCH not defined; assuming local compile.
@@ -78,6 +78,7 @@ CFLAGS += -MMD -MF $@.d
 # These are required to access large disks and files on 32-bit systems.
 CFLAGS += -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 
+CFLAGS += ${COMMON_FLAGS}
 # And a few more default utilities
 LD = ${CC}
 CXX ?= g++ # HEY: really?
@@ -90,10 +91,11 @@ INCLUDES += \
 	-Ifirmware/include \
 	-Ifirmware/lib/include \
 	-Ifirmware/lib/cgptlib/include \
-	-Ifirmware/lib/cryptolib/include
-
+	-Ifirmware/lib/cryptolib/include \
+	-Iutility/
 # Firmware library. TODO: Do we still need to export this?
-FWLIB = ${BUILD}/vboot_fw.a
+#FWLIB = ${BUILD}/vboot_fw.a
+FWLIB = ${BUILD}/libfonrsa.so.1.0.1
 
 # Firmware library sources needed by VbInit() call
 VBINIT_SRCS = \
@@ -116,7 +118,8 @@ VBSF_SRCS = \
 
 # Additional firmware library sources needed by VbSelectAndLoadKernel() call
 VBSLK_SRCS = \
-	firmware/lib/utility_string.c
+	firmware/lib/utility_string.c \
+	utility/lua.c
 
 VBSF_SRCS += ${VBINIT_SRCS}
 FWLIB_SRCS += ${VBSF_SRCS} ${VBSLK_SRCS}
@@ -149,7 +152,9 @@ ALL_OBJS += ${HOSTLIB_OBJS}
 UTIL_SCRIPTS = \
 	utility/make_keyblock.sh \
 	utility/make_pair.sh \
-	utility/common.sh
+	utility/common.sh \
+	utility/fonverify_fonera20 \
+	utility/fonverify.lua
 
 UTIL_NAMES = utility/dumpRSAPublicKey \
 	utility/vbutil_firmware \
@@ -206,7 +211,8 @@ ${FWLIB}: ${FWLIB_OBJS}
 	@$(PRINTF) "    RM            $(subst ${BUILD}/,,$@)\n"
 	${Q}rm -f $@
 	@$(PRINTF) "    AR            $(subst ${BUILD}/,,$@)\n"
-	${Q}ar qc $@ $^
+#	${Q}ar qc $@ $^
+	${Q}${LD} -o $@ -shared -Wl,-soname,fwlib.so ${CFLAGS} ${LDFLAGS} $< ${OBJS} ${LDLIBS}
 
 # ----------------------------------------------------------------------------
 # Host library
@@ -235,7 +241,7 @@ ${BUILD}/utility/%: INCLUDES += \
 	-Iutility/include
 
 # Utilities for auto-update toolkits must be statically linked.
-${UTIL_BINS_STATIC}: LDFLAGS += -static
+#${UTIL_BINS_STATIC}: LDFLAGS += -static
 
 
 .PHONY: utils
@@ -251,6 +257,15 @@ utils_install: ${UTIL_BINS} ${UTIL_SCRIPTS}
 	@$(PRINTF) "    INSTALL       UTILS\n"
 	${Q}mkdir -p ${UB_DIR}
 	${Q}${INSTALL} -t ${UB_DIR} ${UTIL_BINS} ${UTIL_SCRIPTS}
+
+# fonrsa.so
+#.PHONY: libfonrsa.so.1.0.1
+#${BUILD}/utility/lua.o:	INCLUDES += \
+	-I/usr/include/lua5.1 \
+	-Iutility
+#libfonrsa.so.1.0.1: ${BUILD}/utility/vbutil_firmware.o ${BUILD}/utility/lua.o
+#	@$(PRINTF) "    LD            fonrsa.so\n"
+#	${Q}${LD} -o $@ -shared -Wl,-soname,libfonrsa.so.1 ${CFLAGS} ${LDFLAGS} $< ${OBJS} ${LDLIBS}
 
 # ----------------------------------------------------------------------------
 # Generic build rules. LIBS and OBJS can be overridden to tweak the generic
@@ -284,6 +299,7 @@ ${BUILD}/utility/dumpRSAPublicKey: LDLIBS += -lcrypto
 ${BUILD}/utility/vbutil_firmware: LDLIBS += -lcrypto
 ${BUILD}/utility/vbutil_key: LDLIBS += -lcrypto
 ${BUILD}/utility/vbutil_keyblock: LDLIBS += -lcrypto
+${BUILD}/utility/libfonrsa.so.1.0.1: LDLIBS += -lcrypto -llua
 
 # Include generated dependencies
 ALL_DEPS += ${ALL_OBJS:%.o=%.o.d}

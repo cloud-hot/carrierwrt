@@ -1,0 +1,13 @@
+#!/usr/bin/lua
+
+-- give luci some time to load the users page
+
+os.execute("sleep 10")
+os.execute("killall -9 fonstated dnsmasq lucid fonsmcd hostapd ntpclient dropbear onlined")
+os.execute("ifdown wan")
+os.execute("ifdown lan")
+os.execute("wifi down")
+
+local verify = require("luci.fon.pkg.verify")
+local dir = require("luci.model.uci").cursor_state():get("fon", "state", "upgrade")
+local res, str = verify.fonupgrade(dir)

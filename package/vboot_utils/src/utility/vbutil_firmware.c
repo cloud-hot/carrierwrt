@@ -28,6 +28,7 @@ enum {
   OPT_VERSION,
   OPT_FV,
   OPT_KERNELKEY,
+  OPT_FVOUT,
   OPT_FLAGS,
   OPT_VBLOCKONLY,  
 };
@@ -41,6 +42,7 @@ static struct option long_opts[] = {
   {"version", 1, 0,                   OPT_VERSION                 },
   {"fv", 1, 0,                        OPT_FV                      },
   {"kernelkey", 1, 0,                 OPT_KERNELKEY               },
+  {"fv_out", 1, 0,                    OPT_FVOUT                   },
   {"flags", 1, 0,                     OPT_FLAGS                   },
   {"vblockonly", 0, 0,                OPT_VBLOCKONLY              },
   {NULL, 0, 0, 0}
@@ -70,6 +72,7 @@ static int PrintHelp(void) {
        "\n"
        "For '--verify <file>', optional OPTIONS are:\n"
        "  --kernelkey <file>          Write the kernel subkey to this file\n"
+       "  --fv_out <file>             Write the verified firmware to this file\n"
        "");
   return 1;
 }
@@ -182,8 +185,9 @@ static int Vblock(const char* outfile, const char* keyblock_file,
   return 0;
 }
 
-static int Verify(const char* infile, const char* signpubkey,
-                  const char* fv_file, const char* kernelkey_file) {
+int Verify(const char* infile, const char* signpubkey,
+                  const char* fv_file, const char* kernelkey_file,
+                  const char* fv_out_file) {
 
   VbKeyBlockHeader* key_block;
   VbFirmwarePreambleHeader* preamble;
@@ -305,6 +309,14 @@ static int Verify(const char* infile, const char* signpubkey,
       return 1;
     }
   }
+  /* Write the copy, then free it */
+  if (fv_out_file) {
+    if (0 != WriteFile(fv_out_file, fv_data, fv_size)) {
+      fprintf(stderr,
+              "vbutil_firmware: unable to write verified firmware\n");
+      return 1;
+    }
+  }
 
   return 0;
 }
@@ -319,6 +331,7 @@ int main(int argc, char* argv[]) {
   uint64_t version = 0;
   char* fv_file = NULL;
   char* kernelkey_file = NULL;
+  char* fv_out_file = NULL;
   uint32_t preamble_flags = 0;
   int mode = 0;
   int parse_error = 0;
@@ -359,6 +372,10 @@ int main(int argc, char* argv[]) {
         kernelkey_file = optarg;
         break;
 
+      case OPT_FVOUT:
+        fv_out_file = optarg;
+        break;
+
       case OPT_VERSION:
         version = strtoul(optarg, &e, 0);
         if (!*optarg || (e && *e)) {
@@ -388,7 +405,7 @@ int main(int argc, char* argv[]) {
       return Vblock(filename, key_block_file, signprivate, version, fv_file,
                     kernelkey_file, preamble_flags);
     case OPT_MODE_VERIFY:
-      return Verify(filename, signpubkey, fv_file, kernelkey_file);
+      return Verify(filename, signpubkey, fv_file, kernelkey_file, fv_out_file);
     default:
       printf("Must specify a mode.\n");
       return PrintHelp();

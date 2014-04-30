@@ -48,6 +48,14 @@ define Package/vboot_utils/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/utility/common.sh $(1)/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/utility/make_pair.sh $(1)/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/utility/make_keyblock.sh $(1)/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/utility/fonverify_fonera20 $(1)/sbin/fonverify_kon
+	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/fon/pkg/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/utility/fonverify.lua $(1)/usr/lib/lua/luci/fon/pkg/verify.lua
+	$(INSTALL_DIR) $(1)/etc/fonstated/
+	$(INSTALL_DATA) ./files/etc/FlashDevice $(1)/etc/fonstated/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/build/libfonrsa.so.1.0.1 $(1)/usr/lib/libfonrsa.so.1
+	rm -f $(1)/usr/lib/lua/fonrsa.so
+	ln -s /usr/lib/libfonrsa.so.1 $(1)/usr/lib/lua/fonrsa.so
 endef
 
 $(eval $(call BuildPackage,vboot_utils))
