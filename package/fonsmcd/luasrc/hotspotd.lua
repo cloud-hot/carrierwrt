@@ -54,7 +54,10 @@ local timer_heartbeat = {
 }
 
 --local MOSQ_NODE_ID       = uci:get('easycwmp', 'device', 'serial_number')
-uci:foreach('easycwmp', 'device', function(x) MOSQ_NODE_ID = x.serial_number end)
+uci:foreach('easycwmp', 'device', function(x) MOSQ_NODE_OUI = x.oui end)
+uci:foreach('easycwmp', 'device', function(x) MOSQ_NODE_CLASS = x.product_class end)
+uci:foreach('easycwmp', 'device', function(x) MOSQ_NODE_SERIAL = x.serial_number end)
+local MOSQ_NODE_ID       = MOSQ_NODE_OUI .. "-" .. MOSQ_NODE_CLASS .. "-" .. MOSQ_NODE_SERIAL
 local MOSQ_ID            = "tr069-" .. MOSQ_NODE_ID
 local MOSQ_CLEAN_SESSION = true
 local MOSQ_HOST          = hotspot.daemon.mqtt_broker

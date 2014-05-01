@@ -37,6 +37,14 @@ do
 		fi
 		echo "svn revert $P"
 		;;
+	"!")
+		if [ -d "$BACKUP" ]
+		then
+			mkdir -p $BACKUP/$(dirname $P)
+			cp -r $P $BACKUP/$P
+		fi
+		echo "svn revert $P"
+	;;
 	*)
 		echo "WARNING: $(basename $0) does not know what to do with $S!" 1>&2
 		;;
