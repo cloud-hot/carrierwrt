@@ -5,7 +5,7 @@
 # Target: ar2315
 #
 
-define Target/ar2315
+define Target/draginoV1
 
 	CONFIG += \
 		CONFIG_TARGET_atheros=y \
@@ -14,7 +14,8 @@ define Target/ar2315
 		CONFIG_TARGET_ARCH_PACKAGES="atheros" \
 		CONFIG_TARGET_ROOTFS_JFFS2=y \
 		CONFIG_LINUX_2_6_30=y \
-		CONFIG_LINUX_2_6=y
+		CONFIG_LINUX_2_6=y \
+		CONFIG_PACKAGE_draginoV1=y
 
 	IMAGES := \
 		ar71xx/openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin \
