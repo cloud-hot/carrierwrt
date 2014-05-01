@@ -1,0 +1,197 @@
+From 2f03cc4152d2aca497c8de78bcf18f7c89c07391 Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Mon, 31 Mar 2014 14:12:01 +0000
+Subject: [PATCH] add GetParameterNames method
+
+---
+ src/xml.c |  114 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 109 insertions(+), 5 deletions(-)
+
+diff --git a/src/xml.c b/src/xml.c
+index 6521067..501dc43 100644
+--- a/src/xml.c
++++ b/src/xml.c
+@@ -23,6 +23,9 @@
+ #include "freecwmp.h"
+ #include "messages.h"
+ 
++static int xml_handle_get_parameter_names(mxml_node_t *body_in,
++                                           mxml_node_t *tree_in,
++                                           mxml_node_t *tree_out);
+ 
+ static int xml_handle_set_parameter_values(mxml_node_t *body_in,
+ 					   mxml_node_t *tree_in,
+@@ -66,6 +69,35 @@ struct rpc_method {
+ 			  mxml_node_t *tree_out);
+ };
+ 
++struct parametername {
++	const char *name;
++	const char *writable;
++};
++
++const struct parametername parameternames[] = {
++	{"InternetGatewayDevice.", "false"},
++	{"InternetGatewayDevice.DeviceInfo.", "false"},
++	{"InternetGatewayDevice.DeviceInfo.HardwareVersion", "false"},
++	{"InternetGatewayDevice.DeviceInfo.Manufacturer", "false"},
++	{"InternetGatewayDevice.DeviceInfo.ManufacturerOUI", "false"},
++	{"InternetGatewayDevice.DeviceInfo.ProductClass", "false"},
++	{"InternetGatewayDevice.DeviceInfo.ProvisioningCode", "true"},
++	{"InternetGatewayDevice.DeviceInfo.SerialNumber", "false"},
++	{"InternetGatewayDevice.DeviceInfo.SoftwareVersion", "false"},
++	{"InternetGatewayDevice.DeviceInfo.SpecVersion", "false"},
++	{"InternetGatewayDevice.ManagementServer.", "false"},
++	{"InternetGatewayDevice.ManagementServer.ConnectionRequestURL", "true"},
++	{"InternetGatewayDevice.WANDevice.", "false"},
++	{"InternetGatewayDevice.WANDevice.1.", "false"},
++	{"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.", "false"},
++	{"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.", "false"},
++	{"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.", "false"},
++	{"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.", "false"},
++	{"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress", "true"},
++	{"InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID", "true"},
++	{"InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PreSharedKey.1.KeyPassphrase", "true"}
++};
++
+ const static char *soap_env_url = "http://schemas.xmlsoap.org/soap/envelope/";
+ const static char *soap_enc_url = "http://schemas.xmlsoap.org/soap/encoding/";
+ const static char *xsd_url = "http://www.w3.org/2001/XMLSchema";
+@@ -86,6 +118,7 @@ static struct cwmp_namespaces
+ } ns;
+ 
+ const struct rpc_method rpc_methods[] = {
++	{ "GetParameterNames", xml_handle_get_parameter_names },
+ 	{ "SetParameterValues", xml_handle_set_parameter_values },
+ 	{ "GetParameterValues", xml_handle_get_parameter_values },
+ 	{ "SetParameterAttributes", xml_handle_set_parameter_attributes },
+@@ -98,6 +131,7 @@ const struct rpc_method rpc_methods[] = {
+ 
+ static int xml_recreate_namespace(mxml_node_t *tree)
+ {
++	mxml_node_t *b;
+ 	const char *cwmp_urn;
+ 	char *c;
+ 	int i;
+@@ -108,28 +142,32 @@ static int xml_recreate_namespace(mxml_node_t *tree)
+ 	FREE(ns.xsi);
+ 	FREE(ns.cwmp);
+ 
+-	c = (char *) mxmlElementGetAttrName(tree, soap_env_url);
++	b = mxmlFindElement(tree, tree, "soap-env:Envelope", NULL, NULL, MXML_DESCEND);
++	if (!b)
++		return -1;
++
++	c = (char *) mxmlElementGetAttrName(b, soap_env_url);
+ 	if (c && *(c + 5) == ':') {
+ 		ns.soap_env = strdup((c + 6));
+ 	} else {
+ 		return -1;
+ 	}
+ 
+-	c = (char *) mxmlElementGetAttrName(tree, soap_enc_url);
++	c = (char *) mxmlElementGetAttrName(b, soap_enc_url);
+ 	if (c && *(c + 5) == ':') {
+ 		ns.soap_enc = strdup((c + 6));
+ 	} else {
+ 		return -1;
+ 	}
+ 
+-	c = (char *) mxmlElementGetAttrName(tree, xsd_url);
++	c = (char *) mxmlElementGetAttrName(b, xsd_url);
+ 	if (c && *(c + 5) == ':') {
+ 		ns.xsd = strdup((c + 6));
+ 	} else {
+ 		return -1;
+ 	}
+ 
+-	c = (char *) mxmlElementGetAttrName(tree, xsi_url);
++	c = (char *) mxmlElementGetAttrName(b, xsi_url);
+ 	if (c && *(c + 5) == ':') {
+ 		ns.xsi = strdup((c + 6));
+ 	} else {
+@@ -138,7 +176,7 @@ static int xml_recreate_namespace(mxml_node_t *tree)
+ 
+ 	for (i = 0; cwmp_urls[i] != NULL; i++) {
+ 		cwmp_urn = cwmp_urls[i];
+-		c = (char *) mxmlElementGetAttrName(tree, cwmp_urn);
++		c = (char *) mxmlElementGetAttrName(b, cwmp_urn);
+ 		if (c && *(c + 5) == ':') {
+ 			ns.cwmp = strdup((c + 6));
+ 			break;
+@@ -594,6 +632,72 @@ static int xml_create_generic_fault_message(mxml_node_t *body,
+ 	return 0;
+ }
+ 
++int xml_handle_get_parameter_names(mxml_node_t *body_in,
++				   mxml_node_t *tree_in,
++				   mxml_node_t *tree_out)
++{
++	mxml_node_t *n, *b;
++	char *c;
++	int i, counter = 0;
++
++	lfc_log_message(NAME, L_NOTICE, "executing xml_handle_get_parameter_names 0\n");
++	n = mxmlFindElement(tree_out, tree_out, "soap_env:Body",
++			    NULL, NULL, MXML_DESCEND);
++	if (!n) return -1;
++
++	lfc_log_message(NAME, L_NOTICE, "executing xml_handle_get_parameter_names 1\n");
++	n = mxmlNewElement(n, "cwmp:GetParameterNamesResponse");
++	if (!n) return -1;
++
++	lfc_log_message(NAME, L_NOTICE, "executing xml_handle_get_parameter_names 2\n");
++	n = mxmlNewElement(n, "ParameterList");
++	if (!n) return -1;
++
++	lfc_log_message(NAME, L_NOTICE, "executing xml_handle_get_parameter_names 3\n");
++	for(i = 0; i < (sizeof(parameternames)/sizeof(parameternames[0])); i++) {
++		n = mxmlFindElement(tree_out, tree_out, "ParameterList", NULL, NULL, MXML_DESCEND);
++		if (!n) goto out;
++
++		n = mxmlNewElement(n, "ParameterValueStruct");
++		if (!n) goto out;
++
++		n = mxmlNewElement(n, "Name");
++		if (!n) goto out;
++
++		n = mxmlNewText(n, 0, parameternames[i].name);
++		if (!n) goto out;
++
++		n = n->parent->parent;
++		n = mxmlNewElement(n, "Writable");
++		if (!n) goto out;
++
++		n = mxmlNewText(n, 0, parameternames[i].writable);
++		if (!n) goto out;
++
++		counter++;
++		lfc_log_message(NAME, L_NOTICE, "executing xml_handle_get_parameter_names 4: %s\n", parameternames[i].name);
++	}
++
++#ifdef ACS_MULTI
++	b = mxmlFindElement(tree_out, tree_out, "ParameterList",
++			    NULL, NULL, MXML_DESCEND);
++	if (!b) goto out;
++
++	lfc_log_message(NAME, L_NOTICE, "executing xml_handle_get_parameter_names 5\n");
++	if (asprintf(&c, "cwmp:ParameterValueStruct[%d]", counter) == -1)
++		goto out;
++
++	lfc_log_message(NAME, L_NOTICE, "executing xml_handle_get_parameter_names 6\n");
++	mxmlElementSetAttr(b, "soap_enc:arrayType", c);
++	FREE(c);
++#endif
++
++	return 0;
++
++out:
++	return -1;
++}
++
+ int xml_handle_set_parameter_values(mxml_node_t *body_in,
+ 				    mxml_node_t *tree_in,
+ 				    mxml_node_t *tree_out)
+-- 
+1.7.9.5
+

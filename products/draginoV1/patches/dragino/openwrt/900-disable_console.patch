@@ -1,0 +1,11 @@
+--- target/linux/generic/config-3.3	2013-08-24 15:30:39.085514939 +0200
++++ target/linux/generic/config-3.3	2013-09-03 09:35:24.845249969 +0200
+@@ -2566,7 +2566,7 @@
+ CONFIG_SERIAL_8250=y
+ # CONFIG_SERIAL_8250_ACCENT is not set
+ # CONFIG_SERIAL_8250_BOCA is not set
+-CONFIG_SERIAL_8250_CONSOLE=y
++# CONFIG_SERIAL_8250_CONSOLE is not set
+ # CONFIG_SERIAL_8250_CS is not set
+ # CONFIG_SERIAL_8250_DW is not set
+ # CONFIG_SERIAL_8250_EXAR_ST16C554 is not set

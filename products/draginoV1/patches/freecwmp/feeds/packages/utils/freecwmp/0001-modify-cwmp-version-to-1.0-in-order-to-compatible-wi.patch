@@ -1,0 +1,35 @@
+From 3484e7084fdc98ee3779723388e7a899f9432511 Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Mon, 31 Mar 2014 14:16:08 +0000
+Subject: [PATCH] modify cwmp version to 1.0 in order to compatible with
+ Genieacs
+
+---
+ src/messages.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/messages.h b/src/messages.h
+index 4e111f4..d9170b1 100644
+--- a/src/messages.h
++++ b/src/messages.h
+@@ -17,7 +17,7 @@
+ 	"xmlns:soap_enc=\"http://schemas.xmlsoap.org/soap/encoding/\" "						\
+ 	"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "							\
+ 	"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "						\
+-	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">"								\
++	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">"								\
+         "<soap_env:Header>"											\
+ 		"<cwmp:ID soap_env:mustUnderstand=\"1\"/>"							\
+ 	"</soap_env:Header>"											\
+@@ -91,7 +91,7 @@
+ 	"xmlns:soap_enc=\"http://schemas.xmlsoap.org/soap/encoding/\" "	\
+ 	"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "		\
+ 	"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "	\
+-	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">"			\
++	"xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">"			\
+ 	"<soap_env:Header>"						\
+ 		"<cwmp:ID soap_env:mustUnderstand=\"1\"/>"		\
+ 	"</soap_env:Header>"						\
+-- 
+1.7.9.5
+
