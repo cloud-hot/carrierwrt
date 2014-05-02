@@ -18,7 +18,8 @@ define Target/draginoV1
 		CONFIG_PACKAGE_draginoV1=y
 
 	IMAGES := \
-		ar71xx/openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin \
-		ar71xx/openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-sysupgrade.bin
+		atheros/openwrt-atheros-combined.squashfs.img \
+		atheros/openwrt-atheros-root.squashfs \
+		atheros/openwrt-atheros-vmlinux.lzma
 
 endef
