@@ -62,7 +62,11 @@ function index(env)
 		end
 
 		local page  = node("wizard", "step2")
-		page.target = cbi("wizard_fonera2/password", {on_success_to = {"wizard", "step3"}, noheader=true, skip=true})
+		page.target = cbi("wizard_fonera2/password", {on_success_to = {"wizard", "step5"}, noheader=true, skip=true})
+		page.page_icon = "icons/pass.png"
+
+		local page  = node("wizard", "step5")
+		page.target = cbi("wizard_fonera2/activation", {on_success_to = {"wizard", "step3"}, noheader=true, skip=true})
 		page.page_icon = "icons/pass.png"
 
 		local page  = node("wizard", "step3")

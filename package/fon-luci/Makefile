@@ -284,7 +284,7 @@ endef
 
 define Package/luci-web
   $(call Package/luci/libtemplate)
-  DEPENDS+=+luci-http +luci-sys +luci-uci +luci-sgi-cgi
+  DEPENDS+=+luci-http +luci-sys +luci-uci +luci-sgi-cgi +luci-sgi-uhttpd
   TITLE:=MVC Webframework
 endef
 
@@ -341,10 +341,7 @@ define Package/luci-admin-fon_nousb
 	+luci-nixio \
 	+luci-httpclient \
 	+luci-fon \
-	+luci-app-ddns \
-	+luci-app-fonfw \
 	+luci-app-fonlivestats \
-	+luci-app-twitter \
   	+luci-admin-rpc \
 	+luci-luanet \
 	+luci-i18n-english +luci-i18n-zh_cn
@@ -629,6 +626,15 @@ endef
 
 define Package/luci-sgi-webuci/install
 	$(call Package/luci/install/template,$(1),libs/sgi-webuci)
+endef
+
+define Package/luci-sgi-uhttpd
+  $(call Package/luci/libtemplate)
+  TITLE:=SGI for uhttpd
+endef
+
+define Package/luci-sgi-uhttpd/install
+        $(call Package/luci/install/template,$(1),libs/sgi-uhttpd)
 endef
 
 define Package/luci-lucittpd
@@ -971,6 +977,9 @@ endif
 ifneq ($(CONFIG_PACKAGE_luci-sgi-webuci),)
 	PKG_SELECTED_MODULES+=libs/sgi-webuci
 endif
+ifneq ($(CONFIG_PACKAGE_luci-sgi-uhttpd),)
+        PKG_SELECTED_MODULES+=libs/sgi-uhttpd
+endif
 ifneq ($(CONFIG_PACKAGE_luci-lucittpd),)
 	PKG_SELECTED_MODULES+=libs/lucittpd
 endif
@@ -1090,6 +1099,7 @@ $(eval $(call BuildPackage,luci-app-ffrpc))
 $(eval $(call BuildPackage,luci-sgi-cgi))
 $(eval $(call BuildPackage,luci-sgi-luci))
 $(eval $(call BuildPackage,luci-sgi-webuci))
+$(eval $(call BuildPackage,luci-sgi-uhttpd))
 $(eval $(call BuildPackage,luci-lucittpd))
 $(eval $(call BuildPackage,luci-luanet))
 $(eval $(call BuildPackage,luci-twitter))

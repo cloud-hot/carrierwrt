@@ -354,4 +354,4 @@ qos_title = "QoS"
 qos_desc = "Enabling QoS will make the Fonera shape your traffic to give priority to real time applications (voice, video) and web browsing or mail over P2P traffic. This means that the Fonera will try to make your personal traffic more fluent when you are connected so P2P or similar traffic does not make your Internet experience slow."
 qos_interface_download = "Download"
 qos_interface_upload = "Upload"
-
+subnet_id = "Subnet_ID"
