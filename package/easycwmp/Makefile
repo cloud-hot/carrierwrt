@@ -94,8 +94,10 @@ define Package/easycwmp/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ext/openwrt/init.d/easycwmpd $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/etc/easycwmp
-ifeq ($(CONFIG_EASYCWMP_SCRIPTS_FULL),y)
 	$(INSTALL_DIR) $(1)/usr/share/easycwmp
+	$(CP) $(PKG_BUILD_DIR)/ext/openwrt/config/server.pem $(1)/usr/share/easycwmp
+	$(CP) $(PKG_BUILD_DIR)/ext/openwrt/config/ca.crt $(1)/usr/share/easycwmp
+ifeq ($(CONFIG_EASYCWMP_SCRIPTS_FULL),y)
 	$(CP) $(PKG_BUILD_DIR)/ext/openwrt/scripts/defaults $(1)/usr/share/easycwmp
 	$(CP) $(PKG_BUILD_DIR)/ext/openwrt/scripts/functions $(1)/usr/share/easycwmp
 	$(INSTALL_DIR) $(1)/usr/sbin

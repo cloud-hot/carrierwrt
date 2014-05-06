@@ -1,0 +1,136 @@
+From 026025a0d50ee2a8b4d534d41e00d4c6f1a9b63f Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Tue, 6 May 2014 09:08:26 +0000
+Subject: [PATCH] enable https for easycwmp by default
+
+---
+ ext/openwrt/config/ca.crt     |   22 ++++++++++++++++
+ ext/openwrt/config/easycwmp   |   13 +++++----
+ ext/openwrt/config/server.pem |   58 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 88 insertions(+), 5 deletions(-)
+ create mode 100644 ext/openwrt/config/ca.crt
+ create mode 100644 ext/openwrt/config/server.pem
+
+diff --git a/ext/openwrt/config/ca.crt b/ext/openwrt/config/ca.crt
+new file mode 100644
+index 0000000..a377614
+--- /dev/null
++++ b/ext/openwrt/config/ca.crt
+@@ -0,0 +1,22 @@
++-----BEGIN CERTIFICATE-----
++MIIDsTCCApmgAwIBAgIJAIaV2vGCWdHSMA0GCSqGSIb3DQEBBQUAMG8xCzAJBgNV
++BAYTAkNOMRAwDgYDVQQIDAdzaWNodWFuMRAwDgYDVQQHDAdjaGVuZ2R1MRAwDgYD
++VQQKDAdhbGNhdGVsMREwDwYDVQQLDAhwbGF0Zm9ybTEXMBUGA1UEAwwOMTkyLjE2
++OC4xMC4yMzQwHhcNMTQwNTAxMDYyNzE5WhcNMzQwNTAxMDYyNzE5WjBvMQswCQYD
++VQQGEwJDTjEQMA4GA1UECAwHc2ljaHVhbjEQMA4GA1UEBwwHY2hlbmdkdTEQMA4G
++A1UECgwHYWxjYXRlbDERMA8GA1UECwwIcGxhdGZvcm0xFzAVBgNVBAMMDjE5Mi4x
++NjguMTAuMjM0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuSUuO/tN
++3IUm8XnNLg/QG0DuJAFYgfR7Lh1ODnSc2xxp3go92kzhZphVNU/qiJZF5b8JANT3
++//aegsKkA3NcmJ4f0LoEoB68c8dh+VdIWNCAe/Ym3VJzpKiJmxU6M4JWeWJsJjpd
++MWCD91tI3FeH7XlN1wye1ONrBZiSgeFRdNqNqtFzewOu0RxCWeZZaROpBxSasuQx
++WWdBLfmrrfsQrdRjoMyu57sEiBkDb/HgQDphAdE9hH2Cv3+ARqMKLph5bf2VO+IZ
++QlO7cmO1NM4lbQbHvx6zipK3SHobktORdoJASaICIfJl9Scy1Zz4Iy673XG4rM+P
++KW2rsppSs6eGHwIDAQABo1AwTjAdBgNVHQ4EFgQUDEH5qQP11DBlwQW7Unc83VmH
++xZswHwYDVR0jBBgwFoAUDEH5qQP11DBlwQW7Unc83VmHxZswDAYDVR0TBAUwAwEB
++/zANBgkqhkiG9w0BAQUFAAOCAQEAONSDTTgfJiDLY/WsiYg3KWthfVgZSNtkT81S
++4/2Sq/2aVZYOejntEKiYxQkt0B24rOenOc9PbtJW+KoizLffyzaSORb3u9L4UYui
++SEqFL/BZG1NkDF8PqvrPhRA5GUcVHSbq+djlbkE7qd7A6OeuUMIempPDB4+ZZpYw
++SH36a+5fSupcvVKfrNLphV3H3SKon6B1F+uhgKdGxlY/lTv7qyR4gMfC5ZhzuSh4
++oJielPi0lw3AzpN5Hle0pRxUhGGIorn5iVB73BcY5ezl7P5mjnexNur1EVgNp5o0
++Rkqt2A15rOBkqCMHDsjRJc+Kj18uYcDHdQP5prteXv2oAvRlLQ==
++-----END CERTIFICATE-----
+diff --git a/ext/openwrt/config/easycwmp b/ext/openwrt/config/easycwmp
+index 4c8318d..ea059f9 100644
+--- a/ext/openwrt/config/easycwmp
++++ b/ext/openwrt/config/easycwmp
+@@ -9,15 +9,18 @@ config local
+ 	option password easycwmp
+ 
+ config acs
+-	option scheme http
++	option scheme https
+ 	option username easycwmp
+ 	option password easycwmp
+-	option hostname  192.168.1.110 
+-	option port  8080 
+-	option path  /openacs/acs 
++	option hostname  192.168.10.110 
++	option port  7548
++	option path  / 
+ 	option parameter_key ''
+ 	option periodic_enable '1'
+-	option periodic_interval '100'
++	option periodic_interval '1000'
++	option ssl_cert '/usr/share/easycwmp/server.pem'
++	option ssl_cacert '/usr/share/easycwmp/ca.crt'
++	option ssl_verify 'enable'
+ 
+ config device
+ 	option manufacturer easycwmp
+diff --git a/ext/openwrt/config/server.pem b/ext/openwrt/config/server.pem
+new file mode 100644
+index 0000000..7a1720f
+--- /dev/null
++++ b/ext/openwrt/config/server.pem
+@@ -0,0 +1,58 @@
++Bag Attributes
++    localKeyID: B7 F3 3F 60 7C BB F0 5E 43 FB 83 5E 6D 43 D0 07 94 E6 0D 19 
++subject=/C=CN/ST=sichuan/O=alcatel/OU=platform/CN=192.168.10.234
++issuer=/C=CN/ST=sichuan/L=chengdu/O=alcatel/OU=platform/CN=192.168.10.234
++-----BEGIN CERTIFICATE-----
++MIIDxDCCAqygAwIBAgIDEjRYMA0GCSqGSIb3DQEBBQUAMG8xCzAJBgNVBAYTAkNO
++MRAwDgYDVQQIDAdzaWNodWFuMRAwDgYDVQQHDAdjaGVuZ2R1MRAwDgYDVQQKDAdh
++bGNhdGVsMREwDwYDVQQLDAhwbGF0Zm9ybTEXMBUGA1UEAwwOMTkyLjE2OC4xMC4y
++MzQwHhcNMTQwNTAxMDYzMTM5WhcNMTUwNTAxMDYzMTM5WjBdMQswCQYDVQQGEwJD
++TjEQMA4GA1UECAwHc2ljaHVhbjEQMA4GA1UECgwHYWxjYXRlbDERMA8GA1UECwwI
++cGxhdGZvcm0xFzAVBgNVBAMMDjE5Mi4xNjguMTAuMjM0MIIBIjANBgkqhkiG9w0B
++AQEFAAOCAQ8AMIIBCgKCAQEAry8ylg9F4YN5+rmsK/Rc+WFzpDso+CqxconIHdiE
++svcQFUnv82UxXIPQcj6lI24BhntCdImv5m0hraOQAELipsKOv/AALaSMp1hC3U7M
++ATd64pi2pJ/xLPXpkk588IN12KAM4qHbMRuLqZSf8CWUq9VZAJzB/HmMgx/nHVLO
++RUp4anFYLGS+98/JCKbGuRL8qFE6Z3zo+l9UXzORDsvTP5aPLs4SOxunU5CtBEoA
++3sUSLVa90qdH/SndE2nhg/WV1r743kanBikNoHDS/kZmGzgVThjxggLFmG1Ipwq1
++MtS+bxzWhMQYaSkxTNjp+s6RhMLaW3hCQ2lrgYY53mqrFwIDAQABo3sweTAJBgNV
++HRMEAjAAMCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBDZXJ0aWZp
++Y2F0ZTAdBgNVHQ4EFgQUhvfS0JcErHo1st1vWE50TF16G2MwHwYDVR0jBBgwFoAU
++DEH5qQP11DBlwQW7Unc83VmHxZswDQYJKoZIhvcNAQEFBQADggEBAD9wbnk9Ed1f
++R2FLqIy0eVGN/G2ia970iuPbUSdp6euJriT/HD3Mmcqc3LWLTTDv+5lXdTC5t7AX
++C8JEFKd6nAj9papZP+WuEXYkl4iWzjKZO+zFP6qGu/vV+DmOIXwQS0zNvSmQD7wN
++HFvHSo1YknFDgbP6EBZOf/jVI6KT9WATVwXLrBCubdfXu5UyrI3ireFcyYXb01nH
++nODmf1oO4y6/6ypgwYl/kPk3MYkvAAUQaX8SLmaAbLppjO81m7fM0Yxeck5C+1m9
++rksRQXJFm+4K5EJVuLY7x2RrSUU+lPEw14y5bKOAj6wDHycwzB2sqhc17GejIAPW
++KMm9eQxuhRE=
++-----END CERTIFICATE-----
++Bag Attributes
++    localKeyID: B7 F3 3F 60 7C BB F0 5E 43 FB 83 5E 6D 43 D0 07 94 E6 0D 19 
++Key Attributes: <No Attributes>
++-----BEGIN PRIVATE KEY-----
++MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCvLzKWD0Xhg3n6
++uawr9Fz5YXOkOyj4KrFyicgd2ISy9xAVSe/zZTFcg9ByPqUjbgGGe0J0ia/mbSGt
++o5AAQuKmwo6/8AAtpIynWELdTswBN3rimLakn/Es9emSTnzwg3XYoAziodsxG4up
++lJ/wJZSr1VkAnMH8eYyDH+cdUs5FSnhqcVgsZL73z8kIpsa5EvyoUTpnfOj6X1Rf
++M5EOy9M/lo8uzhI7G6dTkK0ESgDexRItVr3Sp0f9Kd0TaeGD9ZXWvvjeRqcGKQ2g
++cNL+RmYbOBVOGPGCAsWYbUinCrUy1L5vHNaExBhpKTFM2On6zpGEwtpbeEJDaWuB
++hjneaqsXAgMBAAECggEBAJgCSU/Ccu2q6xYvNIFzaZWPBQw1tWgZi54KhlW3gfXU
++weTnIkm9veY8DoyDZUHn+3TY0aJTswksGvQToClJ4Ge5HKrZsx3n0ZCH2oU0EXrg
++zEWBI8KXcmuD+qfUaT89ou1Ue7nPnmXvM/HzIBD+WxH7b15Dp2PPiKhi72UXbBrc
++gzhWVkIR+J3oL48amw22ZieyQMpOxqkByQQEIpN5DMjesM1TQHekb31BSkv2OkIW
++nFz/02w83PAS7JbPoBkELO8jzH60zZuY/udoCKsx4P1CD2n9/EgQ6vd7LwL+kT9Y
++7AcgHRrLCi/TCkHDWkz+pJ36CCdwqd0584o0jet2hSECgYEA1PHhMvmfU7nwyawl
++1aOlMiRHipiz7MT1BOpcWJ6kHYPU0SpBYkADZABTKtXGFOnFwkA+z07Dd5NCHoQ6
++sOnfwrAQJyfBShvwjpHiEXA8LKn+sNlY1K922C1jky7YhiXWU1tZ0HraeUQkBe/f
++/GmX12JilAUqo60/dAAfvPCBxacCgYEA0prRmQog5UCvgIvWscwDOOAUExYgQYOI
++JdNF2jSCQ/0PsPQj+BTAJmX+14iNVp15qINTDjh5wKT39gyB0KdRsY2iWwSdm5z9
++okf2yUiFj9/65p1JZ7n+RXF063523sD1dCFFV9ut3Hs35QCCMKVfbvmedOMtPdzk
++N9EGzHKmfRECgYBLNBUtNH0xS4SfJJ3EAmQv/iIJ733zi2dg0gfFAFnDVrCNIhgv
++Q54u7fJxOUgYUKsXvCqyegWMMER0lIxJuH7eueEqgt6/dniRUTH+qJ2HxI1/FXNK
++waD+HaGB9FRho/E6RRPGDe0kUI1MT3fSI9SNK2DXF7AEWAYFyJls159tFwKBgFzz
++gcCW7M/iDdOhZH+SeHWYyKNn55Kit+th5PmapUfWoB9MkbeDiQ8pgyGjniX1WOWc
++GIM1P99bsCkDeiQaRP8lcNvVHK66ymLeejh6bqCCjZ1NHEHQoD4MBjuN1G8aIPtB
++V/af+YtPQusqn0tTIdy8BUi3n5cnL/7GncaMb5jRAoGBAMAAW+MQgLcbUTrnXdK8
++2rWYoLHuXJ8qe/yu3Z6Poo0kbvKVTYh2ro4ZQNyjvZe/EkplNk/8dab+iuDyK5gY
++csFSo7YKnhwpIGJyToYtTi+nnlhvLOANa1K12PYctFIGKbhXO5osV7ApqOTOv7CC
++2DJFBtzHtbkkLVo8i4zht5yW
++-----END PRIVATE KEY-----
+-- 
+1.7.9.5
+
