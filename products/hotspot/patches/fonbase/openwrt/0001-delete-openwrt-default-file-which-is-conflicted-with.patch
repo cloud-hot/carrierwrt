@@ -1,21 +1,15 @@
-From 22b7631bc1043e77e82eb5da2203153f1c236d67 Mon Sep 17 00:00:00 2001
-From: cloud-hot <157724595@163.com>
-Date: Thu, 1 May 2014 03:28:40 +0000
-Subject: [PATCH] delete openwrt default file which is conflicted with fonbase
-
----
- package/base-files/files/etc/banner        |   16 ----------------
- package/base-files/files/etc/config/system |   10 ----------
- package/base-files/files/etc/passwd        |    5 -----
- package/base-files/files/etc/sysctl.conf   |   27 ---------------------------
- package/firewall/files/firewall.user       |    4 ----
- 5 files changed, 62 deletions(-)
- delete mode 100644 package/base-files/files/etc/banner
- delete mode 100644 package/base-files/files/etc/config/system
- delete mode 100644 package/base-files/files/etc/passwd
- delete mode 100644 package/base-files/files/etc/sysctl.conf
- delete mode 100644 package/firewall/files/firewall.user
-
+diff --git package/base-files/Makefile package/base-files/Makefile
+index 2152edd..ab2b370 100644
+--- package/base-files/Makefile
++++ package/base-files/Makefile
+@@ -109,7 +109,6 @@ define Package/base-files/install
+ 	)
+ 
+ 	$(VERSION_SED) \
+-		$(1)/etc/banner \
+ 		$(1)/etc/openwrt_version \
+ 		$(1)/etc/openwrt_release
+ 
 diff --git package/base-files/files/etc/banner package/base-files/files/etc/banner
 deleted file mode 100644
 index 058cb55..0000000
@@ -65,80 +59,40 @@ index 1d06a80..0000000
 -ftp:*:55:55:ftp:/home/ftp:/bin/false
 -network:*:101:101:network:/var:/bin/false
 -nobody:*:65534:65534:nobody:/var:/bin/false
-diff --git package/base-files/files/etc/sysctl.conf package/base-files/files/etc/sysctl.conf
+diff --git package/base-files/files/etc/shadow package/base-files/files/etc/shadow
 deleted file mode 100644
-index 4ea01bb..0000000
---- package/base-files/files/etc/sysctl.conf
+index e989890..0000000
+--- package/base-files/files/etc/shadow
 +++ /dev/null
-@@ -1,27 +0,0 @@
--kernel.panic=3
--net.ipv4.conf.default.arp_ignore=1
--net.ipv4.conf.all.arp_ignore=1
--net.ipv4.ip_forward=1
--net.ipv4.icmp_echo_ignore_broadcasts=1
--net.ipv4.icmp_ignore_bogus_error_responses=1
--net.ipv4.tcp_ecn=0
--net.ipv4.tcp_fin_timeout=30
--net.ipv4.tcp_keepalive_time=120
--net.ipv4.tcp_syncookies=1
--net.ipv4.tcp_timestamps=1
--net.ipv4.tcp_sack=1
--net.ipv4.tcp_dsack=1
--
--net.ipv6.conf.all.forwarding=1
--
--net.netfilter.nf_conntrack_acct=1
--net.netfilter.nf_conntrack_checksum=0
--net.netfilter.nf_conntrack_max=16384
--net.netfilter.nf_conntrack_tcp_timeout_established=3600
--net.netfilter.nf_conntrack_udp_timeout=60
--net.netfilter.nf_conntrack_udp_timeout_stream=180
--
--# disable bridge firewalling by default
--net.bridge.bridge-nf-call-arptables=0
--net.bridge.bridge-nf-call-ip6tables=0
--net.bridge.bridge-nf-call-iptables=0
+@@ -1,5 +0,0 @@
+-root:x:0:0:99999:7:::
+-daemon:*:0:0:99999:7:::
+-ftp:*:0:0:99999:7:::
+-network:*:0:0:99999:7:::
+-nobody:*:0:0:99999:7:::
+diff --git package/firewall/Makefile package/firewall/Makefile
+index 558e863..79f8273 100644
+--- package/firewall/Makefile
++++ package/firewall/Makefile
+@@ -56,8 +56,6 @@ define Package/firewall/install
+ 	$(INSTALL_DATA) ./files/firewall.hotplug $(1)/etc/hotplug.d/iface/20-firewall
+ 	$(INSTALL_DIR) $(1)/etc/config/
+ 	$(INSTALL_DATA) ./files/firewall.config $(1)/etc/config/firewall
+-	$(INSTALL_DIR) $(1)/etc/
+-	$(INSTALL_DATA) ./files/firewall.user $(1)/etc/firewall.user
+ endef
+ 
+ $(eval $(call BuildPackage,firewall))
 diff --git package/firewall/files/firewall.user package/firewall/files/firewall.user
 deleted file mode 100644
-index 1ccbd01..0000000
+index 6f79906..0000000
 --- package/firewall/files/firewall.user
 +++ /dev/null
-@@ -1,4 +0,0 @@
+@@ -1,7 +0,0 @@
 -# This file is interpreted as shell script.
 -# Put your custom iptables rules here, they will
 -# be executed with each firewall (re-)start.
 -
-diff --git package/base-files/Makefile package/base-files/Makefile
-index 1d56e9f..5948f5c 100644
---- package/base-files/Makefile
-+++ package/base-files/Makefile
-@@ -109,7 +109,6 @@ define Package/base-files/install
- 	)
- 
- 	$(VERSION_SED) \
--		$(1)/etc/banner \
- 		$(1)/etc/openwrt_version \
- 		$(1)/etc/openwrt_release
-
-diff --git package/firewall/Makefile package/firewall/Makefile
-index b2be06b..eb0bc52 100644
---- package/firewall/Makefile
-+++ package/firewall/Makefile
-@@ -33,7 +33,6 @@ endef
- 
- define Package/firewall/conffiles
- /etc/config/firewall
--/etc/firewall.user
- endef
- 
- define Package/firewall/install
-@@ -50,7 +49,6 @@ define Package/firewall/install
- 	$(INSTALL_DIR) $(1)/etc/hotplug.d/firewall
- 	$(INSTALL_DATA) ./files/reflection.hotplug $(1)/etc/hotplug.d/firewall/10-nat-reflection
- 	$(INSTALL_DIR) $(1)/etc
--	$(INSTALL_DATA) ./files/firewall.user $(1)/etc
- 	$(INSTALL_DIR) $(1)/lib/upgrade/keep.d
- 	$(INSTALL_DATA) ./files/firewall.upgrade $(1)/lib/upgrade/keep.d/firewall
- endef
---
-1.7.9.5
+-# Internal uci firewall chains are flushed and recreated on reload, so
+-# put custom rules into the root chains e.g. INPUT or FORWARD or into the
+-# special user chains, e.g. input_wan_rule or postrouting_lan_rule.
