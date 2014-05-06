@@ -8,11 +8,7 @@
 define Product/hotspot
 
 	CONFIG += \
-		CONFIG_BUSYBOX_CONFIG_TELNETD=n \
-		CONFIG_PACKAGE_dmsetup=y \
-		CONFIG_PACKAGE_dm-verity=y
-			
-	SETTINGS := uci-product.sh
+		CONFIG_BUSYBOX_CONFIG_TELNETD=n
 
 endef
 
@@ -64,8 +60,6 @@ define Customization/default
 		CONFIG_EASYCWMP_DEVEL=y \
 		CONFIG_EASYCWMP_DEBUG=y \
 		CONFIG_PACKAGE_uhttpd-mod-lua=y
-
-	SETTINGS := uci-customization.sh
 
 	TESTED := \
 		ar71xx/openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin \

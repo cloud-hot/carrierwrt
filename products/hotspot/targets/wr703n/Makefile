@@ -14,7 +14,9 @@ define Target/wr703n
 		CONFIG_PACKAGE_kmod-usb-storage=y \
 		CONFIG_PACKAGE_kmod-fs-ext4=y \
 		CONFIG_PACKAGE_block-mount=y \
-		CONFIG_PACKAGE_e2fsprogs=y
+		CONFIG_PACKAGE_e2fsprogs=y \
+		CONFIG_PACKAGE_dmsetup=y \
+                CONFIG_PACKAGE_dm-verity=y
 
 	IMAGES := \
 		ar71xx/openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin \

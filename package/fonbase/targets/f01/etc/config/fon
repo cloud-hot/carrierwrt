@@ -33,6 +33,10 @@ config advanced advanced
 	option 'umts_net' '3'
 	option 'sharewifi'	'1'
 
+config tr069 tr069
+	option summary ""
+	option subnetID ""
+
 # do not remove, this is used by fonstated to store its state
 config state state 
 
