@@ -6,6 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fonbase
+PKG_VERSION:=Hotspot-0.1
 PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
@@ -36,8 +37,11 @@ define Build/Compile
 		-o $(PKG_BUILD_DIR)/fon.so ./src/fon.c
 endef
 
+BUILD_TIME:=$(shell date)
+
 define Package/fonbase/install
 	$(CP) ./files/* $(1)/
+	chmod 0600 $(1)/etc/shadow
 	$(CP) ./targets/f01/* $(1)/
 	mkdir -p $(1)/usr/lib/lua/
 	echo $(REVISION) > $(1)/etc/fon_svn
@@ -46,6 +50,8 @@ define Package/fonbase/install
 	# spec. The REVISION variable is filled by
 	# openwrt/include/toplevel.mk.
 	sed -i '/option \(beta\|rc\)/s/svn/$(REVISION)/' $(1)/etc/config/system
+	$(SED) 's,$$$$F,$(PKG_VERSION).$(PKG_RELEASE),g' $(1)/etc/banner
+	$(SED) 's,$$$$T,$(BUILD_TIME),g' $(1)/etc/banner
 	# Make a copy of the config file used to build this firmware
 	$(CP) $(TOPDIR)/.config $(1)/etc/openwrt-config
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/fon.so $(1)/usr/lib/lua/

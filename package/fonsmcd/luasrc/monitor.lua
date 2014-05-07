@@ -37,8 +37,8 @@ luci.json        = require 'luci.json'
 luci.util        = require 'luci.util'
 
 
--- parse and load /etc/config/hotspot
-local hotspot          = uci:get_all('hotspot')
+-- parse and load /etc/config/fonsmcd
+local fonsmcd          = uci:get_all('fonsmcd')
 
 -- gzipped syslog tmp file
 local SYSLOG_TMP      = '/tmp/syslog.gz'

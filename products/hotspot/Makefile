@@ -16,6 +16,7 @@ define Customization/default
 
 	CONFIG += \
 		CONFIG_PACKAGE_fon-luci=y  \
+		CONFIG_PACKAGE_luci-core_source=y \
 		CONFIG_PACKAGE_luci-admin-fon_nousb=y  \
 		CONFIG_PACKAGE_luci-admin-fon-rpc=y \
 		CONFIG_PACKAGE_luci-app-debug=y \
@@ -59,7 +60,9 @@ define Customization/default
 		CONFIG_PACKAGE_easycwmp=y \
 		CONFIG_EASYCWMP_DEVEL=y \
 		CONFIG_EASYCWMP_DEBUG=y \
-		CONFIG_PACKAGE_uhttpd-mod-lua=y
+		CONFIG_PACKAGE_uhttpd-mod-lua=y \
+		CONFIG_PACKAGE_libubus-lua=y \
+		CONFIG_PACKAGE_luaposix=y
 
 	TESTED := \
 		ar71xx/openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin \

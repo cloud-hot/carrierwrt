@@ -19,15 +19,11 @@ config private private
 
 config firewall firewall
 	option	lan_wan		1
-	option	hotspot_wan	0
-	option	hotspot_lan	0
 	option	icmp_wan	1
 
 config advanced advanced
-	option	bgmode	mixed
+	option	bgmode	11ng
 	option	channel	auto
-	option	diversity	0
-	option	rtxant	1
 	option	umts	1
 	option 'umts_dns_override' '0'
 	option 'umts_net' '3'

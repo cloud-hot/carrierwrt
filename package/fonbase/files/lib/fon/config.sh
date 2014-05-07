@@ -43,12 +43,12 @@ case "$fon_device" in
 		mgmt_ifname="br-lan"
 	;;
 	fonera01)
-		lan_ifname="eth0.0"
-		wan_ifname="eth0.1"
+		lan_ifname="eth0"
+		wan_ifname="eth1"
 		wifi_device="radio0"
 		wifi_ifname="wlan0"
 		private_wifi_ifname="wlan1"
-		wan_wifi_ifname="ath2"
+		wan_wifi_ifname="wlan2"
 		# This variable is used by /etc/init.d/mgmtnetwork
 		mgmt_ifname="br-lan"
 	;;
@@ -68,7 +68,7 @@ get_default_psk() {
 			dd if=$(find_mtd_part boardconfig) bs=$((0x88)) skip=1 count=1 2>/dev/null | head -c10
 			;;
 		fonera01)
-			dd if=$(find_mtd_part boardconfig) bs=$((0x88)) skip=1 count=1 2>/dev/null | head -c10
+			hexdump -v -e '1/1 "%.2x"' -s $((0x100)) -n 4 /dev/mtd5
 			;;
 	esac
 }
@@ -86,15 +86,6 @@ load_config() {
 config_firewall() {
 	local M
 	. /etc/config/firewall
-	uci_remove "firewall" "hotspot_lan"
-	uci_remove "firewall" "lan" "masq"
-	M=`uci get fon.wan.mode`
-	[ "$M" = "bridge" -o "$M" = "wifi-bridge" ] && {
-		uci_set "firewall" "lan" "masq" "1"
-		uci_add "firewall" "forwarding" "hotspot_lan"
-		uci_set "firewall" "hotspot_lan" "src" "hotspot"
-		uci_set "firewall" "hotspot_lan" "dest" "lan"
-	}
 }
 
 # Configure the hardware switch, if needed. This is separate from
@@ -354,23 +345,6 @@ config_network() {
 	# or when the ttyUSB umts device is ready, etc.
 	uci_set "network" "wan" "auto" "0"
 
-
-	###################################
-	# Setup the hotspot network
-	###################################
-
-	# This network is configured by chillispot
-	uci_remove "network" "hotspot" 2> /dev/null
-	uci_add "network" "interface" "hotspot"
-	uci_set "network" "hotspot" "ifname" "tun0"
-	uci_set "network" "hotspot" "proto" "none"
-
-	# This is a dummy network referred to by the "public" wifi-iface
-	# below in config_wireless
-	uci_remove "network" "hotspotwifi" 2> /dev/null
-	uci_add "network" "interface" "hotspotwifi"
-	uci_set "network" "hotspotwifi" "proto" "none"
-
 	uci commit network
 }
 
@@ -418,7 +392,7 @@ config_wireless() {
 			config_get ht advanced ht
 			config_get country advanced country
 			uci_set "wireless" "$wifi_device" "type" "mac80211"
-			uci_set "wireless" "$wifi_device" "htmode" "${ht:-20}"
+			uci_set "wireless" "$wifi_device" "htmode" "${ht:-HT40+}"
 			uci_set "wireless" "$wifi_device" "country" "${country}"
 			uci_set "wireless" "$wifi_device" "hwmode" "$mode"
 			uci_remove "wireless" "$wifi_device" "disabled" 2> /dev/null
@@ -432,7 +406,7 @@ config_wireless() {
 	uci_add "wireless" "wifi-iface" "public"
 	uci_set "wireless" "public" "device" "$wifi_device"
 	uci_set "wireless" "public" "ifname" "$wifi_ifname"
-	uci_set "wireless" "public" "network" "hotspotwifi"
+	uci_set "wireless" "public" "network" "lan"
 	uci_set "wireless" "public" "mode" "ap"
 	uci_set "wireless" "public" "ssid" "off"
 	uci_set "wireless" "public" "hidden" "0"

@@ -31,7 +31,7 @@ local uci   = require 'luci.model.uci'.cursor()
 local arg = arg or {} -- needed when this code is not loaded via the interpreter
 
 local DEBUG             = (arg[1] == '-d')
-local LOGMASK           = uci:get('hotspot', 'daemon', 'logmask') or 'info'
+local LOGMASK           = uci:get('fonsmcd', 'daemon', 'logmask') or 'info'
 nixio.setlogmask(LOGMASK)
 
 local DAEMON            = os.getenv('DAEMON') or 'supd'
@@ -68,7 +68,7 @@ local fds = { fifo, timer }
 local wifi = {
 	on = false,
 	buffer = {},
-	ath_kmod_reload = uci:get('hotspot', 'event', 'ath_kmod_reload'),
+	ath_kmod_reload = uci:get('fonsmcd', 'event', 'ath_kmod_reload'),
 
 	init = function(self)
 		local cmd = 'wpa_cli -p /var/run/wpa_supplicant-wlan0 -i wlan0 status'
@@ -116,8 +116,8 @@ local wifi = {
 
 	reload = function(self)
 		self.ath_kmod_reload = self.ath_kmod_reload + 1
-		uci:set('hotspot', 'event', 'ath_kmod_reload', self.ath_kmod_reload)
-		uci:commit('hotspot')
+		uci:set('fonsmcd', 'event', 'ath_kmod_reload', self.ath_kmod_reload)
+		uci:commit('fonsmcd')
 
 		os.execute('wifi down')
 		os.execute('rmmod ath9k')

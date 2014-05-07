@@ -326,7 +326,7 @@ endef
 
 define Package/luci-admin-fon
   $(call Package/luci/webtemplate)
-  DEPENDS+=+luci-web +luci-cbi +luci-theme-fon +luci-i18n-english +luci-i18n-zh_cn +luci-luanet +luci-twitter +mobile-broadband-provider-info
+  DEPENDS+=+luci-web +luci-cbi +luci-theme-fon +luci-i18n-english +luci-i18n-zh_cn +luci-luanet +luci-twitter
   TITLE:=Web UI Core Module
 endef
 

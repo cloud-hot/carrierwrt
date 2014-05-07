@@ -9,21 +9,29 @@ config fon fon
 	option revision 0
 	option beta "0+ (svn)"
 
-config led usb
-	option sysfs	gpio3
-	option default	0
+config led 'led_wlan'
+	option name 'WLAN'
+	option sysfs 'dragino2:red:wlan'
+	option trigger 'phy0tpt'
 
-config led powerg
-	option sysfs	gpio4
-	option default	0
+config led 'led_lan'
+	option name 'LAN'
+	option sysfs 'dragino2:red:lan'
+	option trigger 'netdev'
+	option 'mode' 'link tx rx'
+	option 'dev' 'eth0'
 
-config led powero
-	option sysfs	gpio7
-	option default	1	
+config led 'led_wan'
+	option name 'WAN'
+	option sysfs 'dragino2:red:wan'
+	option trigger 'netdev'
+	option 'mode' 'link tx rx'
+	option 'dev' 'eth1'
 
-config led wifio
-	option sysfs	gpio1
-	option default	0
+#config led 'led_usb'
+#        option name 'USB'
+#        option sysfs 'dragino2:red:usb'
+#        option trigger 'usbdev'
 
 config button
 	option button	reset

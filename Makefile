@@ -319,5 +319,11 @@ $(OPENWRT_DIR)/feeds.conf:
 	$(OPENWRT_DIR)/scripts/feeds update
 #	$(OPENWRT_DIR)/scripts/feeds install luci
 	$(OPENWRT_DIR)/scripts/feeds install mosquitto
+	$(OPENWRT_DIR)/scripts/feeds install libcurl
+	$(OPENWRT_DIR)/scripts/feeds install libmicroxml
+	$(OPENWRT_DIR)/scripts/feeds install shflags
+	$(OPENWRT_DIR)/scripts/feeds install ntpclient
+	$(OPENWRT_DIR)/scripts/feeds install libdaemon
+	$(OPENWRT_DIR)/scripts/feeds install luaposix
 
 .PHONY: all help _info _touch _build _build-products _build-targets _build-images

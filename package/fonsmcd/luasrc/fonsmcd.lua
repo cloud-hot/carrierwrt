@@ -30,13 +30,13 @@ local mosq       = require "mosquitto"
 local ubus       = require "ubus"
 
 
--- parse and load /etc/config/hotspot
-local hotspot            = uci:get_all('hotspot')
+-- parse and load /etc/config/fonsmcd
+local fonsmcd            = uci:get_all('fonsmcd')
 
 local arg = arg or {} -- needed when this code is not loaded via the interpreter
 
 local DEBUG             = (arg[1] == '-d')
-local LOGMASK           = hotspot.daemon.logmask or 'info'
+local LOGMASK           = fonsmcd.daemon.logmask or 'info'
 nixio.setlogmask(LOGMASK)
 
 local POLLIN          = nixio.poll_flags("in")
@@ -44,7 +44,7 @@ local POLLOUT         = nixio.poll_flags("out")
 
 local POLL_TIMEOUT_MS = -1 -- no timeout -1
 
-local TIMERFD_HEARTBEAT_SEC     = hotspot.daemon.mqtt_heartbeat -- 5s
+local TIMERFD_HEARTBEAT_SEC     = fonsmcd.daemon.mqtt_heartbeat -- 5s
 local TIMERFD_HEARTBEAT_NS      = 0
 
 local timer_heartbeat = {
@@ -60,9 +60,9 @@ uci:foreach('easycwmp', 'device', function(x) MOSQ_NODE_SERIAL = x.serial_number
 local MOSQ_NODE_ID       = MOSQ_NODE_OUI .. "-" .. MOSQ_NODE_CLASS .. "-" .. MOSQ_NODE_SERIAL
 local MOSQ_ID            = "tr069-" .. MOSQ_NODE_ID
 local MOSQ_CLEAN_SESSION = true
-local MOSQ_HOST          = hotspot.daemon.mqtt_broker
-local MOSQ_PORT          = hotspot.daemon.mqtt_port
-local MOSQ_KEEPALIVE     = hotspot.daemon.mqtt_keepalive
+local MOSQ_HOST          = fonsmcd.daemon.mqtt_broker
+local MOSQ_PORT          = fonsmcd.daemon.mqtt_port
+local MOSQ_KEEPALIVE     = fonsmcd.daemon.mqtt_keepalive
 local MOSQ_MAX_READ      = 10 -- packets
 local MOSQ_MAX_WRITE     = 10 -- packets
 

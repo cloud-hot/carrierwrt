@@ -78,8 +78,8 @@ CONFIGURE_ARGS += \
 	--enable-devel
 endif
 
-#CONFIGURE_ARGS += \
-#	--enable-jsonc=1
+CONFIGURE_ARGS += \
+	--enable-jsonc=1
 
 define Package/easycwmp/conffiles
 /etc/config/easycwmp

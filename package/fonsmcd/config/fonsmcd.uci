@@ -1,6 +1,6 @@
 config settings daemon
 	option logmask info
-	option mqtt_broker 10.0.1.234
+	option mqtt_broker 192.168.10.234
 	option mqtt_port 1883
 	option mqtt_keepalive 300
 	option mqtt_heartbeat 5

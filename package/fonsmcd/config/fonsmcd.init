@@ -5,11 +5,11 @@ START=98
 
 set_version()
 {
-	VERSION=$(opkg info hotspot | grep -o -e '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\.//g')
+	VERSION=$(opkg info fonsmcd | grep -o -e '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\.//g')
 	uci set easycwmp.@device[0].software_version=$VERSION
 	uci commit
 
-	logger 'copying hotspot package version into system uci file at firstboot'
+	logger 'copying fonsmcd package version into system uci file at firstboot'
 }
 
 load_config()
@@ -28,7 +28,7 @@ load_config()
 		uci set easycwmp.@device[0].serial_number=$SERIAL
 	fi
 
-#	uci set system.@system[0].hostname=hotspot-$(hexdump -v -e '1/1 "%.2x"' -s $((0x11020)) -n 3 /dev/mtd6)
+#	uci set system.@system[0].hostname=fonsmcd-$(hexdump -v -e '1/1 "%.2x"' -s $((0x11020)) -n 3 /dev/mtd6)
 
 	uci commit
 
@@ -37,7 +37,7 @@ load_config()
 
 start()
 {
-	FIRSTBOOT=$(uci get hotspot.daemon.firstboot)
+	FIRSTBOOT=$(uci get fonsmcd.daemon.firstboot)
 
 	if [ $FIRSTBOOT -eq '1' ]
 	then
@@ -46,10 +46,11 @@ start()
 	fi
 
 	/usr/sbin/supd
+	/usr/sbin/fonsmcd
 
 	if [ $FIRSTBOOT -eq '1' ]
 	then
-		uci set hotspot.daemon.firstboot='0'
+		uci set fonsmcd.daemon.firstboot='0'
 		uci commit
 	fi
 
@@ -66,5 +67,8 @@ stop()
 
 	/usr/sbin/supd -k
 	rm -rf /var/run/supd
+
+	/usr/sbin/fonsmcd -k
+	rm -rf /var/run/fonsmcd
 }
 

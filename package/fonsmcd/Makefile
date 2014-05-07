@@ -36,9 +36,9 @@ define Package/fonsmcd/install
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/public_sm_rsa_key.pem $(1)/etc/
 	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/hotspot.uci $(1)/etc/config/hotspot
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/fonsmcd.uci $(1)/etc/config/fonsmcd
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/hotspot.init $(1)/etc/init.d/hotspot
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/fonsmcd.init $(1)/etc/init.d/fonsmcd
 	$(INSTALL_DIR) $(1)/etc/fon
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/fonsmcd.conf $(1)/etc/fon/
 	$(INSTALL_DIR) $(1)/etc/fonstated
@@ -49,7 +49,7 @@ define Package/fonsmcd/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/luad $(1)/usr/sbin/
 	$(LN) /usr/sbin/luad $(1)/usr/sbin/fonsmcd
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/hotspotd.lua $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/fonsmcd.lua $(1)/usr/sbin/
 	$(LN) /usr/sbin/luad $(1)/usr/sbin/supd
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/supd.lua $(1)/usr/sbin/
 

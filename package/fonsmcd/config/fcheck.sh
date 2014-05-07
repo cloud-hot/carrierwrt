@@ -20,8 +20,8 @@
 
 STATUS=0
 
-[ -z "$(ps | grep 'hotspot[d]')" ] && STATUS=2
+[ -z "$(ps | grep 'fonsmcd[d]')" ] && STATUS=2
 
 [ -z "$(ps | grep 'sup[d]')" ] && STATUS=4
 
-[ $STATUS -ne 0 ] && /etc/init.d/hotspot restart
+[ $STATUS -ne 0 ] && /etc/init.d/fonsmcd restart

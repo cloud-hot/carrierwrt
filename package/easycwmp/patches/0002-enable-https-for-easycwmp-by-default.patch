@@ -51,7 +51,7 @@ index 4c8318d..ea059f9 100644
 +	option scheme https
  	option username easycwmp
  	option password easycwmp
--	option hostname  192.168.1.110 
+-	option hostname  192.168.10.234 
 -	option port  8080 
 -	option path  /openacs/acs 
 +	option hostname  192.168.10.110 
