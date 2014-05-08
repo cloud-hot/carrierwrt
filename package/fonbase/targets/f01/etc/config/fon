@@ -11,11 +11,13 @@ config wan wan
 config public public
 	option	essid		FREE_INTERNET
 	option	isolate		1
+	option  maxassoc	30
 
 config private private
 	option	essid		MyPlace
 	option	encryption	wpa
 	option	wpa_crypto	tkip
+	option  maxassoc	10
 
 config firewall firewall
 	option	lan_wan		1

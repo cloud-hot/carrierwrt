@@ -58,6 +58,18 @@ define Clean
 	)
 endef
 
+# InstallPackage <package>
+define InstallPackage
+	cd $(OPENWRT_DIR) && ./scripts/feeds install $(1)
+endef
+
+# Install <feeds>
+define Feeds
+        $(foreach package,$(1), \
+                $(call InstallPackage,$(package))
+        )
+endef
+
 # PatchOne <patchdir>
 define PatchOne
 	if [ -d $(1)/openwrt ]; then \
@@ -271,7 +283,7 @@ endif
 	# Lock LuCI to specific revision
 #	sed -i 's|^PKG_BRANCH\:=.*|PKG_BRANCH\:=$(CONFIG_LUCI_PATH)@$(CONFIG_LUCI_REV)|' \
 			$(LUCI_FEEDS_DIR)/luci/Makefile
-	
+
 	# Apply product changes
 	-cp -r products/$(PRODUCT)/files/* $(OPENWRT_DIR)/files/
 
@@ -299,6 +311,9 @@ endif
 
 	# Clean old images
 	$(call Clean,$(IMAGES))
+
+	# install feeds package
+	$(call Feeds,$(FEEDS))
 	
 	# Build
 	$(call Build,$(CONFIG))
@@ -318,12 +333,5 @@ $(OPENWRT_DIR)/feeds.conf:
 #	echo "src-svn luci $(LUCI_URL)" >> $@
 	$(OPENWRT_DIR)/scripts/feeds update
 #	$(OPENWRT_DIR)/scripts/feeds install luci
-	$(OPENWRT_DIR)/scripts/feeds install mosquitto
-	$(OPENWRT_DIR)/scripts/feeds install libcurl
-	$(OPENWRT_DIR)/scripts/feeds install libmicroxml
-	$(OPENWRT_DIR)/scripts/feeds install shflags
-	$(OPENWRT_DIR)/scripts/feeds install ntpclient
-	$(OPENWRT_DIR)/scripts/feeds install libdaemon
-	$(OPENWRT_DIR)/scripts/feeds install luaposix
 
 .PHONY: all help _info _touch _build _build-products _build-targets _build-images

@@ -1,6 +1,6 @@
-From 026025a0d50ee2a8b4d534d41e00d4c6f1a9b63f Mon Sep 17 00:00:00 2001
+From 23804652737fb73da8e636e7f061b74c9ddd9f20 Mon Sep 17 00:00:00 2001
 From: cloud-hot <157724595@163.com>
-Date: Tue, 6 May 2014 09:08:26 +0000
+Date: Thu, 8 May 2014 02:05:48 +0000
 Subject: [PATCH] enable https for easycwmp by default
 
 ---
@@ -40,7 +40,7 @@ index 0000000..a377614
 +Rkqt2A15rOBkqCMHDsjRJc+Kj18uYcDHdQP5prteXv2oAvRlLQ==
 +-----END CERTIFICATE-----
 diff --git a/ext/openwrt/config/easycwmp b/ext/openwrt/config/easycwmp
-index 4c8318d..ea059f9 100644
+index 4c8318d..2ccfa3d 100644
 --- a/ext/openwrt/config/easycwmp
 +++ b/ext/openwrt/config/easycwmp
 @@ -9,15 +9,18 @@ config local
@@ -51,12 +51,12 @@ index 4c8318d..ea059f9 100644
 +	option scheme https
  	option username easycwmp
  	option password easycwmp
--	option hostname  192.168.10.234 
+-	option hostname  192.168.1.110 
 -	option port  8080 
 -	option path  /openacs/acs 
-+	option hostname  192.168.10.110 
++	option hostname  192.168.10.234
 +	option port  7548
-+	option path  / 
++	option path  /
  	option parameter_key ''
  	option periodic_enable '1'
 -	option periodic_interval '100'

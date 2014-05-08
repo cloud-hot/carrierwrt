@@ -349,7 +349,7 @@ config_network() {
 }
 
 config_wireless() {
-	local mode channel ht country diversity rtxant ssid encryption
+	local mode channel pub_maxassoc pri_maxassoc ht country diversity rtxant ssid encryption
 	local wpa_crypto enc pwd key mode auth crypt
 
 	###################################
@@ -357,6 +357,8 @@ config_wireless() {
 	###################################
 	config_get channel advanced channel
 	config_get mode advanced bgmode
+	config_get pub_maxassoc public maxassoc
+	config_get pri_maxassoc private maxassoc
 	uci_add "wireless" "wifi-device" "$wifi_device"
 	uci_set "wireless" "$wifi_device" "channel" "$channel"
 	case $fon_device in
@@ -412,6 +414,7 @@ config_wireless() {
 	uci_set "wireless" "public" "hidden" "0"
 	uci_set "wireless" "public" "encryption" "none"
 	uci_set "wireless" "public" "isolate" "1"
+	uci_set "wireless" "public" "maxassoc" "$pub_maxassoc"
 
 	###################################
 	# Setup the private wifi network
@@ -428,6 +431,7 @@ config_wireless() {
 	uci_set "wireless" "private" "mode" "ap"
 	uci_set "wireless" "private" "ssid" "$ssid"
 	uci_set "wireless" "private" "hidden" "0"
+	uci_set "wireless" "private" "maxassoc" "$pri_maxassoc"
 
 	case "$encryption" in
 		wpa*|WPA*|Mixed|mixed)
@@ -490,7 +494,9 @@ config_wireless() {
 	uci_set "wireless" "uplink" "device" "$wifi_device"
 	uci_set "wireless" "uplink" "ifname" "$wan_wifi_ifname"
 	uci_set "wireless" "uplink" "mode" "sta"
+	uci_set "wireless" "uplink" "disabled" "1"
 	[ "$mode" == "wifi" -o "$mode" == "wifi-bridge" ] && {
+		uci_set "wireless" "uplink" "disabled" "0"
 		config_get ssid wan ssid
 		config_get auth wan auth
 		config_get channel wan channel
