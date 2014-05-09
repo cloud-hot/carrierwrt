@@ -16,7 +16,7 @@ local banner = require("luci.fon.spot").get_device()
 </head>
 <body id="dashboard" class="lang_en">
 
-<form method="post" action="/luci/wizard/step2" enctype="multipart/form-data">
+<form method="post" action="/cgi-bin/luci/wizard/step2" enctype="multipart/form-data">
 	<div>
 		<script type="text/javascript" src="/luci-static/resources/cbi.js"></script>
 		<script type="text/javascript">
@@ -47,6 +47,6 @@ local banner = require("luci.fon.spot").get_device()
 				<div id="mainContent">
 					<div id="breadCrumbs">
 						<ul class="right">
-							<li><a id="abort" href="/luci/wizard/end"><%:wiz_abort Abort Wizard%></a></li>
+							<li><a id="abort" href="/cgi-bin/luci/wizard/end"><%:wiz_abort Abort Wizard%></a></li>
 						</ul>
 					</div>

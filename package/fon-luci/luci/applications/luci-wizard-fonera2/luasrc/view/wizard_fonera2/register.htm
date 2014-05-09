@@ -36,7 +36,7 @@ local banner = require("luci.fon.spot").get_device()
 				<div id="mainContent">
 					<div id="breadCrumbs">
 						<ul class="right">
-							<li><a id="abort" href="/luci/wizard/end"><%:wiz_abort Abort Wizard%></a></li>
+							<li><a id="abort" href="/cgi-bin/luci/wizard/end"><%:wiz_abort Abort Wizard%></a></li>
 						</ul>
 					</div>
 					<div class="box1">
@@ -48,9 +48,9 @@ local banner = require("luci.fon.spot").get_device()
 								<fieldset style="width: 80%">
 								<h2><%:wiz_grats Congratulations!%></h2>
 								<p><%:wiz_reg Your La Fonera 2.0 was successfully set up. If you want to take advantage of all the features of your La Fonera 2.0 please register it.%></p>
-								<%if not(registered) and url and #url > 2 then %><a class="icon register" href="#" onclick="window.open('<%=url%>', '_blank');window.location.href = '/luci/wizard/end';"><%:register Register%></a><%end%>
+								<%if not(registered) and url and #url > 2 then %><a class="icon register" href="#" onclick="window.open('<%=url%>', '_blank');window.location.href = '/cgi-bin/luci/wizard/end';"><%:register Register%></a><%end%>
 								<div class="buttons">
-									<form method="post" action="/luci/wizard/end" enctype="multipart/form-data">
+									<form method="post" action="/cgi-bin/luci/wizard/end" enctype="multipart/form-data">
 										<input class="submit" type="submit" value="<%:wiz_next Next%>" />
 									</form>
                                 </div>

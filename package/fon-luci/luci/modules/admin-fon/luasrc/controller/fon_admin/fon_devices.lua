@@ -12,41 +12,6 @@ function index()
 	page.sysauth_authenticator = "htmlauth"
 	page.index = true
 
-	local page  = node("fon_devices", "fon_hd")
-	page.target = template("fon_hd/main")
-	page.title  = luci.i18n.translate("usb_disc", "USB Disc")
-	page.order  = 40
-	page.page_icon   = "icons/hd_on.png"
-
-	page.fon_status = function()
-		local ico = luci.config.main.mediaurlbase.."/icons/hd_%s.png"
-		local cfg = {"mountd", "mountd", "count"}
-		local uci = require "luci.model.uci".cursor_state()
-		local val = uci:get(unpack(cfg))
-
-		local icon = ico % ((not val or val == "0") and "off" or "on")
-
-		return {icon=icon}
-	end
-
-	page.fon_reload = function()
-		local cfg = {"mountd", "mountd", "count"}
-		local uci = require "luci.model.uci".cursor_state()
-		local val = uci:get(unpack(cfg))
-		local reload = val or "0"
-		return {reload=reload}
-	end
-
-	page.icon_select = function()
-			local u = luci.model.uci.cursor_state()
-			local c = u:get("mountd", "mountd", "count")
-			if c and c > "0" then
-				return "icons/hd_on.png"
-			else
-				return "icons/hd_off.png"
-			end
-		end
-
 	local page  = node("fon_devices", "fon_umts")
 	page.target = cbi("fon_umts/main")
 	page.sysauth = "root"

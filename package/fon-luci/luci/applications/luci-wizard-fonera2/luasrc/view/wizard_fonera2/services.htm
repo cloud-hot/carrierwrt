@@ -36,7 +36,7 @@ local banner = require("luci.fon.spot").get_device()
 				<div id="mainContent">
 					<div id="breadCrumbs">
 						<ul class="right">
-							<li><a id="abort" href="/luci/wizard/end"><%:wiz_abort Abort Wizard%></a></li>
+							<li><a id="abort" href="/cgi-bin/luci/wizard/end"><%:wiz_abort Abort Wizard%></a></li>
 						</ul>
 					</div>
 					<div class="box1">
@@ -58,7 +58,7 @@ local banner = require("luci.fon.spot").get_device()
 								<br>
 								<br>
 								<div class="buttons">
-									<form method="post" action="/luci/wizard/step4" enctype="multipart/form-data">
+									<form method="post" action="/cgi-bin/luci/wizard/step4" enctype="multipart/form-data">
 										<input class="submit" type="submit" value="<%:wiz_next Next%>" />
 									</form>
                                 </div>

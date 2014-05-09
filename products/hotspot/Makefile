@@ -16,18 +16,17 @@ define Customization/default
 
 	CONFIG += \
 		CONFIG_PACKAGE_fon-luci=y  \
-		CONFIG_PACKAGE_luci-core_source=y \
-		CONFIG_PACKAGE_luci-admin-fon_nousb=y  \
+		CONFIG_PACKAGE_luci-admin-fon=y  \
 		CONFIG_PACKAGE_luci-admin-fon-rpc=y \
-		CONFIG_PACKAGE_luci-app-debug=y \
+		CONFIG_PACKAGE_luci-admin-rpc=y \
 		CONFIG_PACKAGE_luci-app-facebook=y \
 		CONFIG_PACKAGE_luci-app-fonfw=y \
-		CONFIG_PACKAGE_luci-app-openvpn=y \
 		CONFIG_PACKAGE_luci-app-qos=y \
+		CONFIG_PACKAGE_luci-app-upgrade=y \
 		CONFIG_PACKAGE_luci-app-wizard-fonera2=y \
 		CONFIG_PACKAGE_luci-cbi=y \
 		CONFIG_PACKAGE_luci-core=y \
-		CONFIG_PACKAGE_luci-core_compile=y \
+		CONFIG_PACKAGE_luci-core_source=y \
 		CONFIG_PACKAGE_luci-fon=y \
 		CONFIG_PACKAGE_luci-http=y \
 		CONFIG_PACKAGE_luci-httpclient=y \
@@ -49,6 +48,7 @@ define Customization/default
 		CONFIG_PACKAGE_fonbase=y \
 		CONFIG_PACKAGE_fonstate=y \
 		CONFIG_PACKAGE_fonsmcd=y \
+		CONFIG_PACKAGE_onlined=y \
 		CONFIG_PACKAGE_vboot_utils=y \
 		CONFIG_PACKAGE_libcurl=y \
 		CONFIG_LIBCURL_OPENSSL=y \
@@ -62,7 +62,8 @@ define Customization/default
 		CONFIG_EASYCWMP_DEBUG=y \
 		CONFIG_PACKAGE_uhttpd-mod-lua=y \
 		CONFIG_PACKAGE_libubus-lua=y \
-		CONFIG_PACKAGE_luaposix=y
+		CONFIG_PACKAGE_luaposix=y \
+		CONFIG_PACKAGE_uhttpd=y
 
 	FEEDS += \
 		mosquitto \
