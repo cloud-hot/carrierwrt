@@ -19,10 +19,10 @@ f = SimpleForm("register",
 f.cancel = false
 f.submit = translate("wiz_next", "Next")
 f.title_custom = true
-name = f:field(Value, "hotspot_summary", translate("hotspot_summary", "Hotspot_Summary"))
+name = f:field(Value, "name", translate("hotspot_summary", "Hotspot_Summary"))
 name.password = false
 
-subnet_id = f:field(Value, "hotspot_subnetid", translate("hotspot_subnetid", "hotspot_SubnetID"))
+subnet_id = f:field(Value, "subnet_id", translate("hotspot_subnetid", "hotspot_SubnetID"))
 subnet_id.password = false
 
 function set_error()
