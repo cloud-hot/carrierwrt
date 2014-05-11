@@ -18,7 +18,7 @@ index 6fa8d64..5b263ce 100644
 +get_device_info_name() {
 +local nl="$1"
 +local val=""
-+local param="InternetGatewayDevice.DeviceInfo.Name"
++local param="InternetGatewayDevice.DeviceInfo.Description"
 +local permissions="1"
 +case "$action" in
 +	get_value)
@@ -37,7 +37,7 @@ index 6fa8d64..5b263ce 100644
 +
 +set_device_info_name() {
 +local val=$1
-+local param="InternetGatewayDevice.DeviceInfo.Name"
++local param="InternetGatewayDevice.DeviceInfo.Description"
 +case "$action" in
 +	set_value)
 +	$UCI_SET fon.tr069.summary=$val
@@ -108,7 +108,7 @@ index 6fa8d64..5b263ce 100644
  	get_device_info_provisioningcode "$2"
  	return $?
  	;;
-+	InternetGatewayDevice.DeviceInfo.Name)
++	InternetGatewayDevice.DeviceInfo.Description)
 +	get_device_info_name "$2"
 +	return $?
 +	;;
@@ -124,7 +124,7 @@ index 6fa8d64..5b263ce 100644
  	set_device_info_provisioningcode "$2"
  	return 0
 +	;;
-+	InternetGatewayDevice.DeviceInfo.Name)
++	InternetGatewayDevice.DeviceInfo.Description)
 +	set_device_info_name "$2"
 +	return 0
 +	;;
