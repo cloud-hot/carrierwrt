@@ -14,15 +14,15 @@ $Id: passwd.lua 2880 2008-08-17 23:47:38Z jow $
 ]]--
 require("luci.tools.webadmin", package.seeall)
 f = SimpleForm("register",
-	translate("wiz_register", "<h2>Register your cloud-hotspot device!</h2><p>Your La Fonera 2.0 was successfully set up. If you want to take advantage of all the features of your La Fonera 2.0 please register it.</p>"))
+	translate("wiz_hotspot", "<h2>Register your cloud-hotspot device!</h2><p>Your La Fonera 2.0 was successfully set up. If you want to take advantage of all the features of your La Fonera 2.0 please register it.</p>"))
 	--translate("passwd_title", "Change Password"),
 f.cancel = false
 f.submit = translate("wiz_next", "Next")
 f.title_custom = true
-name = f:field(Value, "name", translate("name", "Name"))
+name = f:field(Value, "hotspot_summary", translate("hotspot_summary", "Hotspot_Summary"))
 name.password = false
 
-subnet_id = f:field(Value, "subnet_id", translate("subnet_id", "Subnet_ID"))
+subnet_id = f:field(Value, "hotspot_subnetid", translate("hotspot_subnetid", "hotspot_SubnetID"))
 subnet_id.password = false
 
 function set_error()
