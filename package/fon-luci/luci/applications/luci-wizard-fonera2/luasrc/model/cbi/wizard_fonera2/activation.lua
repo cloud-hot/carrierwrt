@@ -47,7 +47,7 @@ function f.handle(self, state, data)
 	if state == FORM_VALID and data.name and data.subnet_id then
 		local uci = require("luci.model.uci").cursor_state()
 		uci:set("fon", "tr069", "summary", data.name)
-		uci:set("fon", "tr069", "subnetID", data.subnet_id)
+		uci:set("fon", "tr069", "subnetid", data.subnet_id)
 		uci:commit("fon")
 
 		data.name = nil

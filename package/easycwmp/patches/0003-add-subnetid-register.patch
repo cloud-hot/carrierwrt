@@ -1,0 +1,146 @@
+From ed8709108aa30805a850a307064a2462bc18793d Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Sun, 11 May 2014 04:07:57 +0000
+Subject: [PATCH] add subnetid register
+
+---
+ ext/openwrt/scripts/functions/device_info |   90 ++++++++++++++++++++++++++++-
+ 1 file changed, 89 insertions(+), 1 deletion(-)
+
+diff --git a/ext/openwrt/scripts/functions/device_info b/ext/openwrt/scripts/functions/device_info
+index 6fa8d64..5b263ce 100644
+--- a/ext/openwrt/scripts/functions/device_info
++++ b/ext/openwrt/scripts/functions/device_info
+@@ -24,6 +24,74 @@ easycwmp_output "$param" "$val" "$permissions"
+ return 0
+ }
+ 
++get_device_info_name() {
++local nl="$1"
++local val=""
++local param="InternetGatewayDevice.DeviceInfo.Name"
++local permissions="1"
++case "$action" in
++	get_value)
++	val=`$UCI_GET fon.tr069.summary 2> /dev/null`
++	;;
++	get_name)
++	[ "$nl" = "1" ] && return $E_INVALID_ARGUMENTS
++	;;
++	get_notification)
++	easycwmp_get_parameter_notification "val" "$param"
++	;;
++esac
++easycwmp_output "$param" "$val" "$permissions"
++return 0
++}
++
++set_device_info_name() {
++local val=$1
++local param="InternetGatewayDevice.DeviceInfo.Name"
++case "$action" in
++	set_value)
++	$UCI_SET fon.tr069.summary=$val
++	$UCI_COMMIT
++	;;
++	set_notification)
++	easycwmp_set_parameter_notification "$param" "$val"
++	;;
++esac
++}
++
++get_device_info_subnetid() {
++local nl="$1"
++local val=""
++local parm="InternetGatewayDevice.DeviceInfo.SubnetID"
++local permissions="1"
++case "$action" in
++	get_value)
++	val=`$UCI_GET fon.tr069.subnetid 2> /dev/null`
++	;;
++	get_name)
++	[ "$nl" = "1" ] && return $E_INVALID_ARGUMENTS
++	;;
++	get_notification)
++	easycwmp_get_parameter_notification "val" "$parm"
++	;;
++esac
++easycwmp_output "$parm" "$val" "$permissions"
++return 0
++}
++
++set_device_info_subnetid() {
++local val=$1
++local param="InternetGatewayDevice.DeviceInfo.SubnetID"
++case $action in
++	set_value)
++	$UCI_SET fon.tr069.subnetid=$val
++	$UCI_COMMIT
++	;;
++	set_notification)
++	easycwmp_set_parameter_notification "$parm" "$val"
++	;;
++esac
++}
++
+ get_device_info_provisioningcode() {
+ local nl="$1"
+ local val=""
+@@ -244,6 +312,8 @@ case "$1" in
+ 	get_device_info_device_log "$2"
+ 	get_device_info_specversion "$2"
+ 	get_device_info_provisioningcode "$2"
++	get_device_info_name "$2"
++	get_device_info_subnetid "$2"
+ 	return 0
+ 	;;
+ 	InternetGatewayDevice.DeviceInfo.)
+@@ -258,6 +328,8 @@ case "$1" in
+ 	get_device_info_device_log 0
+ 	get_device_info_specversion 0
+ 	get_device_info_provisioningcode 0
++	get_device_info_name 0
++	get_device_info_subnetid 0
+ 	return 0
+ 	;;
+ 	InternetGatewayDevice.DeviceInfo.SpecVersion)
+@@ -268,6 +340,14 @@ case "$1" in
+ 	get_device_info_provisioningcode "$2"
+ 	return $?
+ 	;;
++	InternetGatewayDevice.DeviceInfo.Name)
++	get_device_info_name "$2"
++	return $?
++	;;
++	InternetGatewayDevice.DeviceInfo.SubnetID)
++	get_device_info_subnetid "$2"
++	return $?
++	;;
+ 	InternetGatewayDevice.DeviceInfo.Manufacturer)
+ 	get_device_info_manufacturer "$2"
+ 	return $?
+@@ -352,6 +432,14 @@ case "$1" in
+ 	InternetGatewayDevice.DeviceInfo.ProvisioningCode)
+ 	set_device_info_provisioningcode "$2"
+ 	return 0
++	;;
++	InternetGatewayDevice.DeviceInfo.Name)
++	set_device_info_name "$2"
++	return 0
++	;;
++	InternetGatewayDevice.DeviceInfo.SubnetID)
++	set_device_info_subnetid "$2"
++	return 0
+ 	;;	
+ esac
+ return $E_INVALID_PARAMETER_NAME
+@@ -361,4 +449,4 @@ build_instances_device_info() { return 0; }
+ 
+ add_object_device_info() { return $E_INVALID_PARAMETER_NAME; }
+ 
+-delete_object_device_info() { return $E_INVALID_PARAMETER_NAME; }
+\ No newline at end of file
++delete_object_device_info() { return $E_INVALID_PARAMETER_NAME; }
+-- 
+1.7.9.5
+
