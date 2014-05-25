@@ -63,7 +63,15 @@ define Customization/default
 		CONFIG_PACKAGE_uhttpd-mod-lua=y \
 		CONFIG_PACKAGE_libubus-lua=y \
 		CONFIG_PACKAGE_luaposix=y \
-		CONFIG_PACKAGE_uhttpd=y
+		CONFIG_PACKAGE_uhttpd=y \
+		CONFIG_PACKAGE_qos-gargoyle=y \
+		CONFIG_PACKAGE_gargoyle-firewall-util=y \
+		CONFIG_PACKAGE_libericstools=y \
+		CONFIG_PACKAGE_libiptbwctl=y \
+		CONFIG_PACKAGE_bwmon-gargoyle=y \
+		CONFIG_PACKAGE_webmon-gargoyle=y \
+		CONFIG_PACKAGE_ipset=y \
+		CONFIG_PACKAGE_libmnl=y
 
 	FEEDS += \
 		mosquitto \
