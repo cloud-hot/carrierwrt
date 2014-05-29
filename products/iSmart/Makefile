@@ -18,7 +18,6 @@ define Customization/default
 		CONFIG_PACKAGE_luci=y \
 		CONFIG_PACKAGE_luci-app-radvd=y \
 		CONFIG_PACKAGE_luci-theme-openwrt=y \
-		CONFIG_PACKAGE_luci-sgi-uhttpd=y \
 		CONFIG_PACKAGE_vboot_utils=y \
 		CONFIG_PACKAGE_libcurl=y \
 		CONFIG_LIBCURL_OPENSSL=y \

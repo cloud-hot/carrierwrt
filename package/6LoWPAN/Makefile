@@ -248,6 +248,7 @@ define Package/6LoWPAN-6LoWPANd/install
 	$(INSTALL_BIN) ./files/etc/init.d/6LoWPAN $(1)/etc/init.d/6LoWPAN
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/etc/config/6LoWPAN $(1)/etc/config/6LoWPAN
+	$(INSTALL_CONF) ./files/etc/config/network $(1)/etc/config/network
 	$(INSTALL_DIR) $(1)/etc/rc.d
 	$(INSTALL_BIN) ./files/etc/rc.d/S996LoWPAN $(1)/etc/rc.d/S996LoWPAN
 	$(INSTALL_DIR) $(1)/sbin
