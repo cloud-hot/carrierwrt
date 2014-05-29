@@ -1,0 +1,79 @@
+From d4749ca10969bed08c3f7ef19e068f67528b01fd Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Tue, 27 May 2014 15:21:32 +0000
+Subject: [PATCH] radvd-iSmart
+
+---
+ feeds/packages/ipv6/radvd/files/radvd.config |   57 +++++++++++++-------------
+ 1 file changed, 29 insertions(+), 28 deletions(-)
+
+diff --git feeds/packages/ipv6/radvd/files/radvd.config feeds/packages/ipv6/radvd/files/radvd.config
+index 1616c15..d8e9fed 100644
+--- feeds/packages/ipv6/radvd/files/radvd.config
++++ feeds/packages/ipv6/radvd/files/radvd.config
+@@ -1,32 +1,33 @@
+-config interface
+-	option interface	'lan'
+-	option AdvSendAdvert	1
+-	option AdvManagedFlag	0
+-	option AdvOtherConfigFlag 0
+-	list client		''
+-	option ignore		1
+ 
+-config prefix
+-	option interface	'lan'
+-	# If not specified, a non-link-local prefix of the interface is used
+-	list prefix		''
+-	option AdvOnLink	1
+-	option AdvAutonomous	1
+-	option AdvRouterAddr	0
+-	option ignore		1
++config 'interface'
++        option 'interface' 'lan'
++        option 'AdvSendAdvert' '1'
++        option 'ignore' '0'
++        option 'IgnoreIfMissing' '1'
++        option 'AdvSourceLLAddress' '1'
++        option 'AdvDefaultPreference' 'medium'
+ 
+-config route
+-	option interface	'lan'
+-	list prefix		''
+-	option ignore		1
++config 'route'
++        option 'interface' 'lan'
++        option 'ignore' '0'
++        option 'AdvRouteLifetime' '3600'
++        option 'AdvRoutePreference' 'medium'
++        list 'prefix' 'fd04:bd3:80e8:2::/64'
+ 
+-config rdnss
+-	option interface	'lan'
+-	# If not specified, the link-local address of the interface is used
+-	list addr		''
+-	option ignore		1
++config 'rdnss'
++        option 'interface' 'lan'
++        list 'addr' ''
++        option 'ignore' '1'
+ 
+-config dnssl
+-	option interface	'lan'
+-	list suffix		''
+-	option ignore		1
++config 'dnssl'
++        option 'interface' 'lan'
++        list 'suffix' ''
++        option 'ignore' '1'
++
++config 'prefix'
++        option 'ignore' '0'
++        option 'interface' 'lan'
++        option 'AdvOnLink' '1'
++        option 'AdvAutonomous' '1'
++        list 'prefix' 'fd04:bd3:80e8:1::/64'
++        option 'AdvRouterAddr' '1'
+\ No newline at end of file
+-- 
+1.7.9.5
+

@@ -1,0 +1,1144 @@
+From f3922b0bdce626553a4eec7afc713167ebd09e1b Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Wed, 28 May 2014 06:23:49 +0000
+Subject: [PATCH] freeradius for iSmart
+
+---
+ feeds/packages/net/freeradius2/Config.in           |   14 -
+ feeds/packages/net/freeradius2/Makefile            |   77 ++--
+ feeds/packages/net/freeradius2/files/radiusd.init  |    3 +-
+ .../net/freeradius2/patches/002-config.patch       |   50 +--
+ .../patches/010-disbale-openssl-check.patch        |   38 --
+ .../patches/100-nxp_border_router_config.patch     |  160 +++++++
+ .../net/freeradius2/patches/200-rlm-greylist.patch |  474 ++++++++++++++++++++
+ 7 files changed, 695 insertions(+), 121 deletions(-)
+ delete mode 100644 feeds/packages/net/freeradius2/Config.in
+ delete mode 100644 feeds/packages/net/freeradius2/patches/010-disbale-openssl-check.patch
+ create mode 100644 feeds/packages/net/freeradius2/patches/100-nxp_border_router_config.patch
+ create mode 100644 feeds/packages/net/freeradius2/patches/200-rlm-greylist.patch
+
+diff --git feeds/packages/net/freeradius2/Config.in feeds/packages/net/freeradius2/Config.in
+deleted file mode 100644
+index cd0141e..0000000
+--- feeds/packages/net/freeradius2/Config.in
++++ /dev/null
+@@ -1,14 +0,0 @@
+-# FreeRADIUS avanced configuration
+-
+-choice
+-	prompt "SSL library"
+-	default FREERADIUS_OPENSSL
+-	depends on PACKAGE_freeradius2-common
+-
+-config FREERADIUS_NOSSL
+-	bool "No SSL support"
+-
+-config FREERADIUS_OPENSSL
+-	bool "OpenSSL"
+-
+-endchoice
+diff --git feeds/packages/net/freeradius2/Makefile feeds/packages/net/freeradius2/Makefile
+index d36dad5..9e8eb50 100644
+--- feeds/packages/net/freeradius2/Makefile
++++ feeds/packages/net/freeradius2/Makefile
+@@ -1,5 +1,5 @@
+ #
+-# Copyright (C) 2008-2014 OpenWrt.org
++# Copyright (C) 2008-2012 OpenWrt.org
+ #
+ # This is free software, licensed under the GNU General Public License v2.
+ # See /LICENSE for more information.
+@@ -8,37 +8,29 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=freeradius2
+-PKG_VERSION:=2.2.3
+-PKG_RELEASE:=3
++PKG_VERSION:=2.2.0
++PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=freeradius-server-$(PKG_VERSION).tar.bz2
+ PKG_SOURCE_URL:=ftp://ftp.freeradius.org/pub/freeradius/
+-PKG_MD5SUM:=25fb44cc1bc121f44f61f439bf45a420
++PKG_MD5SUM:=0fb333fe6a64eb2b1dd6ef67f7bca119
+ 
+ PKG_BUILD_DIR:=$(BUILD_DIR)/freeradius-server-$(PKG_VERSION)
+ PKG_FIXUP:=autoreconf
+ 
+-PKG_CONFIG_DEPENDS := \
+-  FREERADIUS_OPENSSL \
+-  FREERADIUS_NOSSL
+-
+ include $(INCLUDE_DIR)/package.mk
+ 
+-define Package/freeradius2/config
+-  source "$(SOURCE)/Config.in"
+-endef
+-
+ define Package/freeradius2/Default
+   SECTION:=net
+   CATEGORY:=Network
+   URL:=http://freeradius.org/
+-  SUBMENU:=FreeRADIUS (version 2)
+ endef
+ 
+ define Package/freeradius2
+   $(call Package/freeradius2/Default)
+-  DEPENDS:=+libltdl +libreadline +freeradius2-common
++  DEPENDS:=+libltdl +libopenssl +libpthread +libreadline
+   TITLE:=A flexible RADIUS server (version 2)
++  MENU:=1
+ endef
+ 
+ define Package/freeradius2/conffiles
+@@ -53,12 +45,6 @@ define Package/freeradius2-democerts
+   TITLE:=Demo certificates to test the server
+ endef
+ 
+-define Package/freeradius2-common
+-  $(call Package/freeradius2/Default)
+-  TITLE:=common files
+-  DEPENDS:=+libpthread +FREERADIUS_OPENSSL:libopenssl
+-endef
+-
+ define Package/freeradius2-mod-chap
+   $(call Package/freeradius2/Default)
+   DEPENDS:=freeradius2
+@@ -109,13 +95,13 @@ endef
+ 
+ define Package/freeradius2-mod-eap-peap
+   $(call Package/freeradius2/Default)
+-  DEPENDS:=freeradius2-mod-eap @FREERADIUS_OPENSSL
++  DEPENDS:=freeradius2-mod-eap
+   TITLE:=EAP/PEAP module
+ endef
+ 
+ define Package/freeradius2-mod-eap-tls
+   $(call Package/freeradius2/Default)
+-  DEPENDS:=freeradius2-mod-eap @FREERADIUS_OPENSSL
++  DEPENDS:=freeradius2-mod-eap
+   TITLE:=EAP/TLS module
+ endef
+ 
+@@ -324,9 +310,20 @@ define Package/freeradius2-mod-radutmp/conffiles
+ /etc/freeradius2/modules/sradutmp
+ endef
+ 
++define Package/freeradius2-mod-greylist
++   $(call Package/freeradius2/Default)
++   DEPENDS:=freeradius2
++  TITLE:=NXP Greylisting module
++endef
++
++define Package/freeradius2-mod-greylist/conffiles
++/etc/freeradius2/modules/greylist
++endef
++
++
+ define Package/freeradius2-utils
+   $(call Package/freeradius2/Default)
+-  DEPENDS:=+freeradius2-common
++  DEPENDS:=freeradius2
+   TITLE:=Misc. client utilities
+ endef
+ 
+@@ -343,9 +340,8 @@ CONFIGURE_ARGS+= \
+ 	--disable-static \
+ 	--disable-developer \
+ 	--with-threads \
+-	$(if $(CONFIG_FREERADIUS_OPENSSL),--with,--without)-openssl \
+-	$(if $(CONFIG_FREERADIUS_OPENSSL),--with-openssl-includes="$(STAGING_DIR)/usr/include",) \
+-	$(if $(CONFIG_FREERADIUS_OPENSSL),--with-openssl-libraries="$(STAGING_DIR)/usr/lib",) \
++	--with-openssl-includes="$(STAGING_DIR)/usr/include" \
++	--with-openssl-libraries="$(STAGING_DIR)/usr/lib" \
+ 	--with-system-libtool \
+ 	--with-system-libltdl \
+ 	--enable-strict-dependencies \
+@@ -533,13 +529,15 @@ define Build/Compile
+ 		all certs install
+ endef
+ 
+-define Package/freeradius2-common/install
++define Package/freeradius2/install
+ 	$(INSTALL_DIR) $(1)/etc/freeradius2
++	$(INSTALL_DIR) $(1)/etc/freeradius2/modules
++	$(INSTALL_DIR) $(1)/etc/freeradius2/sites
+ 	chmod 771 $(1)/etc/freeradius2
+-	$(CP) $(PKG_INSTALL_DIR)/etc/freeradius2/dictionary $(1)/etc/freeradius2/ ; \
+-	$(INSTALL_DIR) $(1)/usr/lib/freeradius2
+-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/freeradius2/libfreeradius-radius{,-*}.so $(1)/usr/lib/freeradius2
+-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/freeradius2/libfreeradius-eap{,-*}.so $(1)/usr/lib/freeradius2
++	for f in clients.conf dictionary radiusd.conf policy.conf; do \
++		$(CP) $(PKG_INSTALL_DIR)/etc/freeradius2/$$$${f} $(1)/etc/freeradius2/ ; \
++	done
++	$(CP) $(PKG_INSTALL_DIR)/etc/freeradius2/sites-available/default $(1)/etc/freeradius2/sites/default
+ 	$(INSTALL_DIR) $(1)/usr/share/freeradius2
+ 	$(CP) $(PKG_INSTALL_DIR)/usr/share/freeradius/dictionary $(1)/usr/share/freeradius2/
+ 	$(SED) "s,^\(\$$$$INCLUDE\),#\1,g" $(1)/usr/share/freeradius2/dictionary
+@@ -547,15 +545,10 @@ define Package/freeradius2-common/install
+ 		$(CP) $(PKG_INSTALL_DIR)/usr/share/freeradius/dictionary.$$$${f} $(1)/usr/share/freeradius2/ ; \
+ 		$(SED) "s,^#\(\$$$$INCLUDE dictionary\.$$$${f}\),\1,g" $(1)/usr/share/freeradius2/dictionary ; \
+ 	done
+-endef
+-
+-define Package/freeradius2/install
+-	$(INSTALL_DIR) $(1)/etc/freeradius2/modules
+-	$(INSTALL_DIR) $(1)/etc/freeradius2/sites
+-	for f in clients.conf radiusd.conf policy.conf; do \
+-		$(CP) $(PKG_INSTALL_DIR)/etc/freeradius2/$$$${f} $(1)/etc/freeradius2/ ; \
+-	done
+-	$(CP) $(PKG_INSTALL_DIR)/etc/freeradius2/sites-available/default $(1)/etc/freeradius2/sites/default
++	$(INSTALL_DIR) $(1)/usr/lib/freeradius2
++	$(CP) $(PKG_INSTALL_DIR)/usr/lib/freeradius2/libfreeradius-radius{,-*}.so $(1)/usr/lib/freeradius2
++	ln -s freeradius2/libfreeradius-radius-$(PKG_VERSION).so $(1)/usr/lib/
++	ln -s freeradius2/libfreeradius-eap-$(PKG_VERSION).so $(1)/usr/lib/
+ 	$(INSTALL_DIR) $(1)/usr/sbin
+ 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/radiusd $(1)/usr/sbin/
+ 	$(INSTALL_DIR) $(1)/etc/init.d
+@@ -596,11 +589,10 @@ define BuildPlugin
+ endef
+ 
+ $(eval $(call BuildPackage,freeradius2))
+-$(eval $(call BuildPackage,freeradius2-common))
+ $(eval $(call BuildPackage,freeradius2-democerts))
+ $(eval $(call BuildPlugin,freeradius2-mod-chap,rlm_chap,modules/chap,modules,))
+ $(eval $(call BuildPlugin,freeradius2-mod-detail,rlm_detail,modules/detail,modules,))
+-$(eval $(call BuildPlugin,freeradius2-mod-eap,rlm_eap,eap.conf))
++$(eval $(call BuildPlugin,freeradius2-mod-eap,libfreeradius-eap rlm_eap,eap.conf))
+ $(eval $(call BuildPlugin,freeradius2-mod-eap-gtc,rlm_eap_gtc,))
+ $(eval $(call BuildPlugin,freeradius2-mod-eap-md5,rlm_eap_md5,))
+ $(eval $(call BuildPlugin,freeradius2-mod-eap-mschapv2,rlm_eap_mschapv2,))
+@@ -628,4 +620,5 @@ $(eval $(call BuildPlugin,freeradius2-mod-expr,rlm_expr,modules/expr,modules,))
+ $(eval $(call BuildPlugin,freeradius2-mod-attr-filter,rlm_attr_filter,modules/attr_filter attrs attrs.access_reject attrs.accounting_response attrs.pre-proxy,modules,,))
+ $(eval $(call BuildPlugin,freeradius2-mod-expiration,rlm_expiration,modules/expiration,modules,))
+ $(eval $(call BuildPlugin,freeradius2-mod-always,rlm_always,modules/always,modules,))
++$(eval $(call BuildPlugin,freeradius2-mod-greylist,rlm_greylist,modules/greylist,modules,))
+ $(eval $(call BuildPackage,freeradius2-utils))
+diff --git feeds/packages/net/freeradius2/files/radiusd.init feeds/packages/net/freeradius2/files/radiusd.init
+index 27f75c6..44d33f4 100644
+--- feeds/packages/net/freeradius2/files/radiusd.init
++++ feeds/packages/net/freeradius2/files/radiusd.init
+@@ -7,14 +7,13 @@ LOG_D=/var/log
+ RUN_D=/var/run
+ PID_F=$RUN_D/radiusd.pid
+ RADACCT_D=/var/db/radacct
+-IPADDR=$(ifconfig br-lan | sed -n 's/.*dr:\(.*\)Bc.*/\1/p')
+ 
+ start() {
+ 	[ -f $DEFAULT ] && . $DEFAULT
+ 	mkdir -p $LOG_D
+ 	mkdir -p $RUN_D
+ 	mkdir -p $RADACCT_D
+-	radiusd -i $IPADDR -p 1812,1813 $OPTIONS
++	radiusd $OPTIONS
+ }
+ 
+ stop() {
+diff --git feeds/packages/net/freeradius2/patches/002-config.patch feeds/packages/net/freeradius2/patches/002-config.patch
+index 69132ff..4eb48b7 100644
+--- feeds/packages/net/freeradius2/patches/002-config.patch
++++ feeds/packages/net/freeradius2/patches/002-config.patch
+@@ -1,6 +1,6 @@
+ --- a/raddb/dictionary.in
+ +++ b/raddb/dictionary.in
+-@@ -11,7 +11,7 @@
++@@ -23,7 +23,7 @@
+  #
+  #	The filename given here should be an absolute path. 
+  #
+@@ -62,7 +62,7 @@
+  
+  		## EAP-TLS
+  		#
+-@@ -215,7 +215,7 @@
++@@ -205,7 +205,7 @@
+  			#  In these cases, fragment size should be
+  			#  1024 or less.
+  			#
+@@ -71,7 +71,7 @@
+  
+  			#  include_length is a flag which is
+  			#  by default set to yes If set to
+-@@ -225,7 +225,7 @@
++@@ -215,7 +215,7 @@
+  			#  message is included ONLY in the
+  			#  First packet of a fragment series.
+  			#
+@@ -80,7 +80,7 @@
+  
+  			#  Check the Certificate Revocation List
+  			#
+-@@ -297,7 +297,7 @@
++@@ -281,7 +281,7 @@
+  			# for the server to print out an error message,
+  			# and refuse to start.
+  			#
+@@ -89,7 +89,7 @@
+  
+  			#
+  			#  Elliptical cryptography configuration
+-@@ -332,7 +332,7 @@
++@@ -316,7 +316,7 @@
+  			#  You probably also want "use_tunneled_reply = yes"
+  			#  when using fast session resumption.
+  			#
+@@ -98,7 +98,7 @@
+  			      #
+  			      #  Enable it.  The default is "no".
+  			      #  Deleting the entire "cache" subsection
+-@@ -348,14 +348,14 @@
++@@ -332,14 +332,14 @@
+  			      #  enable resumption for just one user
+  			      #  by setting the above attribute to "yes".
+  			      #
+@@ -115,7 +115,7 @@
+  
+  			      #
+  			      #  The maximum number of entries in the
+-@@ -364,8 +364,8 @@
++@@ -348,8 +348,8 @@
+  			      #  This could be set to the number of users
+  			      #  who are logged in... which can be a LOT.
+  			      #
+@@ -126,7 +126,7 @@
+  
+  			#
+  			#  As of version 2.1.10, client certificates can be
+-@@ -503,7 +503,7 @@
++@@ -449,7 +449,7 @@
+  		#
+  		#  in the control items for a request.
+  		#
+@@ -135,7 +135,7 @@
+  			#  The tunneled EAP session needs a default
+  			#  EAP type which is separate from the one for
+  			#  the non-tunneled EAP module.  Inside of the
+-@@ -511,7 +511,7 @@
++@@ -457,7 +457,7 @@
+  			#  If the request does not contain an EAP
+  			#  conversation, then this configuration entry
+  			#  is ignored.
+@@ -144,7 +144,7 @@
+  
+  			#  The tunneled authentication request does
+  			#  not usually contain useful attributes
+-@@ -527,7 +527,7 @@
++@@ -473,7 +473,7 @@
+  			#  is copied to the tunneled request.
+  			#
+  			# allowed values: {no, yes}
+@@ -153,7 +153,7 @@
+  
+  			#  The reply attributes sent to the NAS are
+  			#  usually based on the name of the user
+-@@ -540,7 +540,7 @@
++@@ -486,7 +486,7 @@
+  			#  the tunneled request.
+  			#
+  			# allowed values: {no, yes}
+@@ -162,7 +162,7 @@
+  
+  			#
+  			#  The inner tunneled request can be sent
+-@@ -552,13 +552,13 @@
++@@ -498,13 +498,13 @@
+  			#  the virtual server that processed the
+  			#  outer requests.
+  			#
+@@ -178,7 +178,7 @@
+  
+  		##################################################
+  		#
+-@@ -627,14 +627,14 @@
++@@ -573,14 +573,14 @@
+  
+  			#  the PEAP module also has these configuration
+  			#  items, which are the same as for TTLS.
+@@ -196,7 +196,7 @@
+  
+  			#
+  			#  The inner tunneled request can be sent
+-@@ -646,7 +646,8 @@
++@@ -592,7 +592,8 @@
+  			#  the virtual server that processed the
+  			#  outer requests.
+  			#
+@@ -297,10 +297,10 @@
+  
+  	#
+  	#  The expression module doesn't do authorization,
+-@@ -756,15 +756,15 @@ instantiate {
+- 	#  other xlat functions such as md5, sha1 and lc.
++@@ -752,15 +752,15 @@ instantiate {
++ 	#  listed in any other section.  See 'doc/rlm_expr' for
++ 	#  more information.
+  	#
+- 	#  We do not recommend removing it's listing here.
+ -	expr
+ +#	expr
+  
+@@ -316,7 +316,7 @@
+  
+  	# subsections here can be thought of as "virtual" modules.
+  	#
+-@@ -788,7 +788,7 @@ instantiate {
++@@ -784,7 +784,7 @@ instantiate {
+  #	to multiple times.
+  #
+  ######################################################################
+@@ -325,7 +325,7 @@
+  
+  ######################################################################
+  #
+-@@ -798,9 +798,9 @@ $INCLUDE policy.conf
++@@ -794,9 +794,9 @@ $INCLUDE policy.conf
+  #	match the regular expression: /[a-zA-Z0-9_.]+/
+  #
+  #	It allows you to define new virtual servers simply by placing
+@@ -337,7 +337,7 @@
+  
+  ######################################################################
+  #
+-@@ -808,7 +808,7 @@ $INCLUDE sites-enabled/
++@@ -804,7 +804,7 @@ $INCLUDE sites-enabled/
+  #	"authenticate {}", "accounting {}", have been moved to the
+  #	the file:
+  #
+@@ -493,7 +493,7 @@
+  
+  	#
+  	#  Calculate the various WiMAX keys.  In order for this to work,
+-@@ -572,12 +572,12 @@ post-auth {
++@@ -558,12 +558,12 @@ post-auth {
+  	#  Add the ldap module name (or instance) if you have set 
+  	#  'edir_account_policy_check = yes' in the ldap module configuration
+  	#
+@@ -511,7 +511,7 @@
+  
+  #
+  #  When the server decides to proxy a request to a home server,
+-@@ -587,7 +587,7 @@ post-auth {
++@@ -573,7 +573,7 @@ post-auth {
+  #
+  #  Only a few modules currently have this method.
+  #
+@@ -520,7 +520,7 @@
+  #	attr_rewrite
+  
+  	#  Uncomment the following line if you want to change attributes
+-@@ -603,14 +603,14 @@ pre-proxy {
++@@ -589,14 +589,14 @@ pre-proxy {
+  	#  server, un-comment the following line, and the
+  	#  'detail pre_proxy_log' section, above.
+  #	pre_proxy_log
+@@ -537,7 +537,7 @@
+  
+  	#  If you want to have a log of replies from a home server,
+  	#  un-comment the following line, and the 'detail post_proxy_log'
+-@@ -634,7 +634,7 @@ post-proxy {
++@@ -620,7 +620,7 @@ post-proxy {
+  	#  hidden inside of the EAP packet, and the end server will
+  	#  reject the EAP request.
+  	#
+@@ -546,7 +546,7 @@
+  
+  	#
+  	#  If the server tries to proxy a request and fails, then the
+-@@ -656,5 +656,5 @@ post-proxy {
++@@ -642,5 +642,5 @@ post-proxy {
+  #	Post-Proxy-Type Fail {
+  #			detail
+  #	}
+diff --git feeds/packages/net/freeradius2/patches/010-disbale-openssl-check.patch feeds/packages/net/freeradius2/patches/010-disbale-openssl-check.patch
+deleted file mode 100644
+index 7f63e66..0000000
+--- feeds/packages/net/freeradius2/patches/010-disbale-openssl-check.patch
++++ /dev/null
+@@ -1,38 +0,0 @@
+---- a/configure.in
+-+++ b/configure.in
+-@@ -831,35 +831,6 @@ if test "x$WITH_OPENSSL" = xyes; then
+-     OPENSSL_INCLUDE="-DOPENSSL_NO_KRB5"
+-   fi
+- 
+--  dnl #
+--  dnl #  Now check that the header versions match the library
+--  dnl #
+--  AC_MSG_CHECKING([OpenSSL library and header version consistency])
+--  AC_RUN_IFELSE(
+--    [AC_LANG_PROGRAM(
+--      [[
+--        #include <stdio.h>
+--        #include <openssl/opensslv.h>
+--        #include <openssl/crypto.h>
+--      ]],
+--      [[
+--        if (SSLeay() == OPENSSL_VERSION_NUMBER) {
+--          return 0;
+--        } else {
+--          printf("library: %lx header: %lx... ", (unsigned long) SSLeay(), (unsigned long) OPENSSL_VERSION_NUMBER);
+--          return 1;
+--        }
+--      ]]
+--    )],
+--    [
+--      AC_MSG_RESULT(yes)
+--    ],
+--    [
+--      AC_MSG_RESULT(no)
+--      AC_MSG_FAILURE([OpenSSL library version does not match header version])
+--    ]
+--  )
+--
+-   if test "x$OPENSSL_LIBS" = x; then
+-     LIBS=$old_LIBS
+-     LDFLAGS="$old_LDFLAGS"
+diff --git feeds/packages/net/freeradius2/patches/100-nxp_border_router_config.patch feeds/packages/net/freeradius2/patches/100-nxp_border_router_config.patch
+new file mode 100644
+index 0000000..246063d
+--- /dev/null
++++ feeds/packages/net/freeradius2/patches/100-nxp_border_router_config.patch
+@@ -0,0 +1,160 @@
++--- a/raddb/radiusd.conf.in
+++++ b/raddb/radiusd.conf.in
++@@ -270,11 +270,11 @@
++ 	#	dotted quad (1.2.3.4)
++ 	#       hostname    (radius.example.com)
++ 	#       wildcard    (*)
++-	ipaddr = *
+++#	ipaddr = *
++ 
++ 	#  OR, you can use an IPv6 address, but not both
++ 	#  at the same time.
++-#	ipv6addr = ::	# any.  ::1 == localhost
+++	ipv6addr = ::	# any.  ::1 == localhost
++ 
++ 	#  Port on which to listen.
++ 	#  Allowed values are:
++@@ -290,7 +290,7 @@
++ 	#  If your system does not support this feature, you will
++ 	#  get an error if you try to use it.
++ 	#
++-	interface = br-lan
+++#	interface = br-lan
++ 
++ 	#  Per-socket lists of clients.  This is a very useful feature.
++ 	#
++@@ -317,7 +317,7 @@
++ #	ipv6addr = ::
++ 	port = 0
++ 	type = acct
++-	interface = br-lan
+++#	interface = br-lan
++ #	clients = per_socket_clients
++ }
++ 
++@@ -440,7 +440,7 @@
++ 	#
++ 	#  allowed values: {no, yes}
++ 	#
++-	auth = no
+++	auth = yes
++ 
++ 	#  Log passwords with the authentication requests.
++ 	#  auth_badpass  - logs password if it's rejected
++@@ -448,7 +448,7 @@
++ 	#
++ 	#  allowed values: {no, yes}
++ 	#
++-	auth_badpass = no
+++	auth_badpass = yes
++ 	auth_goodpass = no
++ 
++ 	#  Log additional text at the end of the "Login OK" messages.
++@@ -675,7 +675,7 @@
++ 	#  For all EAP related authentications.
++ 	#  Now in another file, because it is very large.
++ 	#
++-	$INCLUDE eap.conf
+++#	$INCLUDE eap.conf
++ 
++ 	#  Include another file that has the SQL-related configuration.
++ 	#  This is another file only because it tends to be big.
++--- a/raddb/sites-available/default
+++++ b/raddb/sites-available/default
++@@ -135,9 +135,9 @@
++ 	#  for the many packets that go back and forth to set up TTLS
++ 	#  or PEAP.  The load on those servers will therefore be reduced.
++ 	#
++-	eap {
++-		ok = return
++-	}
+++	#eap {
+++	#	ok = return
+++	#}
++ 
++ 	#
++ 	#  Pull crypt'd passwords from /etc/passwd or /etc/shadow,
++@@ -193,6 +193,10 @@
++ 	#
++ 	pap
++ 
+++	#  Enable NXP Greylisting - if no other module has managed to authenticate the client,
+++	#  It can be greylisted by this module.
+++	greylist
+++
++ 	#
++ 	#  If "status_server = yes", then Status-Server messages are passed
++ 	#  through the following section, and ONLY the following section.
++@@ -245,15 +249,15 @@
++ 	#  A back-end database listed in the 'authorize' section
++ 	#  MUST supply a CLEAR TEXT password.  Encrypted passwords
++ 	#  won't work.
++-	Auth-Type CHAP {
++-		chap
++-	}
+++	#Auth-Type CHAP {
+++	#	chap
+++	#}
++ 
++ 	#
++ 	#  MSCHAP authentication.
++-	Auth-Type MS-CHAP {
++-		mschap
++-	}
+++	#Auth-Type MS-CHAP {
+++	#	mschap
+++	#}
++ 
++ 	#
++ 	#  If you have a Cisco SIP server authenticating against
++@@ -289,7 +293,7 @@
++ 
++ 	#
++ 	#  Allow EAP authentication.
++-	eap
+++	#eap
++ 
++ 	#
++ 	#  The older configurations sent a number of attributes in
++@@ -306,6 +310,11 @@
++ #			handled  # override the "updated" code from attr_filter
++ #		}
++ #	}
+++	
+++	#  Enable NXP Greylisting - if no other module has managed to authenticate the client,
+++	#  It can be greylisted by this module.
+++	greylist
+++
++ }
++ 
++ 
++@@ -411,7 +420,7 @@
++ #	pgsql-voip
++ 
++ 	# For Exec-Program and Exec-Program-Wait
++-	exec
+++#	exec
++ 
++ 	#  Filter attributes from the accounting response.
++ 	#attr_filter.accounting_response
++@@ -429,7 +438,7 @@
++ #  or rlm_sql module can handle this.
++ #  The rlm_sql module is *much* faster
++ session {
++-	radutmp
+++#	radutmp
++ 
++ 	#
++ 	#  See "Simultaneous Use Checking Queries" in sql.conf
++--- a/raddb/users
+++++ b/raddb/users
++@@ -83,6 +83,9 @@
++ #	Framed-MTU = 1500,
++ #	Framed-Compression = Van-Jacobsen-TCP-IP
++ 
+++
+++$INCLUDE /etc/freeradius2/users.6LoWPAN
+++	
++ #
++ # This is an entry for a user with a space in their name.
++ # Note the double quotes surrounding the name.
+diff --git feeds/packages/net/freeradius2/patches/200-rlm-greylist.patch feeds/packages/net/freeradius2/patches/200-rlm-greylist.patch
+new file mode 100644
+index 0000000..79f655f
+--- /dev/null
++++ feeds/packages/net/freeradius2/patches/200-rlm-greylist.patch
+@@ -0,0 +1,474 @@
++diff -Naur freeradius-server-2.1.10/raddb/modules/greylist freeradius-server-2.1.10-new/raddb/modules/greylist
++--- freeradius-server-2.1.10/raddb/modules/greylist	1970-01-01 01:00:00.000000000 +0100
+++++ freeradius-server-2.1.10-new/raddb/modules/greylist	2012-02-27 09:39:15.687180296 +0000
++@@ -0,0 +1,9 @@
+++# -*- text -*-
+++#
+++#  $Id$
+++
+++# Greylist module to greylist any users that have not been authenticated by other modules.
+++
+++greylist {
+++	script = /usr/bin/greylist.sh
+++}
++diff -Naur freeradius-server-2.1.10/src/modules/rlm_greylist/Makefile freeradius-server-2.1.10-new/src/modules/rlm_greylist/Makefile
++--- freeradius-server-2.1.10/src/modules/rlm_greylist/Makefile	1970-01-01 01:00:00.000000000 +0100
+++++ freeradius-server-2.1.10-new/src/modules/rlm_greylist/Makefile	2012-02-27 09:39:15.688180284 +0000
++@@ -0,0 +1,10 @@
+++#
+++# Makefile
+++#
+++# Version:	$Id$
+++#
+++
+++TARGET      = rlm_greylist
+++SRCS        = rlm_greylist.c
+++
+++include ../rules.mak
++diff -Naur freeradius-server-2.1.10/src/modules/rlm_greylist/rlm_greylist.c freeradius-server-2.1.10-new/src/modules/rlm_greylist/rlm_greylist.c
++--- freeradius-server-2.1.10/src/modules/rlm_greylist/rlm_greylist.c	1970-01-01 01:00:00.000000000 +0100
+++++ freeradius-server-2.1.10-new/src/modules/rlm_greylist/rlm_greylist.c	2012-02-27 11:57:45.579292349 +0000
++@@ -0,0 +1,217 @@
+++/*
+++ * rlm_greylist.c
+++ *
+++ * Version:  $Id$
+++ *
+++ *   This program is free software; you can redistribute it and/or modify
+++ *   it under the terms of the GNU General Public License as published by
+++ *   the Free Software Foundation; either version 2 of the License, or
+++ *   (at your option) any later version.
+++ *
+++ *   This program is distributed in the hope that it will be useful,
+++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+++ *   GNU General Public License for more details.
+++ *
+++ *   You should have received a copy of the GNU General Public License
+++ *   along with this program; if not, write to the Free Software
+++ *   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+++ *
+++ * Copyright 2001,2006  The FreeRADIUS server project
+++ * Copyright 2012  Matt Redfearn <matt.redfearn@nxp.com>
+++ */
+++
+++/* This module allows for an external script to be run if authentication fails
+++ * via all other modules. This external script can then take an appropriate action
+++ * to the authentication failure such as adding the user to a greylist file,
+++ */
+++
+++#include <freeradius-devel/ident.h>
+++RCSID("$Id$")
+++
+++#include <freeradius-devel/radiusd.h>
+++#include <freeradius-devel/modules.h>
+++
+++#include <ctype.h>
+++
+++/*
+++ *      Define a structure for our module configuration.
+++ *
+++ *      These variables do not need to be in a structure, but it's
+++ *      a lot cleaner to do so, and a pointer to the structure can
+++ *      be used as the instance handle.
+++ */
+++typedef struct rlm_greylist_t
+++{
+++    const char *name;   /* CONF_SECTION->name, not strdup'd */
+++    char *script;       /* Greylist script to be run */
+++    int   auth_type;    /* Auth type for this module */
+++} rlm_greylist_t;
+++
+++/*
+++ *      A mapping of configuration file names to internal variables.
+++ *
+++ *      Note that the string is dynamically allocated, so it MUST
+++ *      be freed.  When the configuration file parse re-reads the string,
+++ *      it free's the old one, and strdup's the new one, placing the pointer
+++ *      to the strdup'd string into 'config.string'.  This gets around
+++ *      buffer over-flows.
+++ */
+++static const CONF_PARSER module_config[] = 
+++{
+++    { "script", PW_TYPE_STRING_PTR, offsetof(rlm_greylist_t,script), NULL, NULL },
+++    { NULL, -1, 0, NULL, NULL }
+++};
+++
+++
+++static int greylist_detach(void *instance)
+++{
+++    rlm_greylist_t *inst = (rlm_greylist_t *) instance;
+++    
+++    free(inst);
+++
+++    return 0;
+++}
+++
+++
+++static int greylist_instantiate(CONF_SECTION *conf, void **instance)
+++{
+++    rlm_greylist_t *inst;
+++    DICT_VALUE *dval;
+++
+++    /*
+++     *      Set up a storage area for instance data
+++     */
+++    inst = rad_malloc(sizeof(*inst));
+++    if (!inst)
+++    {
+++        return -1;
+++    }
+++    memset(inst, 0, sizeof(*inst));
+++
+++    /*
+++     *      If the configuration parameters can't be parsed, then
+++     *      fail.
+++     */
+++    if (cf_section_parse(conf, inst, module_config) < 0)
+++    {
+++        greylist_detach(inst);
+++        return -1;
+++    }
+++    
+++    if (inst->script == NULL || strlen(inst->script) == 0)
+++    {
+++        radlog(L_ERR, "rlm_greylist: No script defined");
+++        greylist_detach(inst);
+++        return -1;
+++    }
+++
+++    inst->name = cf_section_name2(conf);
+++    if (!inst->name)
+++    {
+++        inst->name = cf_section_name1(conf);
+++    }
+++    
+++    dval = dict_valbyname(PW_AUTH_TYPE, inst->name);
+++    if (dval)
+++    {
+++        inst->auth_type = dval->value;
+++    } 
+++    else 
+++    {
+++        inst->auth_type = 0;
+++    }
+++
+++    *instance = inst;
+++
+++    return 0;
+++}
+++
+++
+++/*
+++ *	Greylist authentication checks if any other module has claimed 
+++ *  to be able to authenticate the user and if not adds itself as
+++ *  the authenticator.
+++ */
+++static int greylist_authorize(void *instance, REQUEST *request)
+++{
+++    rlm_greylist_t *inst = instance;
+++    VALUE_PAIR *vp;
+++    
+++    if (!pairfind(request->config_items, PW_AUTH_TYPE))
+++    {
+++        /* Request has not already been claimed by another module */
+++        RDEBUG("Not claimed by another module - adding greylist auth type.");
+++        vp = radius_paircreate(request, &request->config_items,
+++                        PW_AUTH_TYPE, PW_TYPE_INTEGER);
+++        vp->vp_integer = inst->auth_type;
+++        return RLM_MODULE_UPDATED;
+++    }
+++    
+++    return RLM_MODULE_NOOP;
+++}
+++
+++
+++/*
+++ *	Greylist authentication runs the configured greylist script.
+++ */
+++static int greylist_authenticate(void *instance, REQUEST *request)
+++{
+++    rlm_greylist_t *inst = instance;
+++    
+++    if (inst->script)
+++    {
+++        /*
+++        * Get the correct username based on the configured value
+++        */
+++        VALUE_PAIR *username = NULL;
+++        username = pairfind(request->packet->vps, PW_USER_NAME);
+++
+++        if (username)
+++        {
+++            char command_buffer[1024];
+++            int result;
+++            sprintf(command_buffer, "%s --user=%s", inst->script, username->vp_strvalue);
+++            result = system(command_buffer);
+++            radlog(L_INFO, "rlm_greylist: Greylist script (%s) for user '%s' result: %d", inst->script, username->vp_strvalue, result);
+++            
+++            /* User has been greylisted, reject the log in now */
+++            return RLM_MODULE_REJECT;
+++        }
+++        else
+++        {
+++            RDEBUG("Could not determine username.");
+++            return RLM_MODULE_INVALID;
+++        }
+++    }
+++    return RLM_MODULE_FAIL;
+++}
+++
+++
+++/*
+++ *	The module name should be the only globally exported symbol.
+++ *	That is, everything else should be 'static'.
+++ *
+++ *	If the module needs to temporarily modify it's instantiation
+++ *	data, the type should be changed to RLM_TYPE_THREAD_UNSAFE.
+++ *	The server will then take care of ensuring that the module
+++ *	is single-threaded.
+++ */
+++module_t rlm_greylist = 
+++{
+++    RLM_MODULE_INIT,
+++    "greylist",
+++    RLM_TYPE_CHECK_CONFIG_SAFE | RLM_TYPE_HUP_SAFE, /* type */
+++    greylist_instantiate,                           /* instantiation */
+++    greylist_detach,                                /* detach */
+++    {
+++        greylist_authenticate,  /* authentication */
+++        greylist_authorize,     /* authorization */
+++        NULL,                   /* preaccounting */
+++        NULL,                   /* accounting */
+++        NULL,                   /* checksimul */
+++        NULL,                   /* pre-proxy */
+++        NULL,                   /* post-proxy */
+++        NULL                    /* post-auth */
+++    },
+++};
++diff -Naur freeradius-server-2.1.10/src/modules/rlm_greylist/rlm_greylist.c~ freeradius-server-2.1.10-new/src/modules/rlm_greylist/rlm_greylist.c~
++--- freeradius-server-2.1.10/src/modules/rlm_greylist/rlm_greylist.c~	1970-01-01 01:00:00.000000000 +0100
+++++ freeradius-server-2.1.10-new/src/modules/rlm_greylist/rlm_greylist.c~	2012-02-27 11:57:45.517293125 +0000
++@@ -0,0 +1,211 @@
+++/*
+++ * rlm_greylist.c
+++ *
+++ * Version:  $Id$
+++ *
+++ *   This program is free software; you can redistribute it and/or modify
+++ *   it under the terms of the GNU General Public License as published by
+++ *   the Free Software Foundation; either version 2 of the License, or
+++ *   (at your option) any later version.
+++ *
+++ *   This program is distributed in the hope that it will be useful,
+++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+++ *   GNU General Public License for more details.
+++ *
+++ *   You should have received a copy of the GNU General Public License
+++ *   along with this program; if not, write to the Free Software
+++ *   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+++ *
+++ * Copyright 2001,2006  The FreeRADIUS server project
+++ * Copyright 2012  Matt Redfearn <matt.redfearn@nxp.com>
+++ */
+++
+++/* This module allows for an external script to be run if authentication fails
+++ * via all other modules. This external script can then take an appropriate action
+++ * to the authentication failure such as adding the user to a greylist file,
+++ */
+++
+++#include <freeradius-devel/ident.h>
+++RCSID("$Id$")
+++
+++#include <freeradius-devel/radiusd.h>
+++#include <freeradius-devel/modules.h>
+++
+++#include <ctype.h>
+++
+++/*
+++ *      Define a structure for our module configuration.
+++ *
+++ *      These variables do not need to be in a structure, but it's
+++ *      a lot cleaner to do so, and a pointer to the structure can
+++ *      be used as the instance handle.
+++ */
+++typedef struct rlm_greylist_t {
+++    const char *name;   /* CONF_SECTION->name, not strdup'd */
+++    char *script;       /* Greylist script to be run */
+++    int   auth_type;    /* Auth type for this module */
+++} rlm_greylist_t;
+++
+++/*
+++ *      A mapping of configuration file names to internal variables.
+++ *
+++ *      Note that the string is dynamically allocated, so it MUST
+++ *      be freed.  When the configuration file parse re-reads the string,
+++ *      it free's the old one, and strdup's the new one, placing the pointer
+++ *      to the strdup'd string into 'config.string'.  This gets around
+++ *      buffer over-flows.
+++ */
+++static const CONF_PARSER module_config[] = {
+++    { "script", PW_TYPE_STRING_PTR, offsetof(rlm_greylist_t,script), NULL, NULL },
+++    { NULL, -1, 0, NULL, NULL }
+++};
+++
+++
+++static int greylist_detach(void *instance)
+++{
+++    rlm_greylist_t *inst = (rlm_greylist_t *) instance;
+++    
+++    free(inst);
+++
+++    return 0;
+++}
+++
+++
+++static int greylist_instantiate(CONF_SECTION *conf, void **instance)
+++{
+++    rlm_greylist_t *inst;
+++    DICT_VALUE *dval;
+++
+++    /*
+++     *      Set up a storage area for instance data
+++     */
+++    inst = rad_malloc(sizeof(*inst));
+++    if (!inst) {
+++        return -1;
+++    }
+++    memset(inst, 0, sizeof(*inst));
+++
+++    /*
+++     *      If the configuration parameters can't be parsed, then
+++     *      fail.
+++     */
+++    if (cf_section_parse(conf, inst, module_config) < 0)
+++    {
+++        greylist_detach(inst);
+++        return -1;
+++    }
+++    if (inst->script == NULL || strlen(inst->script) == 0)
+++    {
+++        radlog(L_ERR, "rlm_greylist: No script defined");
+++        greylist_detach(inst);
+++        return -1;
+++    }
+++
+++    inst->name = cf_section_name2(conf);
+++    if (!inst->name)
+++    {
+++        inst->name = cf_section_name1(conf);
+++    }
+++    
+++    dval = dict_valbyname(PW_AUTH_TYPE, inst->name);
+++    if (dval)
+++    {
+++        inst->auth_type = dval->value;
+++    } 
+++    else 
+++    {
+++        inst->auth_type = 0;
+++    }
+++
+++    *instance = inst;
+++
+++    return 0;
+++}
+++
+++
+++/*
+++ *	Greylist authentication checks if any other module has claimed 
+++ *  to be able to authenticate the user and if not adds itself as
+++ *  the authenticator.
+++ */
+++static int greylist_authorize(void *instance, REQUEST *request)
+++{
+++    rlm_greylist_t *inst = instance;
+++    VALUE_PAIR *vp;
+++    
+++    if (!pairfind(request->config_items, PW_AUTH_TYPE))
+++    {
+++        /* Request has not already been claimed by another module */
+++        RDEBUG("Not claimed by another module - adding greylist auth type.");
+++        vp = radius_paircreate(request, &request->config_items,
+++                        PW_AUTH_TYPE, PW_TYPE_INTEGER);
+++        vp->vp_integer = inst->auth_type;
+++        return RLM_MODULE_UPDATED;
+++    }
+++    
+++    return RLM_MODULE_NOOP;
+++}
+++
+++
+++/*
+++ *	Greylist authentication runs the configured greylist script.
+++ */
+++static int greylist_authenticate(void *instance, REQUEST *request)
+++{
+++    rlm_greylist_t *inst = instance;
+++    
+++    if (inst->script) {
+++        /*
+++        * Get the correct username based on the configured value
+++        */
+++        VALUE_PAIR *username = NULL;
+++        username = pairfind(request->packet->vps, PW_USER_NAME);
+++
+++        if (username)
+++        {
+++            char command_buffer[1024];
+++            int result;
+++            sprintf(command_buffer, "%s --user=%s", inst->script, username->vp_strvalue);
+++            result = system(command_buffer);
+++            radlog(L_INFO, "rlm_greylist: Greylist script (%s) for user '%s' result: %d", inst->script, username->vp_strvalue, result);
+++            
+++            /* User has been greylisted, reject the log in now */
+++            return RLM_MODULE_REJECT;
+++        }
+++        else
+++        {
+++            RDEBUG("Could not determine username.");
+++            return RLM_MODULE_INVALID;
+++        }
+++    }
+++    return RLM_MODULE_FAIL;
+++}
+++
+++
+++/*
+++ *	The module name should be the only globally exported symbol.
+++ *	That is, everything else should be 'static'.
+++ *
+++ *	If the module needs to temporarily modify it's instantiation
+++ *	data, the type should be changed to RLM_TYPE_THREAD_UNSAFE.
+++ *	The server will then take care of ensuring that the module
+++ *	is single-threaded.
+++ */
+++module_t rlm_greylist = {
+++    RLM_MODULE_INIT,
+++    "greylist",
+++    RLM_TYPE_CHECK_CONFIG_SAFE | RLM_TYPE_HUP_SAFE, /* type */
+++    greylist_instantiate,                           /* instantiation */
+++    greylist_detach,                                /* detach */
+++    {
+++        greylist_authenticate,  /* authentication */
+++        greylist_authorize,     /* authorization */
+++        NULL,                   /* preaccounting */
+++        NULL,                   /* accounting */
+++        NULL,                   /* checksimul */
+++        NULL,                   /* pre-proxy */
+++        NULL,                   /* post-proxy */
+++        NULL                    /* post-auth */
+++    },
+++};
++diff -Naur freeradius-server-2.1.10/src/modules/stable freeradius-server-2.1.10-new/src/modules/stable
++--- freeradius-server-2.1.10/src/modules/stable	2010-09-28 12:03:56.000000000 +0100
+++++ freeradius-server-2.1.10-new/src/modules/stable	2012-02-27 09:39:15.689180272 +0000
++@@ -16,6 +16,7 @@
++ rlm_expr
++ rlm_fastusers
++ rlm_files
+++rlm_greylist
++ rlm_ippool
++ rlm_krb5
++ rlm_ldap
+-- 
+1.7.9.5
+

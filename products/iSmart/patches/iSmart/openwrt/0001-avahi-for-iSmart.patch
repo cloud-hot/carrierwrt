@@ -1,0 +1,34 @@
+From e52a1717eeed5e341869f5e70b137e216f74b9b8 Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Tue, 27 May 2014 23:22:37 +0000
+Subject: [PATCH] avahi for iSmart
+
+---
+ feeds/packages/libs/avahi/files/avahi-daemon.conf |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git feeds/packages/libs/avahi/files/avahi-daemon.conf feeds/packages/libs/avahi/files/avahi-daemon.conf
+index 4ef64df..a65ae8a 100644
+--- feeds/packages/libs/avahi/files/avahi-daemon.conf
++++ feeds/packages/libs/avahi/files/avahi-daemon.conf
+@@ -2,9 +2,10 @@
+ #host-name=foo
+ #domain-name=local
+ use-ipv4=yes
+-use-ipv6=no
++use-ipv6=yes
+ check-response-ttl=no
+ use-iff-running=no
++allow-interfaces=br-lan
+ 
+ [publish]
+ publish-addresses=yes
+@@ -25,4 +26,4 @@ rlimit-data=4194304
+ rlimit-fsize=0
+ rlimit-nofile=30
+ rlimit-stack=4194304
+-rlimit-nproc=3
++rlimit-nproc=1
+-- 
+1.7.9.5
+

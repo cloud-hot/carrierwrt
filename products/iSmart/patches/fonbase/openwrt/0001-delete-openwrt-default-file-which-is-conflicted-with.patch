@@ -1,0 +1,106 @@
+diff --git package/base-files/Makefile package/base-files/Makefile
+index 2152edd..3b10b7d 100644
+--- package/base-files/Makefile
++++ package/base-files/Makefile
+@@ -109,7 +109,6 @@ define Package/base-files/install
+ 	)
+ 
+ 	$(VERSION_SED) \
+-		$(1)/etc/banner \
+ 		$(1)/etc/openwrt_version \
+ 		$(1)/etc/openwrt_release
+ 
+@@ -135,7 +134,6 @@ define Package/base-files/install
+ 	mkdir -p $(1)/etc
+ 	ln -sf /tmp/resolv.conf /tmp/fstab /tmp/TZ $(1)/etc/
+ 
+-	chmod 0600 $(1)/etc/shadow
+ 	chmod 1777 $(1)/tmp
+ 
+ 	$(call ImageConfigOptions,$(1))
+diff --git package/base-files/files/etc/banner package/base-files/files/etc/banner
+deleted file mode 100644
+index 058cb55..0000000
+--- package/base-files/files/etc/banner
++++ /dev/null
+@@ -1,16 +0,0 @@
+-  _______                     ________        __
+- |       |.-----.-----.-----.|  |  |  |.----.|  |_
+- |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+- |_______||   __|_____|__|__||________||__|  |____|
+-          |__| W I R E L E S S   F R E E D O M
+- -----------------------------------------------------
+- ATTITUDE ADJUSTMENT (%C, %R)
+- -----------------------------------------------------
+-  * 1/4 oz Vodka      Pour all ingredients into mixing
+-  * 1/4 oz Gin        tin with ice, strain into glass.
+-  * 1/4 oz Amaretto
+-  * 1/4 oz Triple sec
+-  * 1/4 oz Peach schnapps
+-  * 1/4 oz Sour mix
+-  * 1 splash Cranberry juice
+- -----------------------------------------------------
+diff --git package/base-files/files/etc/config/system package/base-files/files/etc/config/system
+deleted file mode 100644
+index d2124e4..0000000
+--- package/base-files/files/etc/config/system
++++ /dev/null
+@@ -1,10 +0,0 @@
+-config system
+-	option hostname	OpenWrt
+-	option timezone	UTC
+-
+-config timeserver ntp
+-	list server	0.openwrt.pool.ntp.org
+-	list server	1.openwrt.pool.ntp.org
+-	list server	2.openwrt.pool.ntp.org
+-	list server	3.openwrt.pool.ntp.org
+-	option enable_server 0
+diff --git package/base-files/files/etc/passwd package/base-files/files/etc/passwd
+deleted file mode 100644
+index 1d06a80..0000000
+--- package/base-files/files/etc/passwd
++++ /dev/null
+@@ -1,5 +0,0 @@
+-root:x:0:0:root:/root:/bin/ash
+-daemon:*:1:1:daemon:/var:/bin/false
+-ftp:*:55:55:ftp:/home/ftp:/bin/false
+-network:*:101:101:network:/var:/bin/false
+-nobody:*:65534:65534:nobody:/var:/bin/false
+diff --git package/base-files/files/etc/shadow package/base-files/files/etc/shadow
+deleted file mode 100644
+index e989890..0000000
+--- package/base-files/files/etc/shadow
++++ /dev/null
+@@ -1,5 +0,0 @@
+-root:x:0:0:99999:7:::
+-daemon:*:0:0:99999:7:::
+-ftp:*:0:0:99999:7:::
+-network:*:0:0:99999:7:::
+-nobody:*:0:0:99999:7:::
+diff --git package/firewall/Makefile package/firewall/Makefile
+index 558e863..79f8273 100644
+--- package/firewall/Makefile
++++ package/firewall/Makefile
+@@ -56,8 +56,6 @@ define Package/firewall/install
+ 	$(INSTALL_DATA) ./files/firewall.hotplug $(1)/etc/hotplug.d/iface/20-firewall
+ 	$(INSTALL_DIR) $(1)/etc/config/
+ 	$(INSTALL_DATA) ./files/firewall.config $(1)/etc/config/firewall
+-	$(INSTALL_DIR) $(1)/etc/
+-	$(INSTALL_DATA) ./files/firewall.user $(1)/etc/firewall.user
+ endef
+ 
+ $(eval $(call BuildPackage,firewall))
+diff --git package/firewall/files/firewall.user package/firewall/files/firewall.user
+deleted file mode 100644
+index 6f79906..0000000
+--- package/firewall/files/firewall.user
++++ /dev/null
+@@ -1,7 +0,0 @@
+-# This file is interpreted as shell script.
+-# Put your custom iptables rules here, they will
+-# be executed with each firewall (re-)start.
+-
+-# Internal uci firewall chains are flushed and recreated on reload, so
+-# put custom rules into the root chains e.g. INPUT or FORWARD or into the
+-# special user chains, e.g. input_wan_rule or postrouting_lan_rule.

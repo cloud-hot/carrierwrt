@@ -1,0 +1,44 @@
+From 6c0a718899d85cddbe863366e42bab9c24fe46e5 Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Tue, 27 May 2014 15:27:54 +0000
+Subject: [PATCH] libftdi for iSmart
+
+---
+ feeds/packages/libs/libftdi/Makefile |    7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git feeds/packages/libs/libftdi/Makefile feeds/packages/libs/libftdi/Makefile
+index 819c036..4e817fa 100644
+--- feeds/packages/libs/libftdi/Makefile
++++ feeds/packages/libs/libftdi/Makefile
+@@ -18,12 +18,11 @@ PKG_MD5SUM:=e6e25f33b4327b1b7aa1156947da45f3
+ PKG_INSTALL:=1
+ 
+ include $(INCLUDE_DIR)/package.mk
+-include $(INCLUDE_DIR)/cmake.mk
+ 
+ define Package/libftdi
+   SECTION:=libs
+   CATEGORY:=Libraries
+-  DEPENDS:=+libusb-compat
++  DEPENDS:=+libusb
+   TITLE:=library to talk to FTDI chips
+   URL:=http://www.intra2net.com/en/developer/libftdi/
+ endef
+@@ -36,12 +35,10 @@ endef
+ 
+ define Build/InstallDev
+ 	$(INSTALL_DIR) $(1)/usr/include/
+-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libftdi/ftdi.h $(1)/usr/include/
++	$(CP) $(PKG_INSTALL_DIR)/usr/include/ftdi.h $(1)/usr/include/
+ 	$(INSTALL_DIR) $(1)/usr/lib
+ 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libftdi.{a,so} $(1)/usr/lib/
+ 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libftdi.so* $(1)/usr/lib/
+-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig/
+-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libftdi.pc $(1)/usr/lib/pkgconfig/libftdi.pc
+ endef
+ 
+ define Package/libftdi/install
+-- 
+1.7.9.5
+

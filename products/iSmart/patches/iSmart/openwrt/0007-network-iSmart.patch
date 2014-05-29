@@ -1,0 +1,25 @@
+diff --git package/base-files/files/etc/config/network package/base-files/files/etc/config/network
+index a35fd2e..79dbb93 100644
+--- package/base-files/files/etc/config/network
++++ package/base-files/files/etc/config/network
+@@ -1,5 +1,3 @@
+-# Copyright (C) 2006 OpenWrt.org
+-
+ config interface loopback
+ 	option ifname	lo
+ 	option proto	static
+@@ -8,7 +6,12 @@ config interface loopback
+ 
+ config interface lan
+ 	option ifname	eth0
+-	option type 	bridge
++	option type	bridge
+ 	option proto	static
+-	option ipaddr	192.168.1.1
++	option ipaddr	192.168.11.1
+ 	option netmask	255.255.255.0
++	option ip6addr  fd04:bd3:80e8:1::1/64
++
++config interface wan
++	option ifname	eth1
++	option proto	dhcp
