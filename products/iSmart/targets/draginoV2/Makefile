@@ -21,8 +21,8 @@ define Target/draginoV2
 		CONFIG_PACKAGE_draginoV2=y
 
 	IMAGES := \
-		ar71xx/openwrt-ar71xx-generic-dragino2-kernel.bin \
-		ar71xx/openwrt-ar71xx-generic-dragino2-rootfs-squashfs.bin \
-		ar71xx/openwrt-ar71xx-generic-dragino2-squashfs-sysupgrade.bin
+		ar71xx/openwrt-ar71xx-generic-iSmart1-kernel.bin \
+		ar71xx/openwrt-ar71xx-generic-iSmart1-rootfs-squashfs.bin \
+		ar71xx/openwrt-ar71xx-generic-iSmart1-squashfs-sysupgrade.bin
 
 endef

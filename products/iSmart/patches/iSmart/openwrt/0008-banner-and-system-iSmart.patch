@@ -1,0 +1,58 @@
+From 2d3b8661871700c0113d076716da05739af4d3e7 Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Tue, 3 Jun 2014 06:04:42 +0000
+Subject: [PATCH] banner and system iSmart
+
+---
+ package/base-files/files/etc/banner        |    2 +-
+ package/base-files/files/etc/config/system |   24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
+
+diff --git package/base-files/files/etc/banner package/base-files/files/etc/banner
+index 058cb55..aac777c 100644
+--- package/base-files/files/etc/banner
++++ package/base-files/files/etc/banner
+@@ -4,7 +4,7 @@
+  |_______||   __|_____|__|__||________||__|  |____|
+           |__| W I R E L E S S   F R E E D O M
+  -----------------------------------------------------
+- ATTITUDE ADJUSTMENT (%C, %R)
++ iSmart V1 ATTITUDE ADJUSTMENT (%C, %R)
+  -----------------------------------------------------
+   * 1/4 oz Vodka      Pour all ingredients into mixing
+   * 1/4 oz Gin        tin with ice, strain into glass.
+diff --git package/base-files/files/etc/config/system package/base-files/files/etc/config/system
+index d2124e4..854d36e 100644
+--- package/base-files/files/etc/config/system
++++ package/base-files/files/etc/config/system
+@@ -8,3 +8,27 @@ config timeserver ntp
+ 	list server	2.openwrt.pool.ntp.org
+ 	list server	3.openwrt.pool.ntp.org
+ 	option enable_server 0
++
++config led 'led_wlan'
++        option name 'WLAN'
++        option sysfs 'iSmart1:red:wlan'
++        option trigger 'phy0tpt'
++
++config led 'led_lan'
++        option name 'LAN'
++        option sysfs 'iSmart1:red:lan'
++        option trigger 'netdev'
++        option 'mode' 'link tx rx'
++        option 'dev' 'eth0'
++
++config led 'led_wan'
++        option name 'WAN'
++        option sysfs 'iSmart1:red:wan'
++        option trigger 'netdev'
++        option 'mode' 'link tx rx'
++        option 'dev' 'eth1'
++
++#config led 'led_usb'
++#        option name 'USB'
++#        option sysfs 'iSmart1:red:usb'
++#        option trigger 'usbdev'
+-- 
+1.7.9.5
+

@@ -6,8 +6,8 @@ index 2bc8194..3d645ab 100755
  	*AP121-MINI)
  		name="ap121-mini"
  		;;
-+	*"Dragino v2")
-+		name="dragino2"
++	*"iSmart v1")
++		name="iSmart1"
 +		;;
  	*"AP136 reference board")
  		name="ap136"
@@ -20,7 +20,7 @@ index 49b1de9..b923a26 100755
  	dir-600-a1 | \
  	dir-615-c1 | \
  	dir-615-e4 | \
-+	dragino2 | \
++	iSmart1 | \
  	ew-dorin | \
  	ew-dorin-router | \
  	mzk-w04nu | \
@@ -32,7 +32,7 @@ index b5359bd..728b873 100644
  CONFIG_ATH79_MACH_DIR_600_A1=y
  CONFIG_ATH79_MACH_DIR_615_C1=y
  CONFIG_ATH79_MACH_DIR_825_B1=y
-+CONFIG_ATH79_MACH_DRAGINO2=y
++CONFIG_ATH79_MACH_ISMART1=y
  CONFIG_ATH79_MACH_EAP7660D=y
  CONFIG_ATH79_MACH_EW_DORIN=y
  CONFIG_ATH79_MACH_HORNET_UB=y
@@ -52,7 +52,7 @@ index 9ebe486..8f67e8c 100644
  $(eval $(call SingleProfile,AthLzma,$(fs_64k),EWDORINAP,ew-dorin,EW-DORIN,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),1048576,2752512,KRuImage))
  $(eval $(call SingleProfile,AthLzma,$(fs_64k),EWDORINRT,ew-dorin-router,EW-DORIN-ROUTER,ttyATH0,115200,$$(ew-dorin_mtdlayout_4M),1048576,2752512,KRuImage))
  $(eval $(call SingleProfile,AthLzma,$(fs_64k),PB92,pb92,PB92,ttyS0,115200,$$(pb92_mtdlayout),917504,2818048,KRuImage))
-+$(eval $(call SingleProfile,AthLzma,$(fs_64k),DRAGINO2,dragino2,DRAGINO2,ttyATH0,115200,$$(dragino2_mtdlayout),1048576,15335424,KRuImage))
++$(eval $(call SingleProfile,AthLzma,$(fs_64k),ISMART1,iSmart1,ISMART1,ttyATH0,115200,$$(dragino2_mtdlayout),1048576,15335424,KRuImage))
  
  $(eval $(call SingleProfile,Cameo7240,$(fs_64k),DIR600A1,dir-600-a1,DIR-600-A1,ttyS0,115200,"AP91-AR7240-RT-090223-00"))
  $(eval $(call SingleProfile,Cameo7240,$(fs_64k),DIR601A1,dir-601-a1,DIR-600-A1,ttyS0,115200,"AP91-AR7240-RT-090223-02"))
@@ -109,22 +109,22 @@ index 0000000..6abb6d8
 +
 +static struct gpio_led dragino2_leds_gpio[] __initdata = {
 +	{
-+		.name		= "dragino2:red:lan",
++		.name		= "iSmart1:red:lan",
 +		.gpio		= DRAGINO2_GPIO_LED_LAN,
 +		.active_low	= 0,
 +	},
 +	{
-+		.name		= "dragino2:red:wlan",
++		.name		= "iSmart1:red:wlan",
 +		.gpio		= DRAGINO2_GPIO_LED_WLAN,
 +		.active_low	= 0,
 +	},
 +		{
-+		.name		= "dragino2:red:wan",
++		.name		= "iSmart1:red:wan",
 +		.gpio		= DRAGINO2_GPIO_LED_WAN,
 +		.active_low	= 0,
 +	},
 +	{
-+		.name		= "dragino2:red:usb",
++		.name		= "iSmart1:red:usb",
 +		.gpio		= DRAGINO2_GPIO_LED_USB,
 +		.active_low	= 0,
 +	},
@@ -192,7 +192,7 @@ index 0000000..6abb6d8
 +}
 +
 +
-+MIPS_MACHINE(ATH79_MACH_DRAGINO2, "DRAGINO2", "Dragino Dragino v2",
++MIPS_MACHINE(ATH79_MACH_ISMART1, "ISMART1", "iSmart iSmart v1",
 +	     dragino2_setup);
 +
 diff --git target/linux/ar71xx/generic/profiles/dragino.mk target/linux/ar71xx/generic/profiles/dragino.mk
@@ -208,16 +208,16 @@ index 0000000..4403782
 +# See /LICENSE for more information.
 +#
 +
-+define Profile/DRAGINO2
-+	NAME:=DRAGINO2
++define Profile/ISMART1
++	NAME:=ISMART1
 +	PACKAGES:=kmod-ath9k kmod-usb-core kmod-usb-ohci kmod-usb2 kmod-ledtrig-usbdev
 +endef
 +
-+define Profile/DRAGINO2/Description
++define Profile/ISMART1/Description
 +	Package set optimized for the DRAGINO v2.
 +endef
 +
-+$(eval $(call Profile,DRAGINO2))
++$(eval $(call Profile,ISMART1))
 +
 -- 
 1.7.9.5
