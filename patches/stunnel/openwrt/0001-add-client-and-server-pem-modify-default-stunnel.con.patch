@@ -1,0 +1,182 @@
+From 6e198962b3474a99e42e202d8f98b08f1636f515 Mon Sep 17 00:00:00 2001
+From: cloud-hot <157724595@163.com>
+Date: Thu, 3 Jul 2014 07:35:27 +0000
+Subject: [PATCH] add client and server pem, modify default stunnel.conf and
+ stunnel.init
+
+---
+ feeds/packages/net/stunnel/files/cert-client.pem |   19 +++++++++++++
+ feeds/packages/net/stunnel/files/cert-server.pem |   19 +++++++++++++
+ feeds/packages/net/stunnel/files/key-client.pem  |   28 ++++++++++++++++++
+ feeds/packages/net/stunnel/files/stunnel.conf    |   33 ++++++++++++++++++++++
+ feeds/packages/net/stunnel/files/stunnel.init    |   23 ++++-----------
+ 5 files changed, 104 insertions(+), 18 deletions(-)
+ create mode 100644 feeds/packages/net/stunnel/files/cert-client.pem
+ create mode 100644 feeds/packages/net/stunnel/files/cert-server.pem
+ create mode 100644 feeds/packages/net/stunnel/files/key-client.pem
+ create mode 100644 feeds/packages/net/stunnel/files/stunnel.conf
+
+diff --git a/feeds/packages/net/stunnel/files/cert-client.pem b/feeds/packages/net/stunnel/files/cert-client.pem
+new file mode 100644
+index 0000000..499ef40
+--- /dev/null
++++ b/feeds/packages/net/stunnel/files/cert-client.pem
+@@ -0,0 +1,19 @@
++-----BEGIN CERTIFICATE-----
++MIIC/zCCAeegAwIBAgIJAK5nLxEMo1VpMA0GCSqGSIb3DQEBBQUAMBYxFDASBgNV
++BAMMCzE5Mi4xNjguMS4xMB4XDTE0MDcwMzA2MDkxOFoXDTI5MDYyOTA2MDkxOFow
++FjEUMBIGA1UEAwwLMTkyLjE2OC4xLjEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
++ggEKAoIBAQCvmKhCqqY/YXks03UeiXUMTCTxTsxhLeTLe+jXF7h5wPuU7YDNPUqE
++vNO6Q5d+xARRHutaZU6x+Nc3McUceud0NKVF1l/DIk3j4AWV4+UWpZU/mBxjTRmH
++yKxmNsF3OPPiS9XjKCrY9GkCVvHbGzufjXmEj9TXAUOsuVWY3VaGcErxhILPzmPH
++20eurJ3xSM2XLUxT0xErgylGlLAiYP2qMKtPfAKv/6/O9udBTjsvwsYKxd22mkSK
++3W5SEFpg2w0Vm7xEpgdneOaQYicc4qVC722oMQWIB95wQyEf/olkZvEtKVU9AceF
++gmnRhhTN4Jw9Wv1Hg9CY7ixLtWIFhXTlAgMBAAGjUDBOMB0GA1UdDgQWBBTbI054
++B7MW7D74vmiPk8muKx9DJDAfBgNVHSMEGDAWgBTbI054B7MW7D74vmiPk8muKx9D
++JDAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4IBAQBv+8S0dFEc07Q4Fuya
++QSpdz9Lqsl0tScM65efAsV5rJg/+qBD9MALAuW+f518V7feuur8vItxiLixzuuKP
++SHhBvunH62o+9U17kSJMOipdK4AChzvkCdPDPnrApxckjqA7kSc3hGD5v4v6Ojjh
++5rFE7wpItwkrY5DFfEDzVR8r2uzjLa+2ISoMh9VB9XH5BCpqhhMZPLfD3byI/zjX
++7TesXGFmtw9Jyyk9CTWcvVjhxyX7i4hTeV6dOX7J7QQ3q5MmFI0XhmUEC5ieHfdu
++RqQcKkoT5Ggx/BnCI8Npa+f2JB3jIT0mZliQB9h6j9/Kp69IhEj9CZ6j/HL2u8ri
++SjXY
++-----END CERTIFICATE-----
+diff --git a/feeds/packages/net/stunnel/files/cert-server.pem b/feeds/packages/net/stunnel/files/cert-server.pem
+new file mode 100644
+index 0000000..6cff17f
+--- /dev/null
++++ b/feeds/packages/net/stunnel/files/cert-server.pem
+@@ -0,0 +1,19 @@
++-----BEGIN CERTIFICATE-----
++MIIDAzCCAeugAwIBAgIJAODOqkdbCcsxMA0GCSqGSIb3DQEBBQUAMBgxFjAUBgNV
++BAMMDTE5Mi4xNjguMS4xNDMwHhcNMTQwNzAzMDYwOTE4WhcNMjkwNjI5MDYwOTE4
++WjAYMRYwFAYDVQQDDA0xOTIuMTY4LjEuMTQzMIIBIjANBgkqhkiG9w0BAQEFAAOC
++AQ8AMIIBCgKCAQEAyz0pcBEQCfE1dMl9xfqlu9ZKX2KQtYbsJAWplcon9wi0Sh1l
++OkILbk1bYL7JTpTNyv9QGfdDoYM+7hWGTUunU9Au0Z5Ys0HLzFimDIYSTWP48nwt
++ZzUz8fWuOvtcfqHhgyy/ZHRclJM7L7ykQ0SM53Xk+1pb2BVjFEFFIp/u8dcMuuX0
++XMSo9QLROkrlnJ6IuBIXCsIKacUx1l03C3jHeGZyREkFAkr29ahF5HxChxyFdqAZ
++cxDCEXZWfpbDz5zo+ZiBvQTY0NTgtz6yGZprz3qVFxQUWEvq8VTrmzgdG40tnyAf
++VlSQr6qVzTcCt03JVC3Uc6WDd/AHDLr2Gl08GQIDAQABo1AwTjAdBgNVHQ4EFgQU
++G3tn4zsdFs+MNxsX3YwnW8O86vkwHwYDVR0jBBgwFoAUG3tn4zsdFs+MNxsX3Ywn
++W8O86vkwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAMwRhTbQj0GMV
++5VesMGOl2dW2rGp6y0iJwf4RbKKZxH4NRqotjUfSAbfEZktXukHlemCko3r+VY1b
++5/XzMMtV6cumTAhNjWUvrVOdGTcNNC/w9O7edXW+zJVc/WGPmOSI1m+d0lrL22KN
++D0w0HluW6rL4SmsKo8zJO5fKwPG5qePqd3QUj5DoD3vHgwCqFyDgfia2xQelyCaU
++cyAOkvjQc1UFx9Mk1aByHcDrwla6Yx68/lqA4ueSmvJCcS4iTYHwyRjjy37ipqnJ
++hbZKNTOv0nVCte6Kky8rI9bigIGPSz/BTiCFlZDVTogTigQdp60xV8wv/PDyhiTu
++D2cIUvoeIQ==
++-----END CERTIFICATE-----
+diff --git a/feeds/packages/net/stunnel/files/key-client.pem b/feeds/packages/net/stunnel/files/key-client.pem
+new file mode 100644
+index 0000000..3d0f3f7
+--- /dev/null
++++ b/feeds/packages/net/stunnel/files/key-client.pem
+@@ -0,0 +1,28 @@
++-----BEGIN PRIVATE KEY-----
++MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCvmKhCqqY/YXks
++03UeiXUMTCTxTsxhLeTLe+jXF7h5wPuU7YDNPUqEvNO6Q5d+xARRHutaZU6x+Nc3
++McUceud0NKVF1l/DIk3j4AWV4+UWpZU/mBxjTRmHyKxmNsF3OPPiS9XjKCrY9GkC
++VvHbGzufjXmEj9TXAUOsuVWY3VaGcErxhILPzmPH20eurJ3xSM2XLUxT0xErgylG
++lLAiYP2qMKtPfAKv/6/O9udBTjsvwsYKxd22mkSK3W5SEFpg2w0Vm7xEpgdneOaQ
++Yicc4qVC722oMQWIB95wQyEf/olkZvEtKVU9AceFgmnRhhTN4Jw9Wv1Hg9CY7ixL
++tWIFhXTlAgMBAAECggEARRehJVI2RfwZjOzLSa+2cZdIdfaWbqp7OyHPVUsNGEM5
+++riVFKzINICEIudTpdqFBFJRMuln1JlgPWSE9ZbamZvZaChY19QYp9BPAlKAoq+W
++kUZN7Ti6EfaA91sWNs4fEGzchRwZ9/H7m6MQWTFW/YnSRbm+ercRpNXr+1EkKZNA
++La/8KW9FVjx1bJLPLoNK3xPhhtlQLlnuTFffIsaUsDKkOHUgh4DlafMwF2F1z5n8
++iMLPE9j9FA4LCNi3rV93lzLW5SZwpNTtjjCiv5+7jl0GhiK8nwY5ePgK4apOKfKt
++j/suFBK0lZoi2ApmdV/BEiebzfZSgPZ6Otx8EhQHBQKBgQDoTI/TZWJnTKiRubtc
++I3YgJDXZnpNutjQd5fbhizumx3xP8Z1dXh5EfGSwTy5NBcJ0IHq1o56x436vTYV/
++GS72D+lSz3Wd6EkTzBQeTRa5knVyi26oV0MKSrEk8hDzMSnx/a0hjaBecyjKO8YY
++wz8uuJjS7rOyzsppPyOoITQ1PwKBgQDBgxJZm7oyfdxVyflUnQZRBUKsK8OzGZuE
++8lcbz1QLKTJAyjHoX6zu9mX/SWRKAKpMB904oG3HhGeAVjLLajp118xDHjD1zJsG
++vvZBmCXzguI7A5IUQ/1wsPoObdRVOOYEXvsVn0U1uUN9l2zd38gNHRvZx5zBwk6d
++79J0OaIY2wKBgQCL+H39May+c5lq3VAAr7lgmpD8BKnvXsg+b693rY6O6sqD3SEl
++/i0ctRtyhPNwI5VMpblqsyFPLLXL6VkUAVejmmjLpgfH0wwdaq2AqJCV1qMAFvXh
++Z1sU23arvVPrRWdx0Zm9ivnjj143pRazGwp6G26yQnRyvFmIWywgBYnQvwKBgGkd
++2gnzHeHvnJC9dkMQSS4ZvW3pGBViA6jkO41PwkeNyU6IhzPDRR1Jm35hT6kjU16Z
++pwHro7aNpeuA53a37am1369V5yKeUlgHw50+GN9+aYXFGsUHadSdTjgoUP86OTiG
++n73PFrloOdEvQGQF+5WkCkzysaRO+IWykI+x/uuhAoGATWUUYDapl36QlkXuv7wh
++YwI5dh8uNtUr/0vckeEM2feCRCs2bQU7JPaxpdQdKRJIPPuTl4CWFr6UFn9SndgA
++RR6QfQHpNUu/6HVr5xch08xIzC6lq9gPcFFPSwMKVATd+UNeI3Ix8d+31y+5w2go
++nVou7DMh3XIeTUGiJECu7p8=
++-----END PRIVATE KEY-----
+diff --git a/feeds/packages/net/stunnel/files/stunnel.conf b/feeds/packages/net/stunnel/files/stunnel.conf
+new file mode 100644
+index 0000000..e6d009a
+--- /dev/null
++++ b/feeds/packages/net/stunnel/files/stunnel.conf
+@@ -0,0 +1,33 @@
++client = yes
++
++; protocol version (all, SSLv2, SSLv3, TLSv1)
++sslVersion = SSLv3
++
++; security enhancements for UNIX systems - comment them out on Win32
++; for chroot a copy of some devices and files is needed within the jail
++chroot = /var
++setuid = nobody
++setgid = nogroup
++; oPID is created inside the chross jail
++pid = /stunnel.pid
++
++; performance tunings
++socket = l:TCP_NODELAY=1
++socket = r:TCP_NODELAY=1
++;compression = zlib
++
++; workaround for Eudora bug
++;options = DONT_INSERT_EMPTY_FRAGMENTS
++
++; debugging stuff (may useful for troubleshooting)
++debug = 7
++output = /var/log/stunnel.log
++
++cert = /etc/stunnel/cert-client.pem
++key = /etc/stunnel/key-client.pem
++CAfile = /etc/stunnel/cert-server.pem
++verify = 3
++
++[syslog-ng3]
++accept = 127.0.0.1:514
++connect = 192.168.1.143:5140
+diff --git a/feeds/packages/net/stunnel/files/stunnel.init b/feeds/packages/net/stunnel/files/stunnel.init
+index a3ea103..41b4af1 100644
+--- a/feeds/packages/net/stunnel/files/stunnel.init
++++ b/feeds/packages/net/stunnel/files/stunnel.init
+@@ -1,28 +1,15 @@
+ #!/bin/sh /etc/rc.common
+ # Copyright (C) 2006-2008 OpenWrt.org
+ 
+-START=90
++START=89
+ RUN_D=/var
+ PID_F=$RUN_D/stunnel.pid
+ 
+ start() {
+-	if [ -s "/etc/stunnel/stunnel.pem" ]; then
+-		chmod og-rwx /etc/stunnel/stunnel.pem
+-		[ ! -f $PID_F ] && stunnel
+-	else
+-		[ -e /etc/stunnel/config ] && \
+-		. /etc/stunnel/config
+-
+-		X509_CN=${X509_CN:-"router"}
+-		X509_O=${X509_O:-"openwrt.org"}
+-		X509_OU=${X509_OU:-"open-source firmware"}
+-
+-		[ -x /sbin/keygen ] && {
+-		(keygen "$X509_CN" "$X509_O" "$X509_OU" > /etc/stunnel/stunnel.pem;
+-			chmod og-rwx /etc/stunnel/stunnel.pem;
+-			stunnel) &
+-		}
+-	fi
++	chmod og-rwx /etc/stunnel/cert-client.pem
++	chmod og-rwx /etc/stunnel/cert-server.pem
++	chmod og-rwx /etc/stunnel/key-client.pem
++	[ ! -f $PID_F ] && stunnel
+ }
+ 
+ stop() {
+-- 
+1.7.9.5
+

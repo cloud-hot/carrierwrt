@@ -10,7 +10,7 @@ define Target/draginoV2
 	CONFIG += \
 		CONFIG_TARGET_ar71xx=y \
 		CONFIG_TARGET_ar71xx_generic=y \
-		CONFIG_TARGET_ar71xx_generic_DRAGINO2=y \
+		CONFIG_TARGET_ar71xx_generic_ISMART1=y \
 		CONFIG_TARGET_ROOTFS_JFFS2=n \
 		CONFIG_PACKAGE_uboot-ar71xx-nbg460n_550n_550nh=y \
 		CONFIG_PACKAGE_kmod-fs-ext4=y \

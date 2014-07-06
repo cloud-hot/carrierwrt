@@ -72,7 +72,12 @@ define Customization/default
 		CONFIG_PACKAGE_6to4=y \
 		CONFIG_PACKAGE_kmod-usb-serial=y \
 		CONFIG_PACKAGE_kmod-usb-serial-ftdi=y \
-		CONFIG_PACKAGE_dbus-utils=y
+		CONFIG_PACKAGE_dbus-utils=y \
+		CONFIG_PACKAGE_libiconv=y \
+		CONFIG_PACKAGE_libintl=y \
+		CONFIG_PACKAGE_gettext=y \
+		CONFIG_PACKAGE_syslog-ng3=y \
+		CONFIG_PACKAGE_stunnel=y
 
 
 	FEEDS += \
@@ -87,7 +92,9 @@ define Customization/default
 		libftdi \
 		libxml2 \
 		radvd \
-		libavahi-client
+		libavahi-client \
+		syslog-ng3 \
+		stunnel
 
 	TESTED := \
 		ar71xx/openwrt-ar71xx-generic-tl-wr703n-v1-squashfs-factory.bin \
