@@ -16,11 +16,11 @@ Subject: [PATCH] add client and server pem, modify default stunnel.conf and
  create mode 100644 feeds/packages/net/stunnel/files/key-client.pem
  create mode 100644 feeds/packages/net/stunnel/files/stunnel.conf
 
-diff --git a/feeds/packages/net/stunnel/files/cert-client.pem b/feeds/packages/net/stunnel/files/cert-client.pem
+diff --git feeds/packages/net/stunnel/files/cert-client.pem feeds/packages/net/stunnel/files/cert-client.pem
 new file mode 100644
 index 0000000..499ef40
 --- /dev/null
-+++ b/feeds/packages/net/stunnel/files/cert-client.pem
++++ feeds/packages/net/stunnel/files/cert-client.pem
 @@ -0,0 +1,19 @@
 +-----BEGIN CERTIFICATE-----
 +MIIC/zCCAeegAwIBAgIJAK5nLxEMo1VpMA0GCSqGSIb3DQEBBQUAMBYxFDASBgNV
@@ -41,11 +41,11 @@ index 0000000..499ef40
 +RqQcKkoT5Ggx/BnCI8Npa+f2JB3jIT0mZliQB9h6j9/Kp69IhEj9CZ6j/HL2u8ri
 +SjXY
 +-----END CERTIFICATE-----
-diff --git a/feeds/packages/net/stunnel/files/cert-server.pem b/feeds/packages/net/stunnel/files/cert-server.pem
+diff --git feeds/packages/net/stunnel/files/cert-server.pem feeds/packages/net/stunnel/files/cert-server.pem
 new file mode 100644
 index 0000000..6cff17f
 --- /dev/null
-+++ b/feeds/packages/net/stunnel/files/cert-server.pem
++++ feeds/packages/net/stunnel/files/cert-server.pem
 @@ -0,0 +1,19 @@
 +-----BEGIN CERTIFICATE-----
 +MIIDAzCCAeugAwIBAgIJAODOqkdbCcsxMA0GCSqGSIb3DQEBBQUAMBgxFjAUBgNV
@@ -66,11 +66,11 @@ index 0000000..6cff17f
 +hbZKNTOv0nVCte6Kky8rI9bigIGPSz/BTiCFlZDVTogTigQdp60xV8wv/PDyhiTu
 +D2cIUvoeIQ==
 +-----END CERTIFICATE-----
-diff --git a/feeds/packages/net/stunnel/files/key-client.pem b/feeds/packages/net/stunnel/files/key-client.pem
+diff --git feeds/packages/net/stunnel/files/key-client.pem feeds/packages/net/stunnel/files/key-client.pem
 new file mode 100644
 index 0000000..3d0f3f7
 --- /dev/null
-+++ b/feeds/packages/net/stunnel/files/key-client.pem
++++ feeds/packages/net/stunnel/files/key-client.pem
 @@ -0,0 +1,28 @@
 +-----BEGIN PRIVATE KEY-----
 +MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCvmKhCqqY/YXks
@@ -100,11 +100,11 @@ index 0000000..3d0f3f7
 +RR6QfQHpNUu/6HVr5xch08xIzC6lq9gPcFFPSwMKVATd+UNeI3Ix8d+31y+5w2go
 +nVou7DMh3XIeTUGiJECu7p8=
 +-----END PRIVATE KEY-----
-diff --git a/feeds/packages/net/stunnel/files/stunnel.conf b/feeds/packages/net/stunnel/files/stunnel.conf
+diff --git feeds/packages/net/stunnel/files/stunnel.conf feeds/packages/net/stunnel/files/stunnel.conf
 new file mode 100644
 index 0000000..e6d009a
 --- /dev/null
-+++ b/feeds/packages/net/stunnel/files/stunnel.conf
++++ feeds/packages/net/stunnel/files/stunnel.conf
 @@ -0,0 +1,33 @@
 +client = yes
 +
@@ -139,10 +139,10 @@ index 0000000..e6d009a
 +[syslog-ng3]
 +accept = 127.0.0.1:514
 +connect = 192.168.1.143:5140
-diff --git a/feeds/packages/net/stunnel/files/stunnel.init b/feeds/packages/net/stunnel/files/stunnel.init
+diff --git feeds/packages/net/stunnel/files/stunnel.init feeds/packages/net/stunnel/files/stunnel.init
 index a3ea103..41b4af1 100644
---- a/feeds/packages/net/stunnel/files/stunnel.init
-+++ b/feeds/packages/net/stunnel/files/stunnel.init
+--- feeds/packages/net/stunnel/files/stunnel.init
++++ feeds/packages/net/stunnel/files/stunnel.init
 @@ -1,28 +1,15 @@
  #!/bin/sh /etc/rc.common
  # Copyright (C) 2006-2008 OpenWrt.org
