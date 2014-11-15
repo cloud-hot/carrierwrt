@@ -1,0 +1,21 @@
+notifications:
+  email: false
+language: c
+compiler: gcc
+before_install:
+- sudo apt-get update
+install:
+- sudo apt-get install -y git subversion gcc g++ binutils patch bzip2 flex make gettext pkg-config unzip libz-dev libncurses-dev gawk gcc-multilib
+script:
+- make PRODUCT=iSmart TARGET=draginoV2
+deploy:
+  provider: releases
+  api_key: a4bca331e2538fe9d919e5e088eecba0b9406c7a
+  skip_cleanup: true
+  file_glob: true
+  file:
+    - "firmware/iSmart/debug/*.bin"
+    - "firmware/iSmart/debug/*.bin.md5"
+  on:
+    tags: true
+    all_branches: true
